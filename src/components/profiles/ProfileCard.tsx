@@ -39,6 +39,7 @@ export const ProfileCard: React.FC<IProfileCard> = ({
       entering={FadeIn.duration(i * 500)}
     >
       <TouchableOpacity
+        activeOpacity={0.9}
         key={profile.id}
         onPress={onSelectProfile(profile)}
         style={styles.button}

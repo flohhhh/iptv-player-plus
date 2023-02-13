@@ -8,35 +8,34 @@ import React from 'react'
 import { useSelectedProfile } from '../../atoms/profilesAtom'
 import { useTranslation } from 'react-i18next'
 import Text from '../text'
-import { Drawer } from './Drawer'
-import { Content } from './Content'
+import { ContentCard } from './ContentCard'
+import { SpacerY } from '../spacer'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import Player from '../player'
 
-const Home = () => {
+export const Content = () => {
   const [selectedProfile] = useSelectedProfile()
   const { t } = useTranslation()
   const { width, height } = useWindowDimensions()
 
-  const [selectedMedia] = useSelectedMedia()
-
-  if (selectedMedia) {
-    return <Player />
-  }
-
   return (
     <View
       style={{
-        width,
+        width: 100,
         height,
-        flexDirection: 'row',
       }}
     >
-      <Drawer />
+      <ContentCard categoryName="Category 1" />
 
-      <Content />
+      <SpacerY size={20} />
+
+      <ContentCard categoryName="Category 12" />
+
+      <SpacerY size={20} />
+
+      <ContentCard categoryName="Category 3" />
+
+      <SpacerY size={20} />
     </View>
   )
 }
-
-export default Home

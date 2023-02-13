@@ -22,7 +22,6 @@ const Profiles = () => {
   const [profiles] = useProfiles()
   const { t } = useTranslation()
   const onSelectProfile = (p: IProfile) => () => {
-    console.log('----p', p)
     setSelectedProfile(p)
   }
 
@@ -39,12 +38,7 @@ const Profiles = () => {
       <View style={styles.containerProfiles}>
         {profiles.map((p, i) => (
           <React.Fragment key={p.id}>
-            <ProfileCard
-              i={i}
-              profile={p}
-              onSelectProfile={onSelectProfile}
-              // hasTVPreferredFocus={i === 0 && i === 0}
-            />
+            <ProfileCard i={i} profile={p} onSelectProfile={onSelectProfile} />
             {i !== profiles.length - 1 && <SpacerX size={14} />}
           </React.Fragment>
         ))}
@@ -53,6 +47,7 @@ const Profiles = () => {
       <SpacerY size={30} />
 
       <TouchableOpacity
+        activeOpacity={0.9}
         onPress={onManageProfiles}
         style={styles.manageProfiles}
       >
