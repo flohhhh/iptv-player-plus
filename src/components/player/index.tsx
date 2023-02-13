@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import { VLCPlayer } from 'react-native-vlc-media-player'
+import Video from 'react-native-video'
 import Text from '../text'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { Control } from './Control'
@@ -24,19 +24,18 @@ const Player = () => {
   }
 
   return (
-    <View style={{ width, height, backgroundColor: 'blue' }}>
+    <View style={{ width, height }}>
       <TouchableOpacity onPress={() => setSelectedMedia(null)}>
         <Text size={12}>Back</Text>
       </TouchableOpacity>
-      <VLCPlayer
+      <Video
         style={{ width, height }}
         paused={paused}
-        videoAspectRatio="16:9"
         source={{
           uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4',
         }}
       />
-      <Control onPlay={onPlay} onPause={onPause} />
+      <Control onPlay={onPlay} onPause={onPause} paused={paused} />
     </View>
   )
 }

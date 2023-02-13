@@ -19,7 +19,8 @@
     "react-native": "npm:react-native-tvos@latest",
     "react-native-get-random-values": "^1.8.0",
     "react-native-reanimated": "^2.14.4",
-    "react-native-vlc-media-player": "^1.0.46",
+    "react-native-svg": "^13.8.0",
+    "react-native-video": "^5.2.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
