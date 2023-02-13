@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-
+import Animated, { FadeIn, FadeInUp, Layout } from 'react-native-reanimated'
 import { useTranslation } from 'react-i18next'
 import {
   IProfile,
@@ -29,19 +29,20 @@ const Profiles = () => {
       <SpacerY size={10} />
 
       <View style={styles.containerProfiles}>
-        {profiles.map((p, i) => (
-          <>
-            {i === 0 ? null : <SpacerX key={0} size={10} />}
-            <TouchableOpacity
-              onPress={onSelectProfile(p)}
+        {profiles.map((p, i) => {
+          return (
+            <Animated.View
               key={p.id}
               style={styles.profile}
-            ></TouchableOpacity>
-            {i === profiles.length - 1 ? null : (
-              <SpacerX key={profiles.length - 1} size={10} />
-            )}
-          </>
-        ))}
+              entering={FadeIn.duration(i * 400)}
+            >
+              <TouchableOpacity
+                onPress={onSelectProfile(p)}
+                key={p.id}
+              ></TouchableOpacity>
+            </Animated.View>
+          )
+        })}
       </View>
 
       <SpacerY size={50} />
@@ -59,6 +60,7 @@ const Profiles = () => {
 const styles = StyleSheet.create({
   containerProfiles: {
     flexDirection: 'row',
+    gap: 10,
   },
   profile: {
     width: 100,
