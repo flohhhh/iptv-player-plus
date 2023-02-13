@@ -10,4 +10,13 @@ export const colors = {
   orange: {
     0: '#E9724C',
   },
+  fun: {
+    red: '#FA5557',
+    orange: '#F9A272',
+    yellow: '#FACF71',
+    green: '#87B76F',
+    blue: '#8DDFDC',
+    pink1: '#FBA4AF',
+    pink2: '#F79CB1',
+  },
 }

@@ -12,8 +12,8 @@ const App = () => {
 
   const [selectedProfile] = useSelectedProfile()
 
-  console.log('----profiles', profiles)
-  console.log('----s', selectedProfile)
+  console.log('----selectedProfile', selectedProfile)
+
   return (
     <View style={styles.container}>
       {selectedProfile ? <Home /> : <Profiles />}

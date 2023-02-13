@@ -10,11 +10,15 @@ import {
 import Text from '../text'
 import { colors } from '../../utils/colors'
 import { SpacerX, SpacerY } from '../spacer'
+import { randomValue } from '../../utils/random'
 
 const Profiles = () => {
   const [_, setSelectedProfile] = useSelectedProfile()
   const [profiles] = useProfiles()
   const { t } = useTranslation()
+
+  console.log('----', randomValue(0, 10))
+
   const onSelectProfile = (p: IProfile) => () => {
     console.log('----p', p)
     setSelectedProfile(p)
@@ -33,19 +37,26 @@ const Profiles = () => {
           return (
             <Animated.View
               key={p.id}
-              style={styles.profile}
-              entering={FadeIn.duration(i * 400)}
+              style={[styles.profile, { backgroundColor: p.color }]}
+              entering={FadeIn.duration(i * 500)}
             >
               <TouchableOpacity
-                onPress={onSelectProfile(p)}
                 key={p.id}
-              ></TouchableOpacity>
+                onPress={onSelectProfile(p)}
+                style={{
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text size={16}>{p.name}</Text>
+              </TouchableOpacity>
             </Animated.View>
           )
         })}
       </View>
 
-      <SpacerY size={50} />
+      <SpacerY size={30} />
 
       <TouchableOpacity
         onPress={onManageProfiles}
@@ -66,6 +77,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: colors.white['0'],
+    borderRadius: 10,
   },
   manageProfiles: {
     borderWidth: 1,
