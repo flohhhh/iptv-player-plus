@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Cabin-Regular.ttf",
+      "sha1": "7e0e4e3205840d9505bd0eb66cd71c185a022c01"
+    },
+    {
+      "path": "assets/fonts/CandyCake.ttf",
+      "sha1": "5bf327995d0bbbcd8d192f9a8b7082d3806a9c13"
+    }
+  ]
+}

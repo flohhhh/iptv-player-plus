@@ -1,6 +1,11 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import Animated, { FadeIn, FadeInUp, Layout } from 'react-native-reanimated'
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  TVEventHandler,
+} from 'react-native'
 import { useTranslation } from 'react-i18next'
 import {
   IProfile,
@@ -10,15 +15,12 @@ import {
 import Text from '../text'
 import { colors } from '../../utils/colors'
 import { SpacerX, SpacerY } from '../spacer'
-import { randomValue } from '../../utils/random'
+import { ProfileCard } from './ProfileCard'
 
 const Profiles = () => {
   const [_, setSelectedProfile] = useSelectedProfile()
   const [profiles] = useProfiles()
   const { t } = useTranslation()
-
-  console.log('----', randomValue(0, 10))
-
   const onSelectProfile = (p: IProfile) => () => {
     console.log('----p', p)
     setSelectedProfile(p)
@@ -28,32 +30,24 @@ const Profiles = () => {
 
   return (
     <View>
-      <Text size={20}>{t('profiles.whos_watching')}</Text>
+      <Text size={30} font="CandyCake">
+        {t('profiles.whos_watching')}
+      </Text>
 
       <SpacerY size={10} />
 
       <View style={styles.containerProfiles}>
-        {profiles.map((p, i) => {
-          return (
-            <Animated.View
-              key={p.id}
-              style={[styles.profile, { backgroundColor: p.color }]}
-              entering={FadeIn.duration(i * 500)}
-            >
-              <TouchableOpacity
-                key={p.id}
-                onPress={onSelectProfile(p)}
-                style={{
-                  height: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text size={16}>{p.name}</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )
-        })}
+        {profiles.map((p, i) => (
+          <React.Fragment key={p.id}>
+            <ProfileCard
+              i={i}
+              profile={p}
+              onSelectProfile={onSelectProfile}
+              // hasTVPreferredFocus={i === 0 && i === 0}
+            />
+            {i !== profiles.length - 1 && <SpacerX size={14} />}
+          </React.Fragment>
+        ))}
       </View>
 
       <SpacerY size={30} />
@@ -71,13 +65,18 @@ const Profiles = () => {
 const styles = StyleSheet.create({
   containerProfiles: {
     flexDirection: 'row',
-    gap: 10,
   },
   profile: {
     width: 100,
     height: 100,
     backgroundColor: colors.white['0'],
     borderRadius: 10,
+    borderWidth: 2,
+  },
+  button: {
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   manageProfiles: {
     borderWidth: 1,
