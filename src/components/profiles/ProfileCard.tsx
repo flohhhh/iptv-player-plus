@@ -33,7 +33,6 @@ export const ProfileCard: React.FC<IProfileCard> = ({
       style={[
         styles.profile,
         {
-          // backgroundColor: getByColorKey(profile.color),
           borderColor: focus ? colors.white['0'] : undefined,
         },
       ]}
@@ -46,6 +45,7 @@ export const ProfileCard: React.FC<IProfileCard> = ({
           getByColorKey(profile.color),
           getByColorKey(`${profile.color}Secondary` as TFunColors),
         ]}
+        style={{ borderRadius: 4 }}
       >
         <TouchableOpacity
           activeOpacity={0.9}
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: colors.white['0'],
-    borderRadius: 10,
+    borderRadius: 6,
     borderWidth: 2,
   },
   button: {
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   },
   manageProfiles: {
     borderWidth: 1,
-    // borderColor: colors.orange['0'],
     borderColor: 'red',
     borderRadius: 4,
     width: '100%',

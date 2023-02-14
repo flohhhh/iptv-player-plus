@@ -1,5 +1,6 @@
 import {
   FlatList,
+  ScrollView,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -19,23 +20,29 @@ export const Content = () => {
   const { width, height } = useWindowDimensions()
 
   return (
-    <View
+    <ScrollView
       style={{
         width: 100,
         height,
       }}
     >
-      <ContentByCategory title="Category 1" />
+      <ContentByCategory title="My List" />
+      <SpacerY size={10} />
 
-      <SpacerY size={20} />
+      <ContentByCategory title="Action" />
+      <SpacerY size={10} />
 
-      <ContentByCategory title="Category 12" />
+      <ContentByCategory title="Horror" />
+      <SpacerY size={10} />
 
-      <SpacerY size={20} />
+      <ContentByCategory title="Comedy" />
+      <SpacerY size={10} />
 
-      <ContentByCategory title="Category 3" />
+      <ContentByCategory title="Thriller" />
+      <SpacerY size={10} />
 
-      <SpacerY size={20} />
-    </View>
+      <ContentByCategory title="Live " />
+      <SpacerY size={10} />
+    </ScrollView>
   )
 }

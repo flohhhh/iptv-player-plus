@@ -16,12 +16,8 @@ import { MediaCard } from './MediaCard'
 
 interface IContentByCategory {
   title: string
-  movieTitle: string
 }
-export const ContentByCategory: React.FC<IContentByCategory> = ({
-  title,
-  movieTitle,
-}) => {
+export const ContentByCategory: React.FC<IContentByCategory> = ({ title }) => {
   const [selectedProfile] = useSelectedProfile()
   const { t } = useTranslation()
   const { width, height } = useWindowDimensions()
@@ -31,20 +27,25 @@ export const ContentByCategory: React.FC<IContentByCategory> = ({
     setSelectedMedia(true)
   }
 
+  const _renderItem = () => (
+    <>
+      <MediaCard title="Dune" year="2022" />
+      <SpacerX size={8} />
+    </>
+  )
+
   return (
     <View style={{ paddingLeft: 14, width }}>
-      <Text size={30}>{title}</Text>
+      <Text size={16}> {title}</Text>
 
       <SpacerY size={8} />
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {Array.from(Array(10).keys()).map((_, i) => (
-          <React.Fragment key={i}>
-            <MediaCard title="Dune" year="2022" />
-            <SpacerX size={20} />
-          </React.Fragment>
-        ))}
-      </ScrollView>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+        renderItem={_renderItem}
+      />
     </View>
   )
 }
