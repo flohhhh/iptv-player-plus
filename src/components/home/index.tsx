@@ -12,6 +12,8 @@ import { Drawer } from './Drawer'
 import { Content } from './Content'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import Player from '../player'
+import LinearGradient from 'react-native-linear-gradient'
+import { colors } from '../../utils/colors'
 
 const Home = () => {
   const [selectedProfile] = useSelectedProfile()
@@ -25,7 +27,10 @@ const Home = () => {
   }
 
   return (
-    <View
+    <LinearGradient
+      colors={[colors.black['0'], colors.black['1']]}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 0 }}
       style={{
         width,
         height,
@@ -35,7 +40,7 @@ const Home = () => {
       <Drawer />
 
       <Content />
-    </View>
+    </LinearGradient>
   )
 }
 

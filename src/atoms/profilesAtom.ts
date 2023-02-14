@@ -1,28 +1,28 @@
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom } from 'jotai'
 import { uuid } from '../utils/uuid'
-import { colors } from '../utils/colors'
+import { TFunColors } from '../utils/colors'
 
 export interface IProfile {
   id: string
   name: string
-  color: string
+  color: TFunColors
 }
 
-const defaultProfiles = [
+const defaultProfiles: IProfile[] = [
   {
     id: uuid(),
     name: 'Florian',
-    color: colors.fun.red,
+    color: 'red',
   },
   {
     id: uuid(),
     name: 'Orianne',
-    color: colors.fun.pink2,
+    color: 'pink2',
   },
   {
     id: 'kids',
     name: 'Kids',
-    color: colors.fun.green,
+    color: 'green',
   },
 ]
 

@@ -8,7 +8,7 @@ import React from 'react'
 import { useSelectedProfile } from '../../atoms/profilesAtom'
 import { useTranslation } from 'react-i18next'
 import Text from '../text'
-import { ContentCard } from './ContentCard'
+import { ContentByCategory } from './ContentByCategory'
 import { SpacerY } from '../spacer'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import Player from '../player'
@@ -25,15 +25,15 @@ export const Content = () => {
         height,
       }}
     >
-      <ContentCard categoryName="Category 1" />
+      <ContentByCategory title="Category 1" />
 
       <SpacerY size={20} />
 
-      <ContentCard categoryName="Category 12" />
+      <ContentByCategory title="Category 12" />
 
       <SpacerY size={20} />
 
-      <ContentCard categoryName="Category 3" />
+      <ContentByCategory title="Category 3" />
 
       <SpacerY size={20} />
     </View>

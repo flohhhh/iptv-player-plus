@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  TVEventHandler,
-} from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import {
   IProfile,

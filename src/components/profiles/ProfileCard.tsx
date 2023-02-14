@@ -3,7 +3,8 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
 import { IProfile } from '../../atoms/profilesAtom'
 import Text from '../text'
-import { colors } from '../../utils/colors'
+import { colors, getByColorKey, TFunColors } from '../../utils/colors'
+import LinearGradient from 'react-native-linear-gradient'
 import profiles from './index'
 
 interface IProfileCard {
@@ -32,22 +33,31 @@ export const ProfileCard: React.FC<IProfileCard> = ({
       style={[
         styles.profile,
         {
-          backgroundColor: profile.color,
+          // backgroundColor: getByColorKey(profile.color),
           borderColor: focus ? colors.white['0'] : undefined,
         },
       ]}
       entering={FadeIn.duration(i * 500)}
     >
-      <TouchableOpacity
-        activeOpacity={0.9}
-        key={profile.id}
-        onPress={onSelectProfile(profile)}
-        style={styles.button}
-        onFocus={onFocus}
-        onBlur={onBlur}
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        colors={[
+          getByColorKey(profile.color),
+          getByColorKey(`${profile.color}Secondary` as TFunColors),
+        ]}
       >
-        <Text size={20}>{profile.name}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          key={profile.id}
+          onPress={onSelectProfile(profile)}
+          style={styles.button}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        >
+          <Text size={20}>{profile.name}</Text>
+        </TouchableOpacity>
+      </LinearGradient>
     </Animated.View>
   )
 }

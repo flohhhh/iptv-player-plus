@@ -9,10 +9,13 @@ import Video from 'react-native-video'
 import Text from '../text'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { Control } from './Control'
+import { IProgressVideo } from './types'
 
 const Player = () => {
   const [selectedMedia, setSelectedMedia] = useSelectedMedia()
   const { width, height } = useWindowDimensions()
+
+  const [progress, setProgress] = useState(0)
 
   const [paused, setPaused] = useState(false)
   const onPlay = () => {
@@ -21,6 +24,15 @@ const Player = () => {
 
   const onPause = () => {
     setPaused(true)
+  }
+
+  const onProgress = (e: IProgressVideo) => {
+    const duration = e.playableDuration
+    const currentTime = e.currentTime
+
+    if (currentTime > 0 && currentTime <= duration) {
+      setProgress((currentTime * duration) / 100)
+    }
   }
 
   return (
@@ -34,8 +46,15 @@ const Player = () => {
         source={{
           uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4',
         }}
+        onProgress={onProgress}
       />
-      <Control onPlay={onPlay} onPause={onPause} paused={paused} />
+      <Control
+        onPlay={onPlay}
+        onPause={onPause}
+        paused={paused}
+        progress={progress}
+        // duration={duration}
+      />
     </View>
   )
 }

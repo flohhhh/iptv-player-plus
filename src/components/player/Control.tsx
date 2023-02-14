@@ -13,27 +13,39 @@ import { Rewind } from '../../icons/Rewind'
 import { Play } from '../../icons/Play'
 import { Pause } from '../../icons/Pause'
 import { Forward } from '../../icons/Forward'
+import ProgressBar from '../progressbar'
+import { BlurView } from '@react-native-community/blur'
 
 interface IControl {
   onPlay: () => void
   onPause: () => void
   paused: boolean
+  progress: number
 }
-export const Control: React.FC<IControl> = ({ onPlay, onPause, paused }) => {
+export const Control: React.FC<IControl> = ({
+  onPlay,
+  onPause,
+  paused,
+  progress,
+}) => {
   const [selectedMedia, setSelectedMedia] = useSelectedMedia()
-  const { width, height } = useWindowDimensions()
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.background} />
+
+        <View>
+          <ProgressBar progress={progress} style={styles.progressbar} />
+        </View>
+
         <View style={styles.buttons}>
           <TouchableOpacity
             onPress={onPlay}
             style={styles.controlButton}
             activeOpacity={0.9}
           >
-            <Rewind size={14} />
+            <Rewind size={10} />
           </TouchableOpacity>
 
           <SpacerX size={20} />
@@ -43,7 +55,7 @@ export const Control: React.FC<IControl> = ({ onPlay, onPause, paused }) => {
             style={styles.controlButton}
             activeOpacity={0.9}
           >
-            {paused ? <Play size={14} /> : <Pause size={14} />}
+            {paused ? <Play size={10} /> : <Pause size={10} />}
           </TouchableOpacity>
 
           <SpacerX size={20} />
@@ -53,7 +65,7 @@ export const Control: React.FC<IControl> = ({ onPlay, onPause, paused }) => {
             style={styles.controlButton}
             activeOpacity={0.9}
           >
-            <Forward size={14} />
+            <Forward size={10} />
           </TouchableOpacity>
         </View>
       </View>
@@ -73,7 +85,7 @@ const styles = StyleSheet.create({
     opacity: 0.2,
   },
   card: {
-    height: 240,
+    height: 180,
   },
   buttons: {
     zIndex: 2,
@@ -87,8 +99,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.white['0'],
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     borderRadius: 50,
   },
+  progressbar: { marginTop: 10, marginLeft: 14, marginRight: 100 },
 })

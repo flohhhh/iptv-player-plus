@@ -11,6 +11,7 @@ export const fr = {
       movies: 'Films',
       series: 'Series',
       canal: 'Chaînes',
+      mylist: 'Ma liste',
     },
   },
 }
