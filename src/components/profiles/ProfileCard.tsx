@@ -6,6 +6,8 @@ import Text from '../text'
 import { colors, getByColorKey, TFunColors } from '../../utils/colors'
 import LinearGradient from 'react-native-linear-gradient'
 import profiles from './index'
+import { useFocusBlur } from '../../hooks/useFocusBlur'
+import { ProfileLinearGradient } from './ProfileLinearGradient'
 
 interface IProfileCard {
   profile: IProfile
@@ -17,16 +19,7 @@ export const ProfileCard: React.FC<IProfileCard> = ({
   i,
   onSelectProfile,
 }) => {
-  const [focus, setFocus] = useState(false)
-
-  const onFocus = useCallback(() => {
-    console.log('Focused item ', profile)
-    setFocus(true)
-  }, [profile.id])
-
-  const onBlur = useCallback(() => {
-    setFocus(false)
-  }, [])
+  const { onFocus, onBlur, focus } = useFocusBlur([profile.id])
 
   return (
     <Animated.View
@@ -38,15 +31,7 @@ export const ProfileCard: React.FC<IProfileCard> = ({
       ]}
       entering={FadeIn.duration(i * 500)}
     >
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        colors={[
-          getByColorKey(profile.color),
-          getByColorKey(`${profile.color}Secondary` as TFunColors),
-        ]}
-        style={{ borderRadius: 4 }}
-      >
+      <ProfileLinearGradient color={profile.color}>
         <TouchableOpacity
           activeOpacity={0.9}
           key={profile.id}
@@ -57,7 +42,7 @@ export const ProfileCard: React.FC<IProfileCard> = ({
         >
           <Text size={20}>{profile.name}</Text>
         </TouchableOpacity>
-      </LinearGradient>
+      </ProfileLinearGradient>
     </Animated.View>
   )
 }
@@ -69,7 +54,6 @@ const styles = StyleSheet.create({
   profile: {
     width: 100,
     height: 100,
-    backgroundColor: colors.white['0'],
     borderRadius: 6,
     borderWidth: 2,
   },

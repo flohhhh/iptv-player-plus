@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { uuid } from '../utils/uuid'
 import { TFunColors } from '../utils/colors'
 
@@ -33,4 +33,7 @@ export const useProfiles = () => useAtom(profilesAtom)
 
 export const useSelectedProfile = () => {
   return useAtom(selectedProfileAtom)
+}
+export const useSelectedProfileValue = () => {
+  return useAtomValue<IProfile | null>(selectedProfileAtom)
 }

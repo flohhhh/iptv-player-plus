@@ -10,9 +10,12 @@ import Text from '../text'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { Control } from './Control'
 import { IProgressVideo } from './types'
+import { buildMovieUrl } from '../../atoms/api/utils'
+import { useSelectedAccount } from '../../atoms/accountsAtom'
 
 const Player = () => {
-  const [selectedMedia, setSelectedMedia] = useSelectedMedia()
+  const [selectedMediaId, setSelectedMedia] = useSelectedMedia()
+  const [selectedAccount] = useSelectedAccount()
   const { width, height } = useWindowDimensions()
 
   const [progress, setProgress] = useState(0)
@@ -35,6 +38,10 @@ const Player = () => {
     }
   }
 
+  if (!selectedAccount || !selectedMediaId) {
+    return null
+  }
+
   return (
     <View style={{ width, height }}>
       <TouchableOpacity onPress={() => setSelectedMedia(null)}>
@@ -44,7 +51,7 @@ const Player = () => {
         style={{ width, height }}
         paused={paused}
         source={{
-          uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4',
+          uri: buildMovieUrl(selectedAccount, selectedMediaId),
         }}
         onProgress={onProgress}
       />

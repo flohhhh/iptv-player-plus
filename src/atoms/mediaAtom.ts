@@ -1,13 +1,9 @@
-import { atom, useAtom, useAtomValue } from 'jotai'
-import { uuid } from '../utils/uuid'
-import { colors } from '../utils/colors'
+import { atom, useAtom } from 'jotai'
 
-export interface IMedia {
-  id: string
-  name: string
-  color: string
-}
+// export interface IMedia {
+//   id: number
+// }
 
-const mediaAtom = atom()
+const mediaAtom = atom<number | null>(null)
 
 export const useSelectedMedia = () => useAtom(mediaAtom)

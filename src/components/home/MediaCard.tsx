@@ -2,29 +2,27 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
-  useWindowDimensions,
   View,
 } from 'react-native'
 import React from 'react'
-import { useSelectedProfile } from '../../atoms/profilesAtom'
-import { useTranslation } from 'react-i18next'
 import Text from '../text'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { BlurView } from '@react-native-community/blur'
 import { isAndroid } from '../../utils/device'
 import { IStream } from '../../atoms/api/types'
+import { useFocusBlur } from '../../hooks/useFocusBlur'
+import { colors } from '../../utils/colors'
 
 interface IMediaCard {
   stream: IStream
 }
 export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
-  const [selectedProfile] = useSelectedProfile()
-  const { t } = useTranslation()
-  const { width, height } = useWindowDimensions()
-  const [selectedMedia, setSelectedMedia] = useSelectedMedia()
+  const [_, setSelectedMedia] = useSelectedMedia()
+
+  const { onFocus, onBlur, focus } = useFocusBlur()
 
   const onPressItem = () => {
-    setSelectedMedia(true)
+    setSelectedMedia(stream.stream_id)
   }
 
   return (
@@ -39,9 +37,18 @@ export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={onPressItem}
-        style={styles.container}
+        style={[
+          styles.container,
+          {
+            borderColor: focus ? colors.white[0] : undefined,
+            borderWidth: focus ? 2 : 0,
+          },
+        ]}
+        onFocus={onFocus}
+        onBlur={onBlur}
       >
         <BlurView
+          // @ts-ignore
           overlayColor="transparent"
           style={styles.absolute}
           blurType="extraDark"
@@ -72,16 +79,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   image: {
-    // flex: 1,
     width: 120,
-    height: 80,
+    height: 180,
   },
   imageStyle: {
     borderRadius: 8,
   },
   absolute: {
     position: 'absolute',
-    top: 60,
+    top: 160,
     left: 0,
     right: 0,
     bottom: 0,

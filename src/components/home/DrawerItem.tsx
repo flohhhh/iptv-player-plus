@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Text from '../text'
@@ -8,41 +8,64 @@ import { Canal } from '../../icons/Canal'
 import { MyList } from '../../icons/MyList'
 import { Movie } from '../../icons/Movie'
 import { colors } from '../../utils/colors'
-import { Search } from '../../icons/Search'
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
+import { useFocusBlur } from '../../hooks/useFocusBlur'
 
 type TType = 'movie' | 'tvshow' | 'canal' | 'mylist'
 interface IDrawerItem {
   text: string
   type: TType
-  selected?: boolean
+  drawerIsOpen: boolean
 }
 
 const DEFAULT_SIZE = 14
 
-const iconByType: Record<TType, () => JSX.Element> = {
-  movie: () => <Movie size={DEFAULT_SIZE} color="white" />,
-  tvshow: () => <TvShow size={DEFAULT_SIZE} color="white" />,
-  canal: () => <Canal size={DEFAULT_SIZE} color="white" />,
-  mylist: () => <MyList size={DEFAULT_SIZE} color="white" />,
+const iconByType: Record<TType, (selected: boolean) => () => JSX.Element> = {
+  movie: (s) => () =>
+    <Movie size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
+  tvshow: (s) => () =>
+    <TvShow size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
+  canal: (s) => () =>
+    <Canal size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
+  mylist: (s) => () =>
+    <MyList size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
 }
 
-export const DrawerItem: React.FC<IDrawerItem> = ({ text, type, selected }) => {
+export const DrawerItem: React.FC<IDrawerItem> = ({
+  text,
+  type,
+  drawerIsOpen = false,
+}) => {
   const { t } = useTranslation()
 
-  const Icon = iconByType[type]
+  const { onFocus, onBlur, focus } = useFocusBlur()
+
+  const opacityAnimated = useAnimatedStyle(() => ({
+    opacity: withTiming(drawerIsOpen ? 1 : 0),
+  }))
+
+  const Icon = iconByType[type](focus)
 
   return (
-    <View
+    <TouchableOpacity
       style={[
         styles.container,
-        selected ? { borderLeftColor: colors.white['0'] } : {},
+        { borderLeftColor: focus ? colors.white['0'] : colors.black['1'] },
       ]}
+      activeOpacity={1}
+      onFocus={onFocus}
+      onBlur={onBlur}
     >
       <SpacerX size={8} />
+
       <Icon />
-      <SpacerX size={10} />
-      <Text size={12}>{text}</Text>
-    </View>
+
+      <SpacerX size={20} />
+
+      <Animated.View style={opacityAnimated}>
+        <Text size={focus ? 14 : 12}>{text}</Text>
+      </Animated.View>
+    </TouchableOpacity>
   )
 }
 

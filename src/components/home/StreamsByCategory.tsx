@@ -32,7 +32,7 @@ export const StreamsByCategory: React.FC<IContentByCategory> = ({
   )
 
   return (
-    <View style={{ paddingLeft: 14, height: 120, width }}>
+    <View style={{ paddingLeft: 14 }}>
       <Text size={14}>{category.category_name}</Text>
 
       <SpacerY size={8} />
