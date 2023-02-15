@@ -1,15 +1,9 @@
-import {
-  FlatList,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import { useWindowDimensions } from 'react-native'
 import React from 'react'
 import { useSelectedProfile } from '../../atoms/profilesAtom'
 import { useTranslation } from 'react-i18next'
-import Text from '../text'
 import { Drawer } from './Drawer'
-import { Content } from './Content'
+import { Streams } from './Streams'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import Player from '../player'
 import LinearGradient from 'react-native-linear-gradient'
@@ -39,7 +33,7 @@ const Home = () => {
     >
       <Drawer />
 
-      <Content />
+      <Streams />
     </LinearGradient>
   )
 }

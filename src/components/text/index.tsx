@@ -26,6 +26,7 @@ interface IText {
   font?: 'CandyCake' | 'Cabin-Regular'
   opacity?: number
   letterSpacing?: number
+  numberOfLines?: number
 }
 const Text: React.FC<PropsWithChildren & IText> = ({
   children,
@@ -35,6 +36,7 @@ const Text: React.FC<PropsWithChildren & IText> = ({
   font,
   opacity,
   letterSpacing,
+  numberOfLines,
 }) => {
   return (
     <RNText
@@ -47,6 +49,7 @@ const Text: React.FC<PropsWithChildren & IText> = ({
         opacity,
         letterSpacing,
       }}
+      numberOfLines={numberOfLines}
     >
       {children}
     </RNText>

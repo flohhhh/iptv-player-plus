@@ -1,9 +1,6 @@
 import {
-  FlatList,
   ImageBackground,
-  ScrollView,
   StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -12,17 +9,15 @@ import React from 'react'
 import { useSelectedProfile } from '../../atoms/profilesAtom'
 import { useTranslation } from 'react-i18next'
 import Text from '../text'
-import { SpacerX, SpacerY } from '../spacer'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
-import { colors } from '../../utils/colors'
 import { BlurView } from '@react-native-community/blur'
 import { isAndroid } from '../../utils/device'
+import { IStream } from '../../atoms/api/types'
 
 interface IMediaCard {
-  title: string
-  year: string
+  stream: IStream
 }
-export const MediaCard: React.FC<IMediaCard> = ({ title, year }) => {
+export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
   const [selectedProfile] = useSelectedProfile()
   const { t } = useTranslation()
   const { width, height } = useWindowDimensions()
@@ -35,9 +30,9 @@ export const MediaCard: React.FC<IMediaCard> = ({ title, year }) => {
   return (
     <ImageBackground
       source={{
-        uri: 'https://static1.colliderimages.com/wordpress/wp-content/uploads/2021/10/dune-social-feature.jpg',
+        uri: stream.stream_icon,
       }}
-      resizeMode="cover"
+      resizeMode="contain"
       style={styles.image}
       imageStyle={styles.imageStyle}
     >
@@ -49,18 +44,13 @@ export const MediaCard: React.FC<IMediaCard> = ({ title, year }) => {
         <BlurView
           overlayColor="transparent"
           style={styles.absolute}
-          blurType="light"
+          blurType="extraDark"
           blurAmount={2}
         />
         <View style={styles.title}>
-          <View style={styles.row}>
-            <Text size={10}>{title}</Text>
-            <SpacerX size={4} />
-            <Text size={6} color={colors.white['0']} opacity={0.8}>
-              {year}
-            </Text>
-          </View>
-          <Text size={8}>01 : 45 : 00</Text>
+          <Text size={10} numberOfLines={1}>
+            {stream.name.split('|')[1]}
+          </Text>
         </View>
       </TouchableOpacity>
     </ImageBackground>
@@ -75,7 +65,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 2,
   },
-  row: { flexDirection: 'row' },
   title: {
     flex: 1,
     flexDirection: 'row',

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/blur": "^4.3.0",
+    "@shopify/flash-list": "^1.4.1",
     "@tanstack/query-core": "^4.24.6",
     "add": "^2.0.6",
     "i18next": "^22.4.9",
