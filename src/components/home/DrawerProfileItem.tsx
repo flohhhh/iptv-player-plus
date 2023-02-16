@@ -6,14 +6,13 @@ import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from '../profiles/ProfileLinearGradient'
 import { useSelectedProfileValue } from '../../atoms/profilesAtom'
-
 export const DrawerProfileItem = () => {
   const profile = useSelectedProfileValue()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   if (!profile) {
-    return
+    return null
   }
 
   return (

@@ -72,6 +72,7 @@ export const DrawerItem: React.FC<IDrawerItem> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    height: 20,
     flexDirection: 'row',
     alignItems: 'center',
     borderLeftWidth: 2,

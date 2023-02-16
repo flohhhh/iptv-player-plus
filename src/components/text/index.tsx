@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Text as RNText } from 'react-native'
 import { colors } from '../../utils/colors'
+import Animated from 'react-native-reanimated'
 
 export type TFontSize = 40 | 32 | 30 | 24 | 20 | 16 | 14 | 12 | 10 | 8 | 6
 type TLineHeight = 48 | 40 | 32 | 24 | 20 | 16
@@ -20,6 +21,7 @@ const fontSize: Record<TFontSize, TLineHeight> = {
 }
 
 interface IText {
+  animated?: boolean
   size: TFontSize
   color?: string
   bold?: boolean
@@ -29,6 +31,7 @@ interface IText {
   numberOfLines?: number
 }
 const Text: React.FC<PropsWithChildren & IText> = ({
+  animated = false,
   children,
   size,
   color,
@@ -38,8 +41,9 @@ const Text: React.FC<PropsWithChildren & IText> = ({
   letterSpacing,
   numberOfLines,
 }) => {
+  const TextComponent = animated ? Animated.Text : RNText
   return (
-    <RNText
+    <TextComponent
       style={{
         fontFamily: font ?? 'Cabin-Regular',
         fontSize: size,
@@ -52,7 +56,7 @@ const Text: React.FC<PropsWithChildren & IText> = ({
       numberOfLines={numberOfLines}
     >
       {children}
-    </RNText>
+    </TextComponent>
   )
 }
 

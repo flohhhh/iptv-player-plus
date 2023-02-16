@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native'
-import Text from '../text'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { SpacerX } from '../spacer'
 import { colors } from '../../utils/colors'
@@ -14,7 +8,8 @@ import { Play } from '../../icons/Play'
 import { Pause } from '../../icons/Pause'
 import { Forward } from '../../icons/Forward'
 import ProgressBar from '../progressbar'
-import { BlurView } from '@react-native-community/blur'
+import Animated from 'react-native-reanimated'
+import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
 
 interface IControl {
   onPlay: () => void
@@ -29,9 +24,12 @@ export const Control: React.FC<IControl> = ({
   progress,
 }) => {
   const [selectedMedia, setSelectedMedia] = useSelectedMedia()
+  const [lastEventType, setLastEventType] = React.useState('')
+
+  const { opacityAnimated } = useTimeoutOpacity()
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, opacityAnimated]}>
       <View style={styles.card}>
         <View style={styles.background} />
 
@@ -69,7 +67,7 @@ export const Control: React.FC<IControl> = ({
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Animated.View>
   )
 }
 
