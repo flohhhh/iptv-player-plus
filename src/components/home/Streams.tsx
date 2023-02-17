@@ -1,26 +1,48 @@
 import React from 'react'
-import { StreamsByCategory } from './StreamsByCategory'
+import { MoviesByCategory } from './MoviesByCategory'
 import { SpacerY } from '../spacer'
-import { useVodCategories } from '../../atoms/api/vodCategories'
-import { FlashList } from '@shopify/flash-list'
-import { useWindowDimensions, View } from 'react-native'
+import { useMoviesVodCategories } from '../../atoms/api/moviesCategories'
+import { FlashList, ListRenderItem } from '@shopify/flash-list'
+import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
+import { TDrawerItemType } from './DrawerItem'
+import { ICategory } from '../../atoms/api/types'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
+
+interface IScreen {
+  renderItem: ListRenderItem<ICategory> | null | undefined
+}
+const screens: Record<TDrawerItemType, IScreen> = {
+  movie: {
+    renderItem: ({ item }) => <MoviesByCategory category={item} />,
+  },
+  tvshow: {
+    renderItem: ({ item }) => <MoviesByCategory category={item} />,
+  },
+  canal: {
+    renderItem: ({ item }) => <MoviesByCategory category={item} />,
+  },
+  mylist: {
+    renderItem: ({ item }) => <MoviesByCategory category={item} />,
+  },
+}
 export const Streams = () => {
-  const { width } = useWindowDimensions()
-  const { data: vodCategories, isLoading } = useVodCategories()
+  const [selectDrawerItem] = useSelectDrawerItem()
+
+  const { data: vodCategories, isLoading } = useMoviesVodCategories()
 
   if (isLoading) {
     return null
   }
 
+  // TODO Remove default 'movie' ?
+  const _renderItem = screens[selectDrawerItem || 'movie'].renderItem
+
   return (
     <FlashList
       estimatedItemSize={80}
       data={vodCategories}
-      renderItem={({ item: category }) => (
-        <StreamsByCategory category={category} />
-      )}
+      renderItem={_renderItem}
       ItemSeparatorComponent={ItemSeparatorComponent}
     />
   )

@@ -2,7 +2,7 @@ import { StyleSheet, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
-import { DrawerItem, TType } from './DrawerItem'
+import { DrawerItem, TDrawerItemType } from './DrawerItem'
 import { SpacerY } from '../spacer'
 import Animated, {
   Easing,
@@ -12,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useSelectedProfileValue } from '../../atoms/profilesAtom'
 import { DrawerProfileItem } from './DrawerProfileItem'
+import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
 
 const SPACER_SIZE = 16
 
@@ -19,17 +20,20 @@ const config = {
   duration: 100,
   easing: Easing.ease,
 }
-const itemsFocus: Record<TType, boolean> = {
+const itemsFocus: Record<TDrawerItemType, boolean> = {
   movie: true,
   tvshow: false,
   mylist: false,
   canal: false,
 }
 
-export const Drawer = () => {
+interface IDrawer {}
+
+export const Drawer: React.FC<IDrawer> = () => {
   const { t } = useTranslation()
   const { height } = useWindowDimensions()
   const profile = useSelectedProfileValue()
+  const [_, setSelectDrawerItem] = useSelectDrawerItem()
 
   const widthShared = useSharedValue(120)
 
@@ -43,10 +47,11 @@ export const Drawer = () => {
     width: withTiming(widthShared.value, config),
   }))
 
-  const onFocusItem = (type: TType, focus: boolean) => {
+  const onFocusItem = (type: TDrawerItemType, focus: boolean) => {
     itemsFocus[type] = focus
-    const isFocused = Object.values(itemsFocus).some((f) => f)
-    setDrawerIsOpen(isFocused)
+    const hasAnItemFocused = Object.values(itemsFocus).some((f) => f)
+    setSelectDrawerItem(type)
+    setDrawerIsOpen(hasAnItemFocused)
   }
 
   if (!profile) {

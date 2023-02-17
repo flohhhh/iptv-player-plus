@@ -1,10 +1,10 @@
 import { useSelectedAccount } from '../accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
-import { IStream } from './types'
+import { IMovie } from './moviesTypes'
 import { useEffect, useState } from 'react'
 
-export const useStreamsByCategoryId = (catId: string) => {
-  const [streamsByCatId, setStreamsByCatId] = useState<IStream[]>([])
+export const useMoviesByCategoryId = (catId: string) => {
+  const [moviesByCatId, setMoviesByCatId] = useState<IMovie[]>([])
   const [selectedAccount] = useSelectedAccount()
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export const useStreamsByCategoryId = (catId: string) => {
         return
       }
 
-      const data: IStream[] = await fetch(
+      const data: IMovie[] = await fetch(
         buildApiUrl(
           selectedAccount,
           ['get_vod_streams', 'category_id=%sid%s'],
@@ -21,10 +21,10 @@ export const useStreamsByCategoryId = (catId: string) => {
         ),
         fetchConfig
       ).then((res) => res.json())
-      setStreamsByCatId(data)
+      setMoviesByCatId(data)
     }
     fetchAsync()
   }, [catId])
 
-  return streamsByCatId
+  return moviesByCatId
 }

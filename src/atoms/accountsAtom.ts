@@ -1,6 +1,4 @@
-import { atom, useAtom, useAtomValue } from 'jotai'
-import { uuid } from '../utils/uuid'
-import { colors } from '../utils/colors'
+import { atom, useAtom } from 'jotai'
 
 export interface IAccount {
   id: number

@@ -4,32 +4,29 @@ import { useTranslation } from 'react-i18next'
 import Text from '../text'
 import { SpacerX, SpacerY } from '../spacer'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
-import { MediaCard } from './MediaCard'
-import { IStream, IVodCategory } from '../../atoms/api/types'
-// import { FlashList } from '@shopify/flash-list'
-import { useStreamsByCategoryId } from '../../atoms/api/vodStreamByCategoryId'
-import { FlashList } from '@shopify/flash-list'
+import { MovieCard } from './MovieCard'
+import { ICategory } from '../../atoms/api/types'
+import { useMoviesByCategoryId } from '../../atoms/api/moviesByCategoryId'
+import { IMovie } from '../../atoms/api/moviesTypes'
 
 interface IContentByCategory {
-  category: IVodCategory
+  category: ICategory
 }
 const ItemSeparatorComponent = () => <SpacerX size={8} />
-export const StreamsByCategory: React.FC<IContentByCategory> = ({
+export const MoviesByCategory: React.FC<IContentByCategory> = ({
   category,
 }) => {
   const { t } = useTranslation()
   const { width } = useWindowDimensions()
   const [selectedMedia, setSelectedMedia] = useSelectedMedia()
 
-  const streamsByCatId: IStream[] = useStreamsByCategoryId(category.category_id)
+  const streamsByCatId: IMovie[] = useMoviesByCategoryId(category.category_id)
 
   const onPressItem = () => {
-    setSelectedMedia(true)
+    setSelectedMedia(1)
   }
 
-  const _renderItem = ({ item: stream }: { item: IStream }) => (
-    <MediaCard stream={stream} />
-  )
+  const _renderItem = ({ item }: { item: IMovie }) => <MovieCard movie={item} />
 
   return (
     <View style={{ paddingLeft: 14 }}>

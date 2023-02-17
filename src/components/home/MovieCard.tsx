@@ -9,13 +9,13 @@ import Text from '../text'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { BlurView } from '@react-native-community/blur'
 import { isAndroid } from '../../utils/device'
-import { IStream } from '../../atoms/api/types'
+import { IMovie } from '../../atoms/api/moviesTypes'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { colors } from '../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
-interface IMediaCard {
-  stream: IStream
+interface IMovieCard {
+  movie: IMovie
 }
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground)
@@ -27,7 +27,7 @@ const DEFAULT_VALUES = {
   WIDTH: 120,
   HEIGHT: 180,
 }
-export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
+export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const [_, setSelectedMedia] = useSelectedMedia()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
@@ -44,13 +44,13 @@ export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
   }))
 
   const onPressItem = () => {
-    setSelectedMedia(stream.stream_id)
+    setSelectedMedia(movie.stream_id)
   }
 
   return (
     <AnimatedImageBackground
       source={{
-        uri: stream.stream_icon,
+        uri: movie.stream_icon,
       }}
       resizeMode="contain"
       style={animatedImageStyle}
@@ -72,7 +72,7 @@ export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
         />
         <View style={styles.title}>
           <Text size={10} numberOfLines={1}>
-            {stream.name.split('|')[1]}
+            {movie.name.split('|')[1]}
           </Text>
         </View>
       </AnimatedTouchableOpacity>

@@ -1,7 +1,5 @@
 import { useWindowDimensions } from 'react-native'
 import React from 'react'
-import { useSelectedProfile } from '../../atoms/profilesAtom'
-import { useTranslation } from 'react-i18next'
 import { Drawer } from './Drawer'
 import { Streams } from './Streams'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
@@ -10,10 +8,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../utils/colors'
 
 const Home = () => {
-  const [selectedProfile] = useSelectedProfile()
-  const { t } = useTranslation()
   const { width, height } = useWindowDimensions()
-
   const [selectedMedia] = useSelectedMedia()
 
   if (selectedMedia) {

@@ -10,19 +10,19 @@ import { colors } from '../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 
-export type TType = 'movie' | 'tvshow' | 'canal' | 'mylist'
+export type TDrawerItemType = 'movie' | 'tvshow' | 'canal' | 'mylist'
 interface IDrawerItem {
   text: string
-  type: TType
+  type: TDrawerItemType
   selected?: boolean
   drawerIsOpen: boolean
-  onFocusItem: (type: TType, value: boolean) => void
+  onFocusItem: (type: TDrawerItemType, value: boolean) => void
 }
 
 const DEFAULT_SIZE = 14
 
 const iconByType: Record<
-  TType,
+  TDrawerItemType,
   (selected: boolean, drawerIsOpen: boolean) => () => JSX.Element
 > = {
   movie: (selected, drawerIsOpen) => () =>

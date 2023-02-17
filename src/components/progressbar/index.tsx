@@ -10,7 +10,6 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from 'react-native-reanimated'
 import { colors } from '../../utils/colors'
 

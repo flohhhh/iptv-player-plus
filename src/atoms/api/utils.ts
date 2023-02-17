@@ -14,8 +14,13 @@ export const buildApiUrl = (
   return url
 }
 
-export const buildMovieUrl = (account: IAccount, mediaId: number) => {
-  return `${account.host.replace('8080', '80')}/movie/${account.username}/${
+export type TTypeUrl = 'movie' | 'series' | 'live'
+export const buildStreamUrl = (
+  type: TTypeUrl,
+  account: IAccount,
+  mediaId: number
+) => {
+  return `${account.host.replace('8080', '80')}/${type}/${account.username}/${
     account.password
   }/${mediaId}.mkv`
 }

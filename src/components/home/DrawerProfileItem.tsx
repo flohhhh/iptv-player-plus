@@ -7,6 +7,7 @@ import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from '../profiles/ProfileLinearGradient'
 import { useSelectedProfileValue } from '../../atoms/profilesAtom'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
+
 interface IDrawerProfileItem {
   drawerIsOpen: boolean
   selected?: boolean

@@ -1,12 +1,6 @@
-import React, { PropsWithChildren, useCallback, useState } from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
-import Animated, { FadeIn } from 'react-native-reanimated'
-import { IProfile } from '../../atoms/profilesAtom'
-import Text from '../text'
-import { colors, getByColorKey, TFunColors } from '../../utils/colors'
+import React, { PropsWithChildren } from 'react'
+import { getByColorKey, TFunColors } from '../../utils/colors'
 import LinearGradient from 'react-native-linear-gradient'
-import profiles from './index'
-import { useFocusBlur } from '../../hooks/useFocusBlur'
 
 interface IProfileCard {
   color: TFunColors
