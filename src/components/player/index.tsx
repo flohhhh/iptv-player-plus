@@ -55,12 +55,10 @@ const Player = () => {
   }
 
   const onFocusChange = () => {
-    console.log('----focus')
     onFocus()
   }
 
   const onBlurChange = () => {
-    console.log('----blur')
     onBlur()
   }
   const backAction = () => {
@@ -79,7 +77,6 @@ const Player = () => {
   }, [])
 
   if (!selectedAccount || !selectedMediaId) {
-    console.log('----return null')
     return null
   }
 

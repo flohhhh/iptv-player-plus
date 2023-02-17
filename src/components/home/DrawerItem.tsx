@@ -1,6 +1,5 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import Text from '../text'
 import { TvShow } from '../../icons/TvShow'
 import { SpacerX } from '../spacer'
@@ -11,40 +10,97 @@ import { colors } from '../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 
-type TType = 'movie' | 'tvshow' | 'canal' | 'mylist'
+export type TType = 'movie' | 'tvshow' | 'canal' | 'mylist'
 interface IDrawerItem {
   text: string
   type: TType
   drawerIsOpen: boolean
+  onFocusItem: (type: TType, value: boolean) => void
 }
 
 const DEFAULT_SIZE = 14
 
-const iconByType: Record<TType, (selected: boolean) => () => JSX.Element> = {
-  movie: (s) => () =>
-    <Movie size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
-  tvshow: (s) => () =>
-    <TvShow size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
-  canal: (s) => () =>
-    <Canal size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
-  mylist: (s) => () =>
-    <MyList size={s ? DEFAULT_SIZE : DEFAULT_SIZE} color="white" />,
+const iconByType: Record<
+  TType,
+  (selected: boolean, drawerIsOpen: boolean) => () => JSX.Element
+> = {
+  movie: (selected, drawerIsOpen) => () =>
+    (
+      <Movie
+        size={
+          drawerIsOpen
+            ? selected
+              ? DEFAULT_SIZE + 2
+              : DEFAULT_SIZE
+            : DEFAULT_SIZE + 8
+        }
+        color="white"
+      />
+    ),
+  tvshow: (selected, drawerIsOpen) => () =>
+    (
+      <TvShow
+        size={
+          drawerIsOpen
+            ? selected
+              ? DEFAULT_SIZE + 2
+              : DEFAULT_SIZE
+            : DEFAULT_SIZE + 8
+        }
+        color="white"
+      />
+    ),
+  canal: (selected, drawerIsOpen) => () =>
+    (
+      <Canal
+        size={
+          drawerIsOpen
+            ? selected
+              ? DEFAULT_SIZE + 2
+              : DEFAULT_SIZE
+            : DEFAULT_SIZE + 8
+        }
+        color="white"
+      />
+    ),
+  mylist: (selected, drawerIsOpen) => () =>
+    (
+      <MyList
+        size={
+          drawerIsOpen
+            ? selected
+              ? DEFAULT_SIZE + 2
+              : DEFAULT_SIZE
+            : DEFAULT_SIZE + 8
+        }
+        color="white"
+      />
+    ),
 }
 
 export const DrawerItem: React.FC<IDrawerItem> = ({
   text,
   type,
   drawerIsOpen = false,
+  onFocusItem,
 }) => {
-  const { t } = useTranslation()
-
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   const opacityAnimated = useAnimatedStyle(() => ({
     opacity: withTiming(drawerIsOpen ? 1 : 0),
   }))
 
-  const Icon = iconByType[type](focus)
+  const Icon = iconByType[type](focus, drawerIsOpen)
+
+  const onFocusChange = () => {
+    onFocus()
+    onFocusItem(type, true)
+  }
+
+  const onBlurChange = () => {
+    onBlur()
+    onFocusItem(type, false)
+  }
 
   return (
     <TouchableOpacity
@@ -53,8 +109,8 @@ export const DrawerItem: React.FC<IDrawerItem> = ({
         { borderLeftColor: focus ? colors.white['0'] : colors.black['1'] },
       ]}
       activeOpacity={1}
-      onFocus={onFocus}
-      onBlur={onBlur}
+      onFocus={onFocusChange}
+      onBlur={onBlurChange}
     >
       <SpacerX size={8} />
 

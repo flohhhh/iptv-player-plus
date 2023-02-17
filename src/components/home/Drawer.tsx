@@ -1,8 +1,8 @@
 import { StyleSheet, useWindowDimensions } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../utils/colors'
-import { DrawerItem } from './DrawerItem'
+import { DrawerItem, TType } from './DrawerItem'
 import { SpacerY } from '../spacer'
 import Animated, {
   Easing,
@@ -19,6 +19,13 @@ const config = {
   duration: 100,
   easing: Easing.ease,
 }
+const itemsFocus: Record<TType, boolean> = {
+  movie: false,
+  tvshow: false,
+  mylist: false,
+  canal: false,
+}
+
 export const Drawer = () => {
   const { t } = useTranslation()
   const { height } = useWindowDimensions()
@@ -26,17 +33,21 @@ export const Drawer = () => {
 
   const widthShared = useSharedValue(120)
 
-  const drawerIsOpen = true
+  const [drawerIsOpen, setDrawerIsOpen] = useState(false)
 
   useEffect(() => {
-    widthShared.value = drawerIsOpen ? 110 : 40
+    widthShared.value = drawerIsOpen ? 110 : 46
   }, [drawerIsOpen])
 
   const widthAnimated = useAnimatedStyle(() => ({
     width: withTiming(widthShared.value, config),
   }))
 
-  const onFocusDrawerItem = (focus: boolean) => {}
+  const onFocusItem = (type: TType, focus: boolean) => {
+    itemsFocus[type] = focus
+    const isFocused = Object.values(itemsFocus).some((f) => f)
+    setDrawerIsOpen(isFocused)
+  }
 
   if (!profile) {
     return null
@@ -44,17 +55,37 @@ export const Drawer = () => {
 
   return (
     <Animated.View style={[{ height }, styles.container, widthAnimated]}>
-      <DrawerProfileItem />
+      <DrawerProfileItem drawerIsOpen={drawerIsOpen} />
 
       <SpacerY size={SPACER_SIZE * 2} />
 
-      <DrawerItem text={t('common.movies')} type="movie" drawerIsOpen />
+      <DrawerItem
+        type="movie"
+        text={t('common.movies')}
+        drawerIsOpen={drawerIsOpen}
+        onFocusItem={onFocusItem}
+      />
       <SpacerY size={SPACER_SIZE} />
-      <DrawerItem text={t('common.series')} type="tvshow" drawerIsOpen />
+      <DrawerItem
+        type="tvshow"
+        text={t('common.series')}
+        drawerIsOpen={drawerIsOpen}
+        onFocusItem={onFocusItem}
+      />
       <SpacerY size={SPACER_SIZE} />
-      <DrawerItem text={t('common.canal')} type="canal" drawerIsOpen />
+      <DrawerItem
+        type="canal"
+        text={t('common.canal')}
+        drawerIsOpen={drawerIsOpen}
+        onFocusItem={onFocusItem}
+      />
       <SpacerY size={SPACER_SIZE} />
-      <DrawerItem text={t('common.mylist')} type="mylist" drawerIsOpen />
+      <DrawerItem
+        type="mylist"
+        text={t('common.mylist')}
+        drawerIsOpen={drawerIsOpen}
+        onFocusItem={onFocusItem}
+      />
     </Animated.View>
   )
 }

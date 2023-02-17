@@ -6,10 +6,20 @@ import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from '../profiles/ProfileLinearGradient'
 import { useSelectedProfileValue } from '../../atoms/profilesAtom'
-export const DrawerProfileItem = () => {
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
+interface IDrawerProfileItem {
+  drawerIsOpen: boolean
+}
+export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({
+  drawerIsOpen,
+}) => {
   const profile = useSelectedProfileValue()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
+
+  const opacityAnimated = useAnimatedStyle(() => ({
+    opacity: withTiming(drawerIsOpen ? 1 : 0),
+  }))
 
   if (!profile) {
     return null
@@ -38,9 +48,12 @@ export const DrawerProfileItem = () => {
         </View>
       </ProfileLinearGradient>
       <SpacerX size={8} />
-      <Text size={12} bold={focus}>
-        {profile.name}
-      </Text>
+
+      <Animated.View style={opacityAnimated}>
+        <Text size={12} bold={focus}>
+          {profile.name}
+        </Text>
+      </Animated.View>
     </TouchableOpacity>
   )
 }
