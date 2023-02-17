@@ -12,38 +12,54 @@ import { isAndroid } from '../../utils/device'
 import { IStream } from '../../atoms/api/types'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { colors } from '../../utils/colors'
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
 interface IMediaCard {
   stream: IStream
+}
+const AnimatedImageBackground =
+  Animated.createAnimatedComponent(ImageBackground)
+
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity)
+
+const DEFAULT_VALUES = {
+  WIDTH: 120,
+  HEIGHT: 180,
 }
 export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
   const [_, setSelectedMedia] = useSelectedMedia()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
 
+  const { WIDTH, HEIGHT } = DEFAULT_VALUES
+
+  const animatedImageStyle = useAnimatedStyle(() => ({
+    width: withTiming(focus ? WIDTH + 10 : WIDTH),
+    height: withTiming(focus ? HEIGHT + 10 : HEIGHT),
+  }))
+  const animatedTouchableStyle = useAnimatedStyle(() => ({
+    borderColor: withTiming(focus ? colors.white[0] : '#000'),
+    borderWidth: withTiming(focus ? 3 : 0),
+  }))
+
   const onPressItem = () => {
     setSelectedMedia(stream.stream_id)
   }
 
   return (
-    <ImageBackground
+    <AnimatedImageBackground
       source={{
         uri: stream.stream_icon,
       }}
       resizeMode="contain"
-      style={styles.image}
+      style={animatedImageStyle}
       imageStyle={styles.imageStyle}
     >
-      <TouchableOpacity
+      <AnimatedTouchableOpacity
         activeOpacity={0.9}
         onPress={onPressItem}
-        style={[
-          styles.container,
-          {
-            borderColor: focus ? colors.white[0] : undefined,
-            borderWidth: focus ? 2 : 0,
-          },
-        ]}
+        style={[styles.container, animatedTouchableStyle]}
         onFocus={onFocus}
         onBlur={onBlur}
       >
@@ -59,8 +75,8 @@ export const MediaCard: React.FC<IMediaCard> = ({ stream }) => {
             {stream.name.split('|')[1]}
           </Text>
         </View>
-      </TouchableOpacity>
-    </ImageBackground>
+      </AnimatedTouchableOpacity>
+    </AnimatedImageBackground>
   )
 }
 
@@ -77,10 +93,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-  },
-  image: {
-    width: 120,
-    height: 180,
   },
   imageStyle: {
     borderRadius: 8,
