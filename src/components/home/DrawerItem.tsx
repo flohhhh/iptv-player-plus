@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Text from '../text'
 import { TvShow } from '../../icons/TvShow'
 import { SpacerX } from '../spacer'
@@ -14,6 +14,7 @@ export type TType = 'movie' | 'tvshow' | 'canal' | 'mylist'
 interface IDrawerItem {
   text: string
   type: TType
+  selected?: boolean
   drawerIsOpen: boolean
   onFocusItem: (type: TType, value: boolean) => void
 }
@@ -81,9 +82,11 @@ const iconByType: Record<
 export const DrawerItem: React.FC<IDrawerItem> = ({
   text,
   type,
+  selected,
   drawerIsOpen = false,
   onFocusItem,
 }) => {
+  const refTouchable = useRef<TouchableOpacity | null>(null)
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   const opacityAnimated = useAnimatedStyle(() => ({
@@ -102,8 +105,15 @@ export const DrawerItem: React.FC<IDrawerItem> = ({
     onFocusItem(type, false)
   }
 
+  useEffect(() => {
+    if (refTouchable) {
+      refTouchable.current?.setNativeProps({ hasTVPreferredFocus: selected })
+    }
+  }, [refTouchable, selected])
+
   return (
     <TouchableOpacity
+      ref={refTouchable}
       style={[
         styles.container,
         { borderLeftColor: focus ? colors.white['0'] : colors.black['1'] },

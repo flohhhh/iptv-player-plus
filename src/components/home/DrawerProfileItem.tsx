@@ -9,6 +9,7 @@ import { useSelectedProfileValue } from '../../atoms/profilesAtom'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 interface IDrawerProfileItem {
   drawerIsOpen: boolean
+  selected?: boolean
 }
 export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({
   drawerIsOpen,

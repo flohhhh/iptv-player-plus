@@ -20,7 +20,7 @@ const config = {
   easing: Easing.ease,
 }
 const itemsFocus: Record<TType, boolean> = {
-  movie: false,
+  movie: true,
   tvshow: false,
   mylist: false,
   canal: false,
@@ -33,7 +33,7 @@ export const Drawer = () => {
 
   const widthShared = useSharedValue(120)
 
-  const [drawerIsOpen, setDrawerIsOpen] = useState(false)
+  const [drawerIsOpen, setDrawerIsOpen] = useState(true)
 
   useEffect(() => {
     widthShared.value = drawerIsOpen ? 110 : 46
@@ -64,6 +64,7 @@ export const Drawer = () => {
         text={t('common.movies')}
         drawerIsOpen={drawerIsOpen}
         onFocusItem={onFocusItem}
+        selected
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem
