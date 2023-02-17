@@ -5,14 +5,6 @@ import Home from './src/components/home'
 import Profiles from './src/components/profiles'
 
 const App = () => {
-  // const [lastEventType, setLastEventType] = React.useState('')
-  //
-  // const myTVEventHandler = (evt) => {
-  //   setLastEventType(evt.eventType)
-  // }
-  //
-  // useTVEventHandler(myTVEventHandler)
-
   const [selectedProfile] = useSelectedProfile()
 
   return (

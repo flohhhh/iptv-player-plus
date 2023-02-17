@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
+  BackHandler,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
@@ -53,58 +54,50 @@ const Player = () => {
     }
   }
 
-  const animatedProps = useAnimatedProps(() => ({
-    scale: `${scaleShared.value}`,
-  }))
-
   const onFocusChange = () => {
     console.log('----focus')
-    scaleShared.value = withTiming(1)
     onFocus()
   }
 
   const onBlurChange = () => {
     console.log('----blur')
-    scaleShared.value = withTiming(1.2)
     onBlur()
   }
+  const backAction = () => {
+    setSelectedMedia(null)
+    setPaused(true)
+    return true
+  }
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    )
+
+    return () => backHandler.remove()
+  }, [])
 
   if (!selectedAccount || !selectedMediaId) {
+    console.log('----return null')
     return null
   }
 
   return (
-    <View style={{ width, height }}>
-      <ReanimatedTouchableOpacity
-        style={[styles.back, opacityAnimated]}
-        onPress={() => {
-          setSelectedMedia(null)
-        }}
-        onFocus={onFocusChange}
-        onBlur={onBlurChange}
-      >
-        <Back
-          // animatedProps={animatedProps}
-          size={50}
-          color={colors.white['0']}
-        />
-      </ReanimatedTouchableOpacity>
-      <Video
-        style={{ width, height }}
-        paused={true}
-        source={{
-          uri: buildMovieUrl(selectedAccount, selectedMediaId),
-        }}
-        onProgress={onProgress}
-      />
-      <Control
-        onPlay={onPlay}
-        onPause={onPause}
-        paused={paused}
-        progress={progress}
-        // duration={duration}
-      />
-    </View>
+    <Video
+      style={{ width, height }}
+      paused={paused}
+      source={{
+        uri: 'http://mol-2.com:80/movie/sc68Kfd0em3tNKK/asm7VUX0zA0y7Y8/479231.mkv',
+      }}
+      onProgress={onProgress}
+      bufferConfig={{
+        minBufferMs: 150000,
+        maxBufferMs: 500000,
+        bufferForPlaybackMs: 25000,
+        bufferForPlaybackAfterRebufferMs: 50000,
+      }}
+    />
   )
 }
 
