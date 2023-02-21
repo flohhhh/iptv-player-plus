@@ -12,19 +12,16 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useSelectedProfileValue } from '../../atoms/profiles/profilesAtom'
 import { DrawerProfileItem } from './DrawerProfileItem'
-import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
+import {
+  useSelectDrawerItem,
+  useSelectDrawerOpen,
+} from '../../atoms/selectDrawerItemAtom'
 
 const SPACER_SIZE = 16
 
 const config = {
   duration: 100,
   easing: Easing.ease,
-}
-const itemsFocus: Record<TDrawerItemType, boolean> = {
-  movie: true,
-  tvshow: false,
-  mylist: false,
-  canal: false,
 }
 
 interface IDrawer {}
@@ -37,7 +34,7 @@ export const Drawer: React.FC<IDrawer> = () => {
 
   const widthShared = useSharedValue(120)
 
-  const [drawerIsOpen, setDrawerIsOpen] = useState(true)
+  const [drawerIsOpen, setDrawerIsOpen] = useSelectDrawerOpen()
 
   useEffect(() => {
     widthShared.value = drawerIsOpen ? 110 : 46
@@ -48,10 +45,8 @@ export const Drawer: React.FC<IDrawer> = () => {
   }))
 
   const onFocusItem = (type: TDrawerItemType, focus: boolean) => {
-    itemsFocus[type] = focus
-    const hasAnItemFocused = Object.values(itemsFocus).some((f) => f)
     setSelectDrawerItem(type)
-    setDrawerIsOpen(hasAnItemFocused)
+    setDrawerIsOpen(true)
   }
 
   if (!profile) {
@@ -60,7 +55,7 @@ export const Drawer: React.FC<IDrawer> = () => {
 
   return (
     <Animated.View style={[{ height }, styles.container, widthAnimated]}>
-      <DrawerProfileItem drawerIsOpen={drawerIsOpen} />
+      <DrawerProfileItem />
 
       <SpacerY size={SPACER_SIZE * 2} />
 
@@ -69,7 +64,6 @@ export const Drawer: React.FC<IDrawer> = () => {
         text={t('common.movies')}
         drawerIsOpen={drawerIsOpen}
         onFocusItem={onFocusItem}
-        selected
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem

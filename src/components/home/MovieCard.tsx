@@ -13,6 +13,7 @@ import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { colors } from '../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { DEFAULT_VALUES } from './constants'
+import { useSelectDrawerOpen } from '../../atoms/selectDrawerItemAtom'
 
 interface IMovieCard {
   movie: IMovie
@@ -24,9 +25,15 @@ const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
 
 export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
-  const [_, setSelectedMedia] = useSelectedMedia()
+  const [_1, setDrawerIsOpen] = useSelectDrawerOpen()
+  const [_2, setSelectedMedia] = useSelectedMedia()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
+
+  const onFocusChange = () => {
+    onFocus()
+    setDrawerIsOpen(false)
+  }
 
   const { WIDTH, HEIGHT } = DEFAULT_VALUES
 
@@ -51,7 +58,7 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
         activeOpacity={0.9}
         onPress={onPressItem}
         style={[styles.container, { width: WIDTH, height: HEIGHT }]}
-        onFocus={onFocus}
+        onFocus={onFocusChange}
         onBlur={onBlur}
       >
         <Text size={10} style={styles.title} numberOfLines={1}>
