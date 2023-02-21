@@ -1,11 +1,5 @@
 import { atom, useAtom } from 'jotai'
-
-export interface IAccount {
-  id: number
-  host: string
-  username: string
-  password: string
-}
+import { IAccount } from './types'
 
 const defaultAccount = {
   id: 1,

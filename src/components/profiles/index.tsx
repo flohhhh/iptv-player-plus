@@ -2,17 +2,22 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import {
-  IProfile,
+  useLastSelectedProfileID,
   useProfiles,
   useSelectedProfile,
-} from '../../atoms/profilesAtom'
+  useSelectedProfileSet,
+  useSelectedProfileValue,
+} from '../../atoms/profiles/profilesAtom'
 import Text from '../text'
 import { colors } from '../../utils/colors'
 import { SpacerX, SpacerY } from '../spacer'
 import { ProfileCard } from './ProfileCard'
+import { IProfile } from '../../atoms/profiles/types'
 
 const Profiles = () => {
-  const [_, setSelectedProfile] = useSelectedProfile()
+  const setSelectedProfile = useSelectedProfileSet()
+  const lastSelectedProfileID = useLastSelectedProfileID()
+
   const [profiles] = useProfiles()
   const { t } = useTranslation()
   const onSelectProfile = (p: IProfile) => () => {
@@ -32,7 +37,12 @@ const Profiles = () => {
       <View style={styles.containerProfiles}>
         {profiles.map((p, i) => (
           <React.Fragment key={p.id}>
-            <ProfileCard i={i} profile={p} onSelectProfile={onSelectProfile} />
+            <ProfileCard
+              i={i}
+              selectedProfileID={lastSelectedProfileID}
+              profile={p}
+              onSelectProfile={onSelectProfile}
+            />
             {i !== profiles.length - 1 && <SpacerX size={14} />}
           </React.Fragment>
         ))}

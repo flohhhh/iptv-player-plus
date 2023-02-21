@@ -7,12 +7,12 @@ import {
 import React from 'react'
 import Text from '../text'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
-import { BlurView } from '@react-native-community/blur'
 import { isAndroid } from '../../utils/device'
 import { IMovie } from '../../atoms/api/moviesTypes'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { colors } from '../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
+import { DEFAULT_VALUES } from './constants'
 
 interface IMovieCard {
   movie: IMovie
@@ -23,10 +23,6 @@ const AnimatedImageBackground =
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
 
-const DEFAULT_VALUES = {
-  WIDTH: 120,
-  HEIGHT: 180,
-}
 export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const [_, setSelectedMedia] = useSelectedMedia()
 
@@ -35,12 +31,7 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const { WIDTH, HEIGHT } = DEFAULT_VALUES
 
   const animatedImageStyle = useAnimatedStyle(() => ({
-    width: withTiming(focus ? WIDTH + 10 : WIDTH),
-    height: withTiming(focus ? HEIGHT + 10 : HEIGHT),
-  }))
-  const animatedTouchableStyle = useAnimatedStyle(() => ({
-    borderColor: withTiming(focus ? colors.white[0] : '#000'),
-    borderWidth: withTiming(focus ? 3 : 0),
+    transform: [{ scale: withTiming(focus ? 1 : 0.9) }],
   }))
 
   const onPressItem = () => {
@@ -53,28 +44,19 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
         uri: movie.stream_icon,
       }}
       resizeMode="contain"
-      style={animatedImageStyle}
-      imageStyle={styles.imageStyle}
+      style={[animatedImageStyle]}
+      imageStyle={[styles.imageStyle]}
     >
       <AnimatedTouchableOpacity
         activeOpacity={0.9}
         onPress={onPressItem}
-        style={[styles.container, animatedTouchableStyle]}
+        style={[styles.container, { width: WIDTH, height: HEIGHT }]}
         onFocus={onFocus}
         onBlur={onBlur}
       >
-        <BlurView
-          // @ts-ignore
-          overlayColor="transparent"
-          style={styles.absolute}
-          blurType="extraDark"
-          blurAmount={2}
-        />
-        <View style={styles.title}>
-          <Text size={10} numberOfLines={1}>
-            {movie.name.split('|')[1]}
-          </Text>
-        </View>
+        <Text size={10} style={styles.title} numberOfLines={1}>
+          {movie.name.split('|')[1]}
+        </Text>
       </AnimatedTouchableOpacity>
     </AnimatedImageBackground>
   )
@@ -85,14 +67,16 @@ const styles = StyleSheet.create({
     overflow: isAndroid ? 'hidden' : 'visible',
     flex: 1,
     borderRadius: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
+    justifyContent: 'flex-end',
+    width: DEFAULT_VALUES.WIDTH,
+    height: DEFAULT_VALUES.HEIGHT,
   },
   title: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    position: 'absolute',
+    paddingTop: 4,
+    paddingHorizontal: 2,
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   imageStyle: {
     borderRadius: 8,

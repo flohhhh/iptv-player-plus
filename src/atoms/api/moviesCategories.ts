@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { atomsWithQuery } from 'jotai-tanstack-query'
-import { selectedAccountAtom } from '../accountsAtom'
+import { selectedAccountAtom } from '../accounts/accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
 import { ICategory } from './types'
 

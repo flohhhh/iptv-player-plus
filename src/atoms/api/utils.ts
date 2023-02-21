@@ -1,4 +1,4 @@
-import { IAccount } from '../accountsAtom'
+import { IAccount } from '../accounts/accountsAtom'
 import { TAction } from './types'
 
 export const buildApiUrl = (

@@ -10,7 +10,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { useSelectedProfileValue } from '../../atoms/profilesAtom'
+import { useSelectedProfileValue } from '../../atoms/profiles/profilesAtom'
 import { DrawerProfileItem } from './DrawerProfileItem'
 import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
 
@@ -99,7 +99,6 @@ export const Drawer: React.FC<IDrawer> = () => {
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 16,
-    backgroundColor: colors.black['1'],
     borderRadius: 4,
     alignItems: 'center',
   },

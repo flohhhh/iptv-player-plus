@@ -1,4 +1,4 @@
-import { useSelectedAccount } from '../accountsAtom'
+import { useSelectedAccount } from '../accounts/accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
 import { useEffect, useState } from 'react'
 import { ISerieByCategoryId } from './seriesTypes'

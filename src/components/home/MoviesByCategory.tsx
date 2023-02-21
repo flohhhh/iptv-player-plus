@@ -1,6 +1,5 @@
-import { FlatList, useWindowDimensions, View } from 'react-native'
+import { Dimensions, FlatList, useWindowDimensions, View } from 'react-native'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import Text from '../text'
 import { SpacerX, SpacerY } from '../spacer'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
@@ -8,6 +7,8 @@ import { MovieCard } from './MovieCard'
 import { ICategory } from '../../atoms/api/types'
 import { useMoviesByCategoryId } from '../../atoms/api/moviesByCategoryId'
 import { IMovie } from '../../atoms/api/moviesTypes'
+import { FlashList } from '@shopify/flash-list'
+import { DEFAULT_VALUES } from './constants'
 
 interface IContentByCategory {
   category: ICategory
@@ -16,10 +17,7 @@ const ItemSeparatorComponent = () => <SpacerX size={8} />
 export const MoviesByCategory: React.FC<IContentByCategory> = ({
   category,
 }) => {
-  const { t } = useTranslation()
-  const { width } = useWindowDimensions()
   const [selectedMedia, setSelectedMedia] = useSelectedMedia()
-
   const streamsByCatId: IMovie[] = useMoviesByCategoryId(category.category_id)
 
   const onPressItem = () => {
@@ -35,12 +33,17 @@ export const MoviesByCategory: React.FC<IContentByCategory> = ({
       <SpacerY size={8} />
 
       <FlatList
-        // estimatedItemSize={200}
         horizontal
+        // disableHorizontalListHeightMeasurement={true}
+        // estimatedListSize={{
+        //   width: width,
+        //   height: 200,
+        // }}
+        // estimatedItemSize={200}
         showsHorizontalScrollIndicator={false}
         data={streamsByCatId}
         renderItem={_renderItem}
-        ItemSeparatorComponent={ItemSeparatorComponent}
+        // ItemSeparatorComponent={ItemSeparatorComponent}
       />
     </View>
   )

@@ -4,22 +4,27 @@ import {
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
+  View,
 } from 'react-native'
 import Video from 'react-native-video'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { IProgressVideo } from './types'
-import { useSelectedAccount } from '../../atoms/accountsAtom'
+import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
 import Animated from 'react-native-reanimated'
 import { buildStreamUrl, TTypeUrl } from '../../atoms/api/utils'
 import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
 import { TDrawerItemType } from '../home/DrawerItem'
+import { colors } from '../../utils/colors'
+import { Back } from '../../icons/Back'
+import { Control } from './Control'
 
 const typeByDrawerItem: Record<TDrawerItemType, TTypeUrl> = {
   movie: 'movie',
   tvshow: 'series',
   canal: 'live',
+  mylist: 'movie',
 }
 const ReanimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
@@ -83,21 +88,43 @@ const Player = () => {
     : 'movie'
 
   return (
-    <Video
-      style={{ width, height }}
-      paused={paused}
-      source={{
-        // uri: buildStreamUrl(type, selectedAccount, selectedMediaId),
-        uri: 'http://mol-2.com:80/movie/sc68Kfd0em3tNKK/asm7VUX0zA0y7Y8/479231.mkv',
-      }}
-      onProgress={onProgress}
-      bufferConfig={{
-        minBufferMs: 150000,
-        maxBufferMs: 500000,
-        bufferForPlaybackMs: 25000,
-        bufferForPlaybackAfterRebufferMs: 50000,
-      }}
-    />
+    <View style={{ width, height }}>
+      <ReanimatedTouchableOpacity
+        style={[styles.back, opacityAnimated]}
+        onPress={() => {
+          setSelectedMedia(null)
+        }}
+        onFocus={onFocusChange}
+        onBlur={onBlurChange}
+      >
+        <Back
+          // animatedProps={animatedProps}
+          size={50}
+          color={colors.white['0']}
+        />
+      </ReanimatedTouchableOpacity>
+      <Video
+        style={{ width, height }}
+        paused={paused}
+        source={{
+          uri: buildStreamUrl(type, selectedAccount, selectedMediaId),
+        }}
+        onProgress={onProgress}
+        bufferConfig={{
+          minBufferMs: 150000,
+          maxBufferMs: 500000,
+          bufferForPlaybackMs: 25000,
+          bufferForPlaybackAfterRebufferMs: 50000,
+        }}
+      />
+      <Control
+        onPlay={onPlay}
+        onPause={onPause}
+        paused={paused}
+        progress={progress}
+        // duration={duration}
+      />
+    </View>
   )
 }
 

@@ -1,21 +1,23 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
-import { IProfile } from '../../atoms/profilesAtom'
 import Text from '../text'
 import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from './ProfileLinearGradient'
+import { IProfile } from '../../atoms/profiles/types'
 
 interface IProfileCard {
   profile: IProfile
   i: number
   onSelectProfile: (profile: IProfile) => () => void
+  selectedProfileID?: string
 }
 export const ProfileCard: React.FC<IProfileCard> = ({
   profile,
   i,
   onSelectProfile,
+  selectedProfileID,
 }) => {
   const { onFocus, onBlur, focus } = useFocusBlur([profile.id])
 
@@ -37,8 +39,11 @@ export const ProfileCard: React.FC<IProfileCard> = ({
           style={styles.button}
           onFocus={onFocus}
           onBlur={onBlur}
+          hasTVPreferredFocus={profile.id === selectedProfileID}
         >
-          <Text size={20}>{profile.name}</Text>
+          <Text size={focus ? 22 : 20} color={colors.black['0']}>
+            {profile.name}
+          </Text>
         </TouchableOpacity>
       </ProfileLinearGradient>
     </Animated.View>

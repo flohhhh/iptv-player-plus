@@ -5,7 +5,11 @@ import { SpacerX } from '../spacer'
 import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from '../profiles/ProfileLinearGradient'
-import { useSelectedProfileValue } from '../../atoms/profilesAtom'
+import {
+  useSelectedProfile,
+  useSelectedProfileSet,
+  useSelectedProfileValue,
+} from '../../atoms/profiles/profilesAtom'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
 interface IDrawerProfileItem {
@@ -16,12 +20,15 @@ export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({
   drawerIsOpen,
 }) => {
   const profile = useSelectedProfileValue()
+  const setProfile = useSelectedProfileSet()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   const opacityAnimated = useAnimatedStyle(() => ({
     opacity: withTiming(drawerIsOpen ? 1 : 0),
   }))
+
+  const onPressProfile = () => setProfile(null)
 
   if (!profile) {
     return null
@@ -32,6 +39,7 @@ export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({
       style={styles.selectedProfile}
       onFocus={onFocus}
       onBlur={onBlur}
+      onPress={onPressProfile}
     >
       <SpacerX size={8} />
       <ProfileLinearGradient color={profile.color}>
