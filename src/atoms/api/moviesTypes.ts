@@ -1,3 +1,7 @@
+export interface IInfoMovieData {
+  info: IInfo
+  movie_data: IMovieData
+}
 export interface IMovie {
   num: number
   name: string
@@ -13,10 +17,7 @@ export interface IMovie {
   custom_sid?: any
   tmdb_id: string
 }
-export interface IInfoMovieData {
-  info: IInfo
-  movie_data: IMovieData
-}
+
 export interface IInfo {
   tmdb_id: string
   name: string

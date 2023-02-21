@@ -5,15 +5,16 @@ import {
   View,
 } from 'react-native'
 import React from 'react'
-import Text from '../text'
-import { useSelectedMedia } from '../../atoms/mediaAtom'
-import { isAndroid } from '../../utils/device'
-import { IMovie } from '../../atoms/api/moviesTypes'
-import { useFocusBlur } from '../../hooks/useFocusBlur'
-import { colors } from '../../utils/colors'
+import Text from '../../text'
+import { useSelectedMedia } from '../../../atoms/mediaAtom'
+import { isAndroid } from '../../../utils/device'
+import { IMovie } from '../../../atoms/api/moviesTypes'
+import { useFocusBlur } from '../../../hooks/useFocusBlur'
+import { colors } from '../../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { DEFAULT_VALUES } from './constants'
-import { useSelectDrawerOpen } from '../../atoms/selectDrawerItemAtom'
+import { DEFAULT_VALUES } from '../constants'
+import { useSelectDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 
 interface IMovieCard {
   movie: IMovie
@@ -29,9 +30,11 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const [_2, setSelectedMedia] = useSelectedMedia()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
+  const [_3, setFocusId] = useFocusMovieId()
 
   const onFocusChange = () => {
     onFocus()
+    setFocusId(movie.stream_id)
     setDrawerIsOpen(false)
   }
 

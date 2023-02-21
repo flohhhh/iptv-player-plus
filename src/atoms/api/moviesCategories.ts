@@ -1,10 +1,11 @@
-import { useAtom } from 'jotai'
+import { atom, useAtom } from 'jotai'
 import { atomsWithQuery } from 'jotai-tanstack-query'
 import { selectedAccountAtom } from '../accounts/accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
 import { ICategory } from './types'
+import { IInfoMovieData, IMovie } from './moviesTypes'
 
-const [_, statusAtom] = atomsWithQuery((get) => ({
+const [_1, statusMoviesVodCategoriesAtom] = atomsWithQuery((get) => ({
   queryKey: ['moviesVodCategories'],
   queryFn: async ({ queryKey: [] }) => {
     const selectedAccount = get(selectedAccountAtom)
@@ -19,11 +20,39 @@ const [_, statusAtom] = atomsWithQuery((get) => ({
   },
 }))
 
+const focusMovieIdAtom = atom<number>(-1)
+
+export const useFocusMovieId = () => useAtom(focusMovieIdAtom)
+
+const [_2, statusMovieDetailsAtom] = atomsWithQuery((get) => ({
+  queryKey: ['moviesDetails', get(focusMovieIdAtom)],
+  queryFn: async ({ queryKey: [, id] }) => {
+    const selectedAccount = get(selectedAccountAtom)
+    if (!selectedAccount) {
+      return
+    }
+    const res = await fetch(
+      buildApiUrl(selectedAccount, ['get_vod_info', 'vod_id=%sid%s'], id),
+      fetchConfig
+    )
+    return res.json()
+  },
+}))
+
 export const useMoviesVodCategories = () => {
-  const [status] = useAtom(statusAtom)
+  const [status] = useAtom(statusMoviesVodCategoriesAtom)
   const data = status.data?.length > 5 ? status.data.slice(0, 6) : []
   return {
     data: data as ICategory[],
+    isLoading: status.isLoading,
+  }
+}
+
+export const useMovieDetails = () => {
+  const [status] = useAtom(statusMovieDetailsAtom)
+  console.log(JSON.stringify(status.data, null, 2))
+  return {
+    data: status.data as IInfoMovieData | undefined,
     isLoading: status.isLoading,
   }
 }
