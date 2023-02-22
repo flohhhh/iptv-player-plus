@@ -5,18 +5,18 @@ import { useEffect } from 'react'
 import { storage } from '../../storage'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atomWithMMKV } from '../storageAtoms'
-//
+
 const defaultProfiles: IProfile[] = [
   {
     id: uuid(),
     name: 'Florian',
     color: 'red',
   },
-  {
-    id: uuid(),
-    name: 'Orianne',
-    color: 'pink2',
-  },
+  // {
+  //   id: uuid(),
+  //   name: 'Orianne',
+  //   color: 'pink2',
+  // },
   {
     id: 'kids',
     name: 'Kids',

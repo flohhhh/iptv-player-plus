@@ -12,7 +12,7 @@ export const en = {
     },
     profiles: {
       whos_watching: "Who's watching ?",
-      manage_profiles: 'Manage profiles',
+      edit_profiles: 'Edit you profiles',
     },
     common: {
       movies: 'Movies',
