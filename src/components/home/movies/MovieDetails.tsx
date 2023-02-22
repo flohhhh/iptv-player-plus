@@ -7,8 +7,8 @@ import { SpacerX, SpacerY } from '../../spacer'
 
 export const MovieDetails: React.FC = () => {
   const { data: details } = useMovieDetails()
-  if (!details) {
-    return null
+  if (!details || !details.info) {
+    return <View style={styles.container} />
   }
   return (
     <View style={styles.container}>

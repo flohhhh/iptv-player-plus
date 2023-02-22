@@ -1,5 +1,5 @@
 export interface IAccount {
-  id: number
+  id: string
   host: string
   username: string
   password: string

@@ -2,7 +2,10 @@ import { MMKV } from 'react-native-mmkv'
 
 const mmkvStorage = new MMKV()
 
-export type TMKKVKey = 'profile.all' | 'profile.selected.id'
+export type TMKKVKey =
+  | 'account.selected'
+  | 'profile.all'
+  | 'profile.selected.id'
 
 export const storage = () => ({
   set: (k: TMKKVKey, v: string) => {

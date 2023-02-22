@@ -4,15 +4,25 @@ import { useSelectedProfileValue } from './src/atoms/profiles/profilesAtom'
 import Home from './src/components/home'
 import Profiles from './src/components/profiles'
 import { useInitializeDefaultValues } from './src/hooks/useInitializeDefaultValues'
+import { useSelectedAccount } from './src/atoms/accounts/accountsAtom'
+import { SelectAccount } from './src/components/accounts'
 
 const App = () => {
+  const [selectAccount] = useSelectedAccount()
+
   const selectedProfile = useSelectedProfileValue()
 
   useInitializeDefaultValues()
 
   return (
     <View style={styles.container}>
-      {selectedProfile ? <Home /> : <Profiles />}
+      {!selectAccount ? (
+        <SelectAccount />
+      ) : selectedProfile ? (
+        <Home />
+      ) : (
+        <Profiles />
+      )}
     </View>
   )
 }
