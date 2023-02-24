@@ -9,7 +9,7 @@ import { atomWithMMKV } from '../storageAtoms'
 // password: 'asm7VUX0zA0y7Y8',
 // }
 
-const selectedAccountAtom = atomWithMMKV<IAccount | null>(
+export const selectedAccountAtom = atomWithMMKV<IAccount | null>(
   'account.selected',
   null
 )

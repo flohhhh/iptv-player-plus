@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import Video from 'react-native-video'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
-import { IProgressVideo } from './types'
+import { IAudioTrack, IProgressVideo, ITextTrack } from './types'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
@@ -38,6 +38,16 @@ const Player = () => {
   const [selectedDrawerItem] = useSelectDrawerItem()
 
   const [progress, setProgress] = useState(0)
+  const [currentTime, setCurrentTime] = useState(0)
+
+  const [audioTracks, setAudioTracks] = useState<IAudioTrack[] | undefined>(
+    undefined
+  )
+  const [textTracks, setTextTracks] = useState<ITextTrack[] | undefined>(
+    undefined
+  )
+  const [selectedAudioTrack, setSelectedAudioTrack] = useState(undefined)
+  const [selectedTextTrack, setSelectedTextTrack] = useState(undefined)
 
   const [paused, setPaused] = useState(false)
   const onPlay = () => {
@@ -53,22 +63,29 @@ const Player = () => {
     const currentTime = e.currentTime
 
     if (currentTime > 0 && currentTime <= duration) {
+      setCurrentTime(currentTime)
       setProgress((currentTime * duration) / 100)
     }
   }
 
-  const onFocusChange = () => {
-    onFocus()
-  }
-
-  const onBlurChange = () => {
-    onBlur()
-  }
+  const onFocusChange = () => onFocus()
+  const onBlurChange = () => onBlur()
   const backAction = () => {
-    setSelectedMedia(null)
     setPaused(true)
+    setSelectedMedia(null)
     return true
   }
+
+  const onForward = () => {
+    setCurrentTime((curTime) => curTime + 30)
+  }
+
+  const onRewind = () => {
+    setCurrentTime((curTime) => curTime - 15)
+  }
+
+  const onSelectAudioTrack = () => {}
+  const onSelectTextTrack = () => {}
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -116,12 +133,29 @@ const Player = () => {
           bufferForPlaybackMs: 25000,
           bufferForPlaybackAfterRebufferMs: 50000,
         }}
+        onAudioTracks={({ audioTracks }: { audioTracks: IAudioTrack[] }) =>
+          setAudioTracks(audioTracks)
+        }
+        onTextTracks={({ textTracks }: { textTracks: ITextTrack[] }) => {
+          setTextTracks(textTracks)
+        }}
+        selectedAudioTrack={selectedAudioTrack}
+        selectedTextTrack={selectedTextTrack}
       />
       <Control
         onPlay={onPlay}
         onPause={onPause}
+        onForward={onForward}
+        onRewind={onRewind}
+        onSelectAudioTrack={onSelectAudioTrack}
+        onSelectTextTrack={onSelectTextTrack}
         paused={paused}
         progress={progress}
+        audioTracks={audioTracks}
+        textTracks={textTracks}
+        selectedAudioTrack={selectedAudioTrack}
+        selectedTextTrack={selectedTextTrack}
+
         // duration={duration}
       />
     </View>

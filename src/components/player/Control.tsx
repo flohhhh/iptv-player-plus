@@ -10,18 +10,21 @@ import { Forward } from '../../icons/Forward'
 import ProgressBar from '../progressbar'
 import Animated from 'react-native-reanimated'
 import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
+import { IControl } from './types'
 
-interface IControl {
-  onPlay: () => void
-  onPause: () => void
-  paused: boolean
-  progress: number
-}
 export const Control: React.FC<IControl> = ({
   onPlay,
   onPause,
+  onForward,
+  onRewind,
+  onSelectAudioTrack,
+  onSelectTextTrack,
   paused,
   progress,
+  audioTracks,
+  textTracks,
+  selectedAudioTrack,
+  selectedTextTrack,
 }) => {
   const [selectedMedia, setSelectedMedia] = useSelectedMedia()
   const [lastEventType, setLastEventType] = React.useState('')
@@ -39,7 +42,7 @@ export const Control: React.FC<IControl> = ({
 
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={onPlay}
+            onPress={onRewind}
             style={styles.controlButton}
             activeOpacity={0.9}
           >
@@ -59,13 +62,28 @@ export const Control: React.FC<IControl> = ({
           <SpacerX size={20} />
 
           <TouchableOpacity
-            onPress={onPlay}
+            onPress={onForward}
             style={styles.controlButton}
             activeOpacity={0.9}
           >
             <Forward size={10} />
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          onPress={onSelectAudioTrack}
+          style={styles.controlButton}
+          activeOpacity={0.9}
+        >
+          <Forward size={10} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={onSelectTextTrack}
+          style={styles.controlButton}
+          activeOpacity={0.9}
+        >
+          <Forward size={10} />
+        </TouchableOpacity>
       </View>
     </Animated.View>
   )
