@@ -10,6 +10,8 @@ import Text from '../../text'
 import { FlashList } from '@shopify/flash-list'
 import { IMovie } from '../../../atoms/api/moviesTypes'
 import FuseResult = Fuse.FuseResult
+import { Search } from '../../../icons/Search'
+import FocusInput from '../../focus-pressable/FocusInput'
 
 const DATA = [
   {
@@ -64,14 +66,13 @@ const DATA = [
 
 const options = {
   includeScore: true,
-  // Search in `author` and in `tags` array
   keys: ['name'],
 }
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
 type TSelectTypes = 'movies' | 'series' | 'mylist'
-export const Search = () => {
+export const SearchScreen = () => {
   const { t } = useTranslation()
   const [selectedTypes, setSelectedTypes] = useState<TSelectTypes[]>([])
   const [results, setResults] = useState<IMovie[]>(DATA)
@@ -91,8 +92,6 @@ export const Search = () => {
 
   const _renderItem = ({ item }) => <MovieCard movie={item} />
 
-  const data = DATA
-
   const onSelectFilters = (value: TSelectTypes) => () => {
     if (selectedTypes.includes(value)) {
       setSelectedTypes(selectedTypes.filter((t) => t !== value))
@@ -104,8 +103,11 @@ export const Search = () => {
   return (
     <View style={styles.container}>
       <View style={styles.containerSearchInput}>
-        <TextInput
+        <Search size={14} />
+        <SpacerX size={16} />
+        <FocusInput
           style={styles.input}
+          focusStyle={styles.inputFocus}
           placeholder={t('search.inputTitle') || ''}
           onChangeText={onChangeSearchText}
           value={searchText}
@@ -130,6 +132,7 @@ export const Search = () => {
             styles.searchType,
             selectedTypes.includes('movies') ? styles.searchTypeSelected : null,
           ]}
+          focusStyle={styles.focusType}
           onPress={onSelectFilters('movies')}
         >
           <Text size={12}>{t('common.movies')}</Text>
@@ -142,6 +145,7 @@ export const Search = () => {
             styles.searchType,
             selectedTypes.includes('series') ? styles.searchTypeSelected : {},
           ]}
+          focusStyle={styles.focusType}
           onPress={onSelectFilters('series')}
         >
           <Text size={12}>{t('common.series')}</Text>
@@ -154,6 +158,7 @@ export const Search = () => {
             styles.searchType,
             selectedTypes.includes('mylist') ? styles.searchTypeSelected : {},
           ]}
+          focusStyle={styles.focusType}
           onPress={onSelectFilters('mylist')}
         >
           <Text size={12}>{t('common.mylist')}</Text>
@@ -164,7 +169,6 @@ export const Search = () => {
 
       <FlashList
         estimatedItemSize={20}
-        // contentContainerStyle={styles.contentContainerStyle}
         numColumns={6}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -188,11 +192,14 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: colors.white['0'],
+    borderColor: colors.gray['3'],
     paddingHorizontal: 8,
     paddingVertical: 4,
     alignItems: 'center',
     width: 240,
+  },
+  inputFocus: {
+    borderColor: colors.gray['0'],
   },
   containerSearchTypes: {
     flexDirection: 'row',
@@ -201,10 +208,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.black['1'],
     borderColor: colors.black['1'],
     borderRadius: 4,
+    borderWidth: 1,
     width: 100,
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 4,
+  },
+  focusType: {
+    borderColor: colors.gray['0'],
   },
   searchTypeSelected: {
     borderColor: colors.fun.greenSecondary,

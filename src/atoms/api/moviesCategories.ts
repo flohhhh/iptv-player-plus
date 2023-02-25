@@ -50,7 +50,6 @@ export const useMoviesVodCategories = () => {
 
 export const useMovieDetails = () => {
   const [status] = useAtom(statusMovieDetailsAtom)
-  console.log(JSON.stringify(status.data, null, 2))
   return {
     data: status.data as IInfoMovieData | undefined,
     isLoading: status.isLoading,

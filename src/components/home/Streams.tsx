@@ -8,7 +8,7 @@ import { TDrawerItemType } from './drawer/DrawerItem'
 import { ICategory } from '../../atoms/api/types'
 import { MovieDetails } from './movies/MovieDetails'
 import { StyleSheet, View } from 'react-native'
-import { Search } from './search'
+import { SearchScreen } from './search'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
@@ -40,7 +40,7 @@ export const Streams = () => {
   }
 
   if (selectDrawerItem === 'search') {
-    return <Search />
+    return <SearchScreen />
   }
 
   // TODO Remove default 'movie' ?
