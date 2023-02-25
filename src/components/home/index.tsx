@@ -1,6 +1,6 @@
 import { useWindowDimensions } from 'react-native'
 import React from 'react'
-import { Drawer } from './Drawer'
+import { Drawer } from './drawer/Drawer'
 import { Streams } from './Streams'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import Player from '../player'

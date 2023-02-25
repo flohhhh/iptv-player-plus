@@ -1,21 +1,21 @@
 import { StyleSheet, useWindowDimensions } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { colors } from '../../utils/colors'
 import { DrawerItem, TDrawerItemType } from './DrawerItem'
-import { SpacerY } from '../spacer'
+import { SpacerY } from '../../spacer'
 import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { useSelectedProfileValue } from '../../atoms/profiles/profilesAtom'
+import { useSelectedProfileValue } from '../../../atoms/profiles/profilesAtom'
 import { DrawerProfileItem } from './DrawerProfileItem'
 import {
   useSelectDrawerItem,
   useSelectDrawerOpen,
-} from '../../atoms/selectDrawerItemAtom'
+} from '../../../atoms/selectDrawerItemAtom'
+import { DrawerDisconnectAccountItem } from './DrawerDisconnectAccountItem'
 
 const SPACER_SIZE = 16
 
@@ -29,8 +29,9 @@ interface IDrawer {}
 export const Drawer: React.FC<IDrawer> = () => {
   const { t } = useTranslation()
   const { height } = useWindowDimensions()
+
   const profile = useSelectedProfileValue()
-  const [_, setSelectDrawerItem] = useSelectDrawerItem()
+  const [_1, setSelectDrawerItem] = useSelectDrawerItem()
 
   const widthShared = useSharedValue(120)
 
@@ -60,32 +61,39 @@ export const Drawer: React.FC<IDrawer> = () => {
       <SpacerY size={SPACER_SIZE * 2} />
 
       <DrawerItem
+        type="search"
+        text={t('drawer.item.search')}
+        onFocusItem={onFocusItem}
+      />
+      <SpacerY size={SPACER_SIZE} />
+
+      <DrawerItem
         type="movie"
-        text={t('common.movies')}
-        drawerIsOpen={drawerIsOpen}
+        text={t('drawer.item.movies')}
         onFocusItem={onFocusItem}
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem
         type="tvshow"
-        text={t('common.series')}
-        drawerIsOpen={drawerIsOpen}
+        text={t('drawer.item.series')}
         onFocusItem={onFocusItem}
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem
         type="canal"
-        text={t('common.canal')}
-        drawerIsOpen={drawerIsOpen}
+        text={t('drawer.item.canal')}
         onFocusItem={onFocusItem}
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem
         type="mylist"
-        text={t('common.mylist')}
-        drawerIsOpen={drawerIsOpen}
+        text={t('drawer.item.mylist')}
         onFocusItem={onFocusItem}
       />
+
+      <SpacerY size={SPACER_SIZE + 2} />
+
+      <DrawerDisconnectAccountItem />
     </Animated.View>
   )
 }

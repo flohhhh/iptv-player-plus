@@ -44,7 +44,7 @@ export const MovieDetails: React.FC = () => {
         <SpacerX size={8} />
 
         <Text size={10} color={colors.white['0']}>
-          {Number(details.info.rating).toFixed(1)} / 5
+          {Number(details.info.rating).toFixed(1).replace('.0', '')} / 10
         </Text>
       </View>
 

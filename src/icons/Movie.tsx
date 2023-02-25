@@ -2,7 +2,7 @@ import { IIcon } from './types'
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-export const Movie: React.FC<IIcon> = ({ size, color = '#000' }) => {
+export const Movie: React.FC<IIcon> = ({ size, color = '#FFF' }) => {
   return (
     <Svg x="0" y="0" width={size} height={size} viewBox="0 0 122.88 110.35">
       <Path

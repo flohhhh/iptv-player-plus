@@ -1,3 +1,5 @@
+import { randomValue } from './random'
+
 export const colors = {
   black: {
     0: '#000',
@@ -22,12 +24,15 @@ export const colors = {
     yellowSecondary: '#fac453',
     green: '#6bb446',
     greenSecondary: '#92dc6a',
-    pink1: '#b06f77',
-    pink1Secondary: '#f5a4ae',
-    pink2: '#F79CB1',
-    pink2Secondary: '#fcc7d3',
+    pink: '#b06f77',
+    pinkSecondary: '#f5a4ae',
   },
 }
 
-export type TFunColors = keyof typeof colors.fun
+export type TFunColors = 'red' | 'orange' | 'yellow' | 'green' | 'pink'
 export const getByColorKey = (key: TFunColors) => colors.fun[key]
+
+const arr: TFunColors[] = ['red', 'orange', 'yellow', 'green', 'pink']
+export const getRandomFunColors = () => {
+  return arr[randomValue(0, arr.length - 1)]
+}

@@ -2,7 +2,7 @@ import { IIcon } from './types'
 import React from 'react'
 import Svg, { G, Path } from 'react-native-svg'
 
-export const ChangeTrack: React.FC<IIcon> = ({ size, color = '#000' }) => {
+export const ChangeTrack: React.FC<IIcon> = ({ size, color = '#FFF' }) => {
   return (
     <Svg viewBox="0 0 271.88 271.88" width={size} height={size}>
       <G fill={color}>

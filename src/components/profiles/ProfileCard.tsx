@@ -1,11 +1,18 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
 import Text from '../text'
 import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from './ProfileLinearGradient'
 import { IProfile } from '../../atoms/profiles/types'
+import { Disconnect } from '../../icons/Disconnect'
+import { Cross } from '../../icons/Cross'
+import FocusPressable, {
+  FocusPressableIcon,
+} from '../focus-pressable/FocusPressable'
+import { SpacerY } from '../spacer'
+import { useProfiles } from '../../atoms/profiles/profilesAtom'
 
 interface IProfileCard {
   profile: IProfile
@@ -20,6 +27,11 @@ export const ProfileCard: React.FC<IProfileCard> = ({
   selectedProfileID,
 }) => {
   const { onFocus, onBlur, focus } = useFocusBlur([profile.id])
+  const [profiles, setProfiles] = useProfiles()
+
+  const onRemoveProfile = (profileId: string) => () => {
+    setProfiles(profiles.filter((p) => p.id !== profileId))
+  }
 
   return (
     <Animated.View
@@ -46,6 +58,17 @@ export const ProfileCard: React.FC<IProfileCard> = ({
           </Text>
         </TouchableOpacity>
       </ProfileLinearGradient>
+
+      <View style={{ alignItems: 'center' }}>
+        <SpacerY size={12} />
+        <FocusPressableIcon
+          onPress={onRemoveProfile(profile.id)}
+          Icon={Cross}
+          sizeIcon={36}
+          color={colors.white['1']}
+          focusColor={colors.white['0']}
+        />
+      </View>
     </Animated.View>
   )
 }

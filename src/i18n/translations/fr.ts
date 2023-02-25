@@ -6,19 +6,41 @@ export const fr = {
       username: "Nom d'utilisateur",
       password: 'Mot de passe',
       save: 'Enregistrer',
-      error: {
-        generic: 'Certains champs sont manquants',
-      },
     },
     profiles: {
       whos_watching: 'Qui regarde ?',
-      edit_profiles: 'Gérer vos profils',
+      new_profile: {
+        title: 'Créer votre profil',
+        profile_name: 'Nom de profil',
+      },
+    },
+    drawer: {
+      item: {
+        search: 'Recherche',
+        movies: 'Films',
+        series: 'Series',
+        canal: 'Chaînes',
+        mylist: 'Ma liste',
+        disconnect_account: 'Déconnecter',
+      },
+    },
+    search: {
+      inputTitle: 'Recherche',
+      result: '{{count}} résultat trouvé',
+      results: '{{count}} résultats trouvés',
     },
     common: {
+      search: 'Recherche',
       movies: 'Films',
       series: 'Series',
       canal: 'Chaînes',
       mylist: 'Ma liste',
+      button: {
+        save: 'Enregistrer',
+      },
+      error: {
+        generic: 'Certains champs sont manquants',
+      },
     },
   },
 }

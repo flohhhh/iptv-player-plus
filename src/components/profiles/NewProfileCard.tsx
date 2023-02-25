@@ -5,11 +5,11 @@ import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { MyList as Plus } from '../../icons/MyList'
 
-interface INewProfileCard {}
-export const NewProfileCard: React.FC<INewProfileCard> = ({}) => {
+interface INewProfileCard {
+  onNewProfile: () => void
+}
+export const NewProfileCard: React.FC<INewProfileCard> = ({ onNewProfile }) => {
   const { onFocus, onBlur, focus } = useFocusBlur()
-
-  const onNewProfile = () => {}
 
   return (
     <Animated.View

@@ -4,10 +4,11 @@ import { SpacerY } from '../spacer'
 import { useMoviesVodCategories } from '../../atoms/api/moviesCategories'
 import { FlashList, ListRenderItem } from '@shopify/flash-list'
 import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
-import { TDrawerItemType } from './DrawerItem'
+import { TDrawerItemType } from './drawer/DrawerItem'
 import { ICategory } from '../../atoms/api/types'
 import { MovieDetails } from './movies/MovieDetails'
 import { StyleSheet, View } from 'react-native'
+import { Search } from './search'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
@@ -15,6 +16,7 @@ interface IScreen {
   renderItem: ListRenderItem<ICategory> | null | undefined
 }
 const screens: Record<TDrawerItemType, IScreen> = {
+  search: { renderItem: () => null },
   movie: {
     renderItem: ({ item }) => <MoviesByCategory category={item} />,
   },
@@ -35,6 +37,10 @@ export const Streams = () => {
 
   if (isLoading) {
     return null
+  }
+
+  if (selectDrawerItem === 'search') {
+    return <Search />
   }
 
   // TODO Remove default 'movie' ?

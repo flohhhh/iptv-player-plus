@@ -21,7 +21,7 @@ export const SelectAccount = () => {
 
   const onSave = () => {
     if (host.length === 0 || username.length === 0 || password.length === 0) {
-      setError(t('accounts.error.generic'))
+      setError(t('common.error.generic'))
     } else {
       setError(null)
       setSelectedAccount({
@@ -95,7 +95,7 @@ export const SelectAccount = () => {
         style={styles.save}
       >
         <Text size={12} color={colors.black['0']}>
-          {t('accounts.save')}
+          {t('common.button.save')}
         </Text>
       </TouchableOpacity>
     </View>
