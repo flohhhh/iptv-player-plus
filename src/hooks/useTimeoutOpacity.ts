@@ -22,7 +22,7 @@ export const useTimeoutOpacity = () => {
   }, [showStreamControl.value])
 
   const opacityAnimated = useAnimatedStyle(() => ({
-    opacity: withTiming(showStreamControl.value ? 1 : 0),
+    opacity: withTiming(showStreamControl.value ? 1 : 1),
   }))
   return { opacityAnimated }
 }

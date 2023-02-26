@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { SpacerX, SpacerY } from '../../spacer'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { colors } from '../../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { MovieCard } from '../movies/MovieCard'
@@ -9,9 +9,9 @@ import FocusPressable from '../../focus-pressable/FocusPressable'
 import Text from '../../text'
 import { FlashList } from '@shopify/flash-list'
 import { IMovie } from '../../../atoms/api/moviesTypes'
-import FuseResult = Fuse.FuseResult
 import { Search } from '../../../icons/Search'
-import FocusInput from '../../focus-pressable/FocusInput'
+import { FocusInput } from '../../focus-pressable/FocusInput'
+import FuseResult = Fuse.FuseResult
 
 const DATA = [
   {

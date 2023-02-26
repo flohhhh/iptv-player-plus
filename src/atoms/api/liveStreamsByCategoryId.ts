@@ -7,20 +7,16 @@ export const useLiveStreamsByCategoryId = (catId: string) => {
   const [liveStreamsByCatId, setStreamsByCatId] = useState<
     ILiveStreamByCategoryId[]
   >([])
-  const [selectedAccount] = useSelectedAccount()
+  const { account } = useSelectedAccount()
 
   useEffect(() => {
     const fetchAsync = async () => {
-      if (!selectedAccount) {
+      if (!account) {
         return
       }
 
       const data: ILiveStreamByCategoryId[] = await fetch(
-        buildApiUrl(
-          selectedAccount,
-          ['get_live_streams', 'category_id=%sid%s'],
-          catId
-        ),
+        buildApiUrl(account, ['get_live_streams', 'category_id=%sid%s'], catId),
         fetchConfig
       ).then((res) => res.json())
       setStreamsByCatId(data)

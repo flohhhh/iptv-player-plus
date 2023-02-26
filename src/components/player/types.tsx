@@ -12,6 +12,8 @@ export interface IControl {
   textTracks: ITextTrack[] | undefined
   selectedAudioTrack: IAudioTrack[] | undefined
   selectedTextTrack: IAudioTrack[] | undefined
+  duration: number
+  currentTime: number
 }
 export interface IProgressVideo {
   currentTime: number

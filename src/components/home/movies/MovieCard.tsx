@@ -1,20 +1,16 @@
-import {
-  ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Text from '../../text'
 import { useSelectedMedia } from '../../../atoms/mediaAtom'
 import { isAndroid } from '../../../utils/device'
 import { IMovie } from '../../../atoms/api/moviesTypes'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
-import { colors } from '../../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { DEFAULT_VALUES } from '../constants'
-import { useSelectDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
 import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
+import { buildStreamUrl } from '../../../atoms/api/utils'
+import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 
 interface IMovieCard {
   movie: IMovie
@@ -26,8 +22,9 @@ const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
 
 export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
-  const [_1, setDrawerIsOpen] = useSelectDrawerOpen()
-  const [_2, setSelectedMedia] = useSelectedMedia()
+  const { account } = useSelectedAccount()
+  const { setMedia } = useSelectedMedia()
+  const { setDrawerOpen } = useDrawerOpen()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
   const [_3, setFocusId] = useFocusMovieId()
@@ -35,7 +32,7 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const onFocusChange = () => {
     onFocus()
     setFocusId(movie.stream_id)
-    setDrawerIsOpen(false)
+    setDrawerOpen(false)
   }
 
   const { WIDTH, HEIGHT } = DEFAULT_VALUES
@@ -45,7 +42,8 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   }))
 
   const onPressItem = () => {
-    setSelectedMedia(movie.stream_id)
+    const url = buildStreamUrl('movie', account, movie.stream_id)
+    setMedia({ url })
   }
 
   return (

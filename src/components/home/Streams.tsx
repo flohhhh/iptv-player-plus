@@ -31,7 +31,7 @@ const screens: Record<TDrawerItemType, IScreen> = {
   },
 }
 export const Streams = () => {
-  const [selectDrawerItem] = useSelectDrawerItem()
+  const { selectDrawerItem } = useSelectDrawerItem()
 
   const { data: vodCategories, isLoading } = useMoviesVodCategories()
 

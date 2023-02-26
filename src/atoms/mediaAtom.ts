@@ -1,9 +1,15 @@
 import { atom, useAtom } from 'jotai'
 
-// export interface IMedia {
-//   id: number
-// }
+export interface IMedia {
+  url: string
+}
 
-const mediaAtom = atom<number | null>(null)
+const mediaAtom = atom<IMedia | null>(null)
 
-export const useSelectedMedia = () => useAtom(mediaAtom)
+export const useSelectedMedia = () => {
+  const [media, setMedia] = useAtom(mediaAtom)
+  return {
+    media,
+    setMedia,
+  }
+}

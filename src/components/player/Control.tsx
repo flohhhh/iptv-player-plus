@@ -1,16 +1,21 @@
-import React from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
-import { SpacerX } from '../spacer'
+import { SpacerX, SpacerY } from '../spacer'
 import { colors } from '../../utils/colors'
-import { Rewind } from '../../icons/Rewind'
 import { Play } from '../../icons/Play'
 import { Pause } from '../../icons/Pause'
-import { Forward } from '../../icons/Forward'
 import ProgressBar from '../progressbar'
 import Animated from 'react-native-reanimated'
 import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
 import { IControl } from './types'
+import Text from '../text'
+import { formatTime } from '../../utils/time'
+import { Favorite } from '../../icons/Favorite'
+import { FocusPressableIcon } from '../focus-pressable/FocusPressableIcon'
+import { useTranslation } from 'react-i18next'
+import { FocusPressable } from '../focus-pressable/FocusPressable'
+import { FocusPressableText } from '../focus-pressable/FocusPressableText'
 
 export const Control: React.FC<IControl> = ({
   onPlay,
@@ -25,99 +30,147 @@ export const Control: React.FC<IControl> = ({
   textTracks,
   selectedAudioTrack,
   selectedTextTrack,
+  duration,
+  currentTime,
 }) => {
-  const [selectedMedia, setSelectedMedia] = useSelectedMedia()
+  const { t } = useTranslation()
+  const [settingType, setSettingType] = useState<'audio' | 'subtitles' | null>(
+    null
+  )
+  const { media, setMedia } = useSelectedMedia()
   const [lastEventType, setLastEventType] = React.useState('')
 
   const { opacityAnimated } = useTimeoutOpacity()
 
+  const hasAddedToList = false
+
+  const audios = ['Disable', 'French', 'English']
+  const subtitles = ['Disable', 'Arabic', 'Spanish']
+
+  const getSettingValues = () => {
+    if (settingType === 'audio') return audios
+    if (settingType === 'subtitles') {
+      return subtitles
+    }
+    return []
+  }
   return (
     <Animated.View style={[styles.container, opacityAnimated]}>
-      <View style={styles.card}>
-        <View style={styles.background} />
-
-        <View>
-          <ProgressBar progress={progress} style={styles.progressbar} />
-        </View>
-
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            onPress={onRewind}
-            style={styles.controlButton}
-            activeOpacity={0.9}
-          >
-            <Rewind size={10} />
-          </TouchableOpacity>
-
-          <SpacerX size={20} />
-
-          <TouchableOpacity
+      <View style={styles.row}>
+        <View style={styles.leftAndRight}>
+          <Text size={12}>{formatTime(currentTime)}</Text>
+          <FocusPressableIcon
             onPress={paused ? onPlay : onPause}
-            style={styles.controlButton}
-            activeOpacity={0.9}
-          >
-            {paused ? <Play size={10} /> : <Pause size={10} />}
-          </TouchableOpacity>
-
-          <SpacerX size={20} />
-
-          <TouchableOpacity
-            onPress={onForward}
-            style={styles.controlButton}
-            activeOpacity={0.9}
-          >
-            <Forward size={10} />
-          </TouchableOpacity>
+            Icon={paused ? Play : Pause}
+            sizeIcon={14}
+            color={colors.white['1']}
+            focusColor={colors.white['0']}
+          />
         </View>
-
-        <TouchableOpacity
-          onPress={onSelectAudioTrack}
-          style={styles.controlButton}
-          activeOpacity={0.9}
-        >
-          <Forward size={10} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={onSelectTextTrack}
-          style={styles.controlButton}
-          activeOpacity={0.9}
-        >
-          <Forward size={10} />
-        </TouchableOpacity>
+        <View style={styles.progressContainer}>
+          <ProgressBar progress={progress} />
+        </View>
+        <View style={styles.leftAndRight}>
+          <Text size={12}>{formatTime(duration - currentTime)}</Text>
+          <FocusPressable
+            onPress={paused ? onPlay : onPause}
+            focusStyle={{ backgroundColor: 'red' }}
+          >
+            <Favorite
+              size={24}
+              borderColor={hasAddedToList ? colors.fun.red : colors.gray['0']}
+              color={hasAddedToList ? colors.fun.red : colors.gray['1']}
+            />
+          </FocusPressable>
+        </View>
       </View>
+
+      <View style={styles.audioAndSubtitlesContainer}>
+        <FocusPressableText
+          text={t('streams.audio')}
+          onPress={() => null}
+          size={12}
+          color={colors.white['0']}
+          focusColorText={colors.black['0']}
+          style={styles.audioSubButton}
+          focusStyle={{ backgroundColor: colors.white['0'] }}
+          onFocus={() => setSettingType('audio')}
+          // onBlur={() => setSettingType(null)}
+        />
+
+        <SpacerX size={6} />
+
+        <FocusPressableText
+          text={t('streams.subtitles')}
+          onPress={() => null}
+          size={12}
+          color={colors.white['0']}
+          focusColorText={colors.black['0']}
+          style={styles.audioSubButton}
+          focusStyle={{ backgroundColor: colors.white['0'] }}
+          onFocus={() => setSettingType('subtitles')}
+          // onBlur={() => setSettingType(null)}
+        />
+      </View>
+
+      {settingType && (
+        <>
+          <SpacerY size={4} />
+          <View style={styles.audioAndSubtitlesContainer}>
+            {getSettingValues().map((v, i, arr) => (
+              <>
+                <FocusPressableText
+                  text={v}
+                  onPress={() => {
+                    console.log('----v', v)
+                    setSettingType(null)
+                  }}
+                  size={12}
+                  color={colors.white['0']}
+                  focusColorText={colors.black['0']}
+                  style={styles.audioSubButton}
+                  focusStyle={{ backgroundColor: colors.white['0'] }}
+                />
+                {i !== arr.length - 1 && <SpacerX size={4} />}
+              </>
+            ))}
+          </View>
+        </>
+      )}
     </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+  },
+  leftAndRight: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  progressContainer: {
+    flexGrow: 6,
     justifyContent: 'center',
+    paddingHorizontal: 8,
   },
-  background: {
-    zIndex: 1,
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.black['0'],
-    opacity: 0.2,
-  },
-  card: {
-    height: 180,
-  },
-  buttons: {
-    zIndex: 2,
+  audioAndSubtitlesContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20,
   },
-  controlButton: {
-    zIndex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.white['0'],
-    width: 30,
-    height: 30,
-    borderRadius: 50,
+  audioSubButton: {
+    borderRadius: 4,
+    borderColor: colors.gray['0'],
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: colors.black['0'],
   },
-  progressbar: { marginTop: 10, marginLeft: 14, marginRight: 100 },
+  row: { flexDirection: 'row' },
 })

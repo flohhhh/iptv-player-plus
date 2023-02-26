@@ -9,9 +9,9 @@ import { colors } from '../../utils/colors'
 
 const Home = () => {
   const { width, height } = useWindowDimensions()
-  const [selectedMedia] = useSelectedMedia()
+  const { media } = useSelectedMedia()
 
-  if (selectedMedia) {
+  if (media) {
     return <Player />
   }
 

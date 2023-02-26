@@ -28,6 +28,15 @@ export const en = {
       result: '{{count}} result found',
       results: '{{count}} results found',
     },
+    streams: {
+      continue_watching: 'Continue Watching',
+      play_from_beginning: 'Play from beginning',
+      resume_playing: 'Resume Playing',
+      add_from_my_list: 'Add to my list',
+      remove_from_my_list: 'Remove from my list',
+      audio: 'Audio',
+      subtitles: 'Subtitles',
+    },
     common: {
       search: 'Recherche',
       movies: 'Films',

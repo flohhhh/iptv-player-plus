@@ -14,4 +14,7 @@ export const selectedAccountAtom = atomWithMMKV<IAccount | null>(
   null
 )
 
-export const useSelectedAccount = () => useAtom(selectedAccountAtom)
+export const useSelectedAccount = () => {
+  const [account, setAccount] = useAtom(selectedAccountAtom)
+  return { account, setAccount }
+}

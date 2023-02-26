@@ -6,7 +6,11 @@ type TInputProps = TextInputProps & PropsWithChildren
 interface IFocusInput extends TInputProps {
   focusStyle?: ViewStyle
 }
-const FocusInput: React.FC<IFocusInput> = ({ focusStyle, style, ...props }) => {
+export const FocusInput: React.FC<IFocusInput> = ({
+  focusStyle,
+  style,
+  ...props
+}) => {
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   return (
@@ -18,5 +22,3 @@ const FocusInput: React.FC<IFocusInput> = ({ focusStyle, style, ...props }) => {
     />
   )
 }
-
-export default FocusInput

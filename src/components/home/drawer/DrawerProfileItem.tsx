@@ -15,7 +15,7 @@ import { useSelectDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
 
 interface IDrawerProfileItem {}
 export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({}) => {
-  const [drawerIsOpen] = useSelectDrawerOpen()
+  const { drawerOpen } = useSelectDrawerOpen()
 
   const profile = useSelectedProfileValue()
   const setProfile = useSelectedProfileSet()
@@ -23,7 +23,7 @@ export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({}) => {
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   const opacityAnimated = useAnimatedStyle(() => ({
-    opacity: withTiming(drawerIsOpen ? 1 : 0),
+    opacity: withTiming(drawerOpen ? 1 : 0),
   }))
 
   const onPressProfile = () => setProfile(null)

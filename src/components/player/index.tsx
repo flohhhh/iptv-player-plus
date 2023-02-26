@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   BackHandler,
   StyleSheet,
@@ -6,39 +6,34 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import Video from 'react-native-video'
+import Video, { OnLoadData } from 'react-native-video'
 import { useSelectedMedia } from '../../atoms/mediaAtom'
 import { IAudioTrack, IProgressVideo, ITextTrack } from './types'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
 import Animated from 'react-native-reanimated'
-import { buildStreamUrl, TTypeUrl } from '../../atoms/api/utils'
 import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
-import { TDrawerItemType } from '../home/drawer/DrawerItem'
 import { colors } from '../../utils/colors'
 import { Back } from '../../icons/Back'
 import { Control } from './Control'
+import Text from '../text'
 
-const typeByDrawerItem: Record<TDrawerItemType, TTypeUrl> = {
-  movie: 'movie',
-  tvshow: 'series',
-  canal: 'live',
-  mylist: 'movie',
-}
 const ReanimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
 
 const Player = () => {
-  const [selectedMediaId, setSelectedMedia] = useSelectedMedia()
-  const [selectedAccount] = useSelectedAccount()
+  const videoRef = useRef<Video | null>(null)
+  const { media, setMedia } = useSelectedMedia()
+  const { account } = useSelectedAccount()
   const { width, height } = useWindowDimensions()
   const { opacityAnimated } = useTimeoutOpacity()
   const { onFocus, onBlur, focus } = useFocusBlur()
-  const [selectedDrawerItem] = useSelectDrawerItem()
+  const { selectDrawerItem } = useSelectDrawerItem()
 
+  const [duration, setDuration] = useState(-1)
+  const [currentTime, setCurrentTime] = useState(-1)
   const [progress, setProgress] = useState(0)
-  const [currentTime, setCurrentTime] = useState(0)
 
   const [audioTracks, setAudioTracks] = useState<IAudioTrack[] | undefined>(
     undefined
@@ -50,6 +45,8 @@ const Player = () => {
   const [selectedTextTrack, setSelectedTextTrack] = useState(undefined)
 
   const [paused, setPaused] = useState(false)
+
+  const title = 'Seven'
   const onPlay = () => {
     setPaused(false)
   }
@@ -58,13 +55,17 @@ const Player = () => {
     setPaused(true)
   }
 
+  const onLoad = (onLoadData: OnLoadData) => {
+    console.log('----on load', onLoadData)
+    setDuration(onLoadData.duration)
+    setAudioTracks(onLoadData.audioTracks)
+    setTextTracks(onLoadData.textTracks)
+  }
   const onProgress = (e: IProgressVideo) => {
-    const duration = e.playableDuration
-    const currentTime = e.currentTime
+    setCurrentTime(e.currentTime)
 
-    if (currentTime > 0 && currentTime <= duration) {
-      setCurrentTime(currentTime)
-      setProgress((currentTime * duration) / 100)
+    if (e.currentTime > 0 && duration > 0) {
+      setProgress(e.currentTime / duration)
     }
   }
 
@@ -72,16 +73,16 @@ const Player = () => {
   const onBlurChange = () => onBlur()
   const backAction = () => {
     setPaused(true)
-    setSelectedMedia(null)
+    setMedia(null)
     return true
   }
 
   const onForward = () => {
-    setCurrentTime((curTime) => curTime + 30)
+    videoRef.current?.seek(currentTime + 30)
   }
 
   const onRewind = () => {
-    setCurrentTime((curTime) => curTime - 15)
+    videoRef.current?.seek(currentTime - 15)
   }
 
   const onSelectAudioTrack = () => {}
@@ -96,69 +97,65 @@ const Player = () => {
     return () => backHandler.remove()
   }, [])
 
-  if (!selectedAccount || !selectedMediaId || !selectedDrawerItem) {
-    return null
-  }
-
-  const type = selectedDrawerItem
-    ? typeByDrawerItem[selectedDrawerItem]
-    : 'movie'
-
   return (
-    <View style={{ width, height }}>
-      <ReanimatedTouchableOpacity
-        style={[styles.back, opacityAnimated]}
-        onPress={() => {
-          setSelectedMedia(null)
-        }}
-        onFocus={onFocusChange}
-        onBlur={onBlurChange}
-      >
-        <Back
-          // animatedProps={animatedProps}
-          size={50}
-          color={colors.white['0']}
-        />
-      </ReanimatedTouchableOpacity>
-      <Video
-        style={{ width, height }}
-        paused={paused}
-        source={{
-          uri: buildStreamUrl(type, selectedAccount, selectedMediaId),
-        }}
-        onProgress={onProgress}
-        bufferConfig={{
-          minBufferMs: 150000,
-          maxBufferMs: 500000,
-          bufferForPlaybackMs: 25000,
-          bufferForPlaybackAfterRebufferMs: 50000,
-        }}
-        onAudioTracks={({ audioTracks }: { audioTracks: IAudioTrack[] }) =>
-          setAudioTracks(audioTracks)
-        }
-        onTextTracks={({ textTracks }: { textTracks: ITextTrack[] }) => {
-          setTextTracks(textTracks)
-        }}
-        selectedAudioTrack={selectedAudioTrack}
-        selectedTextTrack={selectedTextTrack}
-      />
-      <Control
-        onPlay={onPlay}
-        onPause={onPause}
-        onForward={onForward}
-        onRewind={onRewind}
-        onSelectAudioTrack={onSelectAudioTrack}
-        onSelectTextTrack={onSelectTextTrack}
-        paused={paused}
-        progress={progress}
-        audioTracks={audioTracks}
-        textTracks={textTracks}
-        selectedAudioTrack={selectedAudioTrack}
-        selectedTextTrack={selectedTextTrack}
+    <>
+      <View style={{ width, height }}>
+        <Animated.View style={[styles.title, opacityAnimated]}>
+          <Text size={16}>{title}</Text>
+        </Animated.View>
+        <ReanimatedTouchableOpacity
+          style={[styles.back, opacityAnimated]}
+          onPress={() => {
+            setMedia(null)
+          }}
+          onFocus={onFocusChange}
+          onBlur={onBlurChange}
+        >
+          <Back
+            // animatedProps={animatedProps}
+            size={30}
+            color={colors.white['0']}
+          />
+        </ReanimatedTouchableOpacity>
 
-        // duration={duration}
-      />
-    </View>
+        <Video
+          ref={videoRef}
+          style={{ width, height }}
+          paused={true}
+          source={{
+            uri: 'https://filesamples.com/samples/video/mkv/sample_1280x720_surfing_with_audio.mkv', //media.url,
+          }}
+          currentTime={currentTime}
+          onLoad={onLoad}
+          fullscreen={false}
+          onProgress={onProgress}
+          bufferConfig={{
+            minBufferMs: 150000,
+            maxBufferMs: 500000,
+            bufferForPlaybackMs: 25000,
+            bufferForPlaybackAfterRebufferMs: 50000,
+          }}
+          // selectedAudioTrack={selectedAudioTrack}
+          // selectedTextTrack={selectedTextTrack}
+        />
+        <Control
+          onPlay={onPlay}
+          onPause={onPause}
+          onForward={onForward}
+          onRewind={onRewind}
+          onSelectAudioTrack={onSelectAudioTrack}
+          onSelectTextTrack={onSelectTextTrack}
+          paused={paused}
+          audioTracks={audioTracks}
+          textTracks={textTracks}
+          selectedAudioTrack={selectedAudioTrack}
+          selectedTextTrack={selectedTextTrack}
+          duration={duration}
+          currentTime={currentTime}
+          progress={progress}
+        />
+      </View>
+    </>
   )
 }
 
@@ -167,6 +164,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
     position: 'absolute',
     left: 10,
+    top: 10,
+  },
+  title: {
+    zIndex: 1,
+    position: 'absolute',
+    right: 20,
     top: 10,
   },
 })

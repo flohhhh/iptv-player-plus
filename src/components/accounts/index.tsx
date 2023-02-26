@@ -12,7 +12,7 @@ export const SelectAccount = () => {
   const refPassword = useRef<TextInput | null>(null)
   const { t } = useTranslation()
 
-  const [_, setSelectedAccount] = useSelectedAccount()
+  const { setAccount } = useSelectedAccount()
 
   const [error, setError] = useState<string | null>(null)
   const [host, onChangeHost] = React.useState('http://')
@@ -24,7 +24,7 @@ export const SelectAccount = () => {
       setError(t('common.error.generic'))
     } else {
       setError(null)
-      setSelectedAccount({
+      setAccount({
         id: uuid(),
         host,
         username,

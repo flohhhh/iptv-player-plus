@@ -4,7 +4,7 @@ import Text from '../../text'
 import { SpacerX } from '../../spacer'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { useSelectDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
 import { useTranslation } from 'react-i18next'
 import { Disconnect } from '../../../icons/Disconnect'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
@@ -15,21 +15,21 @@ export const DrawerDisconnectAccountItem: React.FC<
   IDrawerProfileItem
 > = ({}) => {
   const { t } = useTranslation()
-  const [drawerIsOpen, setDrawerIsOpen] = useSelectDrawerOpen()
+  const { drawerOpen, setDrawerOpen } = useDrawerOpen()
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   const onFocusChange = () => {
     onFocus()
-    setDrawerIsOpen(true)
+    setDrawerOpen(true)
   }
 
-  const [_, setSelectedAccount] = useSelectedAccount()
+  const { setAccount } = useSelectedAccount()
 
   const opacityAnimated = useAnimatedStyle(() => ({
-    opacity: withTiming(drawerIsOpen ? 1 : 0),
+    opacity: withTiming(drawerOpen ? 1 : 0),
   }))
 
-  const onPressDisconnect = () => setSelectedAccount(null)
+  const onPressDisconnect = () => setAccount(null)
 
   return (
     <TouchableOpacity

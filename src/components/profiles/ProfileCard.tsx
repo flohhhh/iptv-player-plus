@@ -6,13 +6,10 @@ import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { ProfileLinearGradient } from './ProfileLinearGradient'
 import { IProfile } from '../../atoms/profiles/types'
-import { Disconnect } from '../../icons/Disconnect'
 import { Cross } from '../../icons/Cross'
-import FocusPressable, {
-  FocusPressableIcon,
-} from '../focus-pressable/FocusPressable'
 import { SpacerY } from '../spacer'
 import { useProfiles } from '../../atoms/profiles/profilesAtom'
+import { FocusPressableIcon } from '../focus-pressable/FocusPressableIcon'
 
 interface IProfileCard {
   profile: IProfile
@@ -62,8 +59,8 @@ export const ProfileCard: React.FC<IProfileCard> = ({
       <View style={{ alignItems: 'center' }}>
         <SpacerY size={12} />
         <FocusPressableIcon
-          onPress={onRemoveProfile(profile.id)}
           Icon={Cross}
+          onPress={onRemoveProfile(profile.id)}
           sizeIcon={36}
           color={colors.white['1']}
           focusColor={colors.white['0']}

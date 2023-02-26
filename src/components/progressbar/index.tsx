@@ -42,7 +42,7 @@ const DeterminateProgressBar = ({
       throw new Error('Invalid range (progress should be between 0 and 1')
     }
     // Animate progressWidth to the selected progress value
-    progressWidth.value = progress * width - RIGHT_PROGRESS
+    progressWidth.value = progress * width
   }, [progress, progressWidth])
 
   const progressStyle = useAnimatedStyle(() => {
@@ -56,10 +56,7 @@ const DeterminateProgressBar = ({
   return (
     <View style={[style, styles.container, { backgroundColor }]}>
       <Animated.View
-        style={[
-          progressStyle,
-          { backgroundColor: foregroundColor, justifyContent: 'center' },
-        ]}
+        style={[progressStyle, { backgroundColor: foregroundColor }]}
       />
     </View>
   )
@@ -70,7 +67,7 @@ export default DeterminateProgressBar
 const styles = StyleSheet.create({
   container: {
     zIndex: 3,
-    width: width - RIGHT_PROGRESS,
+    width: '100%',
     height: 4,
     borderRadius: 10,
     justifyContent: 'center',

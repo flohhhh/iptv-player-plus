@@ -6,9 +6,10 @@ import Profiles from './src/components/profiles'
 import { useInitializeDefaultValues } from './src/hooks/useInitializeDefaultValues'
 import { useSelectedAccount } from './src/atoms/accounts/accountsAtom'
 import { SelectAccount } from './src/components/accounts'
+import Player from './src/components/player'
 
 const App = () => {
-  const [selectAccount] = useSelectedAccount()
+  const { account } = useSelectedAccount()
 
   const selectedProfile = useSelectedProfileValue()
 
@@ -16,13 +17,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      {!selectAccount ? (
-        <SelectAccount />
-      ) : selectedProfile ? (
-        <Home />
-      ) : (
-        <Profiles />
-      )}
+      <Player />
     </View>
   )
 }

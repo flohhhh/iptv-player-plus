@@ -29,6 +29,15 @@ export const fr = {
       result: '{{count}} résultat trouvé',
       results: '{{count}} résultats trouvés',
     },
+    streams: {
+      continue_watching: 'Continuer à regarder',
+      play_from_beginning: 'Regarder depuis le début',
+      resume_playing: 'Reprendre la lecture',
+      add_from_my_list: 'Ajouter à ma liste',
+      remove_from_my_list: 'Supprimer de ma liste',
+      audio: 'Audio',
+      subtitles: 'Sous-titres',
+    },
     common: {
       search: 'Recherche',
       movies: 'Films',

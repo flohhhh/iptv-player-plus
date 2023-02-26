@@ -9,7 +9,7 @@ import { Movie } from '../../../icons/Movie'
 import { colors } from '../../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
-import { useSelectDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
 import { Search } from '../../../icons/Search'
 
 export type TDrawerItemType = 'search' | 'movie' | 'tvshow' | 'canal' | 'mylist'
@@ -24,13 +24,13 @@ const DEFAULT_SIZE = 14
 
 const iconByType: Record<
   TDrawerItemType,
-  (selected: boolean, drawerIsOpen: boolean) => () => JSX.Element
+  (selected: boolean, drawerOpen: boolean) => () => JSX.Element
 > = {
-  search: (selected, drawerIsOpen) => () =>
+  search: (selected, drawerOpen) => () =>
     (
       <Search
         size={
-          drawerIsOpen
+          drawerOpen
             ? selected
               ? DEFAULT_SIZE + 2
               : DEFAULT_SIZE
@@ -38,11 +38,11 @@ const iconByType: Record<
         }
       />
     ),
-  movie: (selected, drawerIsOpen) => () =>
+  movie: (selected, drawerOpen) => () =>
     (
       <Movie
         size={
-          drawerIsOpen
+          drawerOpen
             ? selected
               ? DEFAULT_SIZE + 2
               : DEFAULT_SIZE
@@ -50,11 +50,11 @@ const iconByType: Record<
         }
       />
     ),
-  tvshow: (selected, drawerIsOpen) => () =>
+  tvshow: (selected, drawerOpen) => () =>
     (
       <TvShow
         size={
-          drawerIsOpen
+          drawerOpen
             ? selected
               ? DEFAULT_SIZE + 2
               : DEFAULT_SIZE
@@ -62,11 +62,11 @@ const iconByType: Record<
         }
       />
     ),
-  canal: (selected, drawerIsOpen) => () =>
+  canal: (selected, drawerOpen) => () =>
     (
       <Canal
         size={
-          drawerIsOpen
+          drawerOpen
             ? selected
               ? DEFAULT_SIZE + 2
               : DEFAULT_SIZE
@@ -74,11 +74,11 @@ const iconByType: Record<
         }
       />
     ),
-  mylist: (selected, drawerIsOpen) => () =>
+  mylist: (selected, drawerOpen) => () =>
     (
       <MyList
         size={
-          drawerIsOpen
+          drawerOpen
             ? selected
               ? DEFAULT_SIZE + 2
               : DEFAULT_SIZE
@@ -94,16 +94,16 @@ export const DrawerItem: React.FC<IDrawerItem> = ({
   selected,
   onFocusItem,
 }) => {
-  const [drawerIsOpen] = useSelectDrawerOpen()
+  const { drawerOpen } = useDrawerOpen()
 
   const refTouchable = useRef<TouchableOpacity | null>(null)
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   const opacityAnimated = useAnimatedStyle(() => ({
-    opacity: withTiming(drawerIsOpen ? 1 : 0),
+    opacity: withTiming(drawerOpen ? 1 : 0),
   }))
 
-  const Icon = iconByType[type](focus, drawerIsOpen)
+  const Icon = iconByType[type](focus, drawerOpen)
 
   const onFocusChange = () => {
     onFocus()

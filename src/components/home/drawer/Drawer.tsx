@@ -12,8 +12,8 @@ import Animated, {
 import { useSelectedProfileValue } from '../../../atoms/profiles/profilesAtom'
 import { DrawerProfileItem } from './DrawerProfileItem'
 import {
+  useDrawerOpen,
   useSelectDrawerItem,
-  useSelectDrawerOpen,
 } from '../../../atoms/selectDrawerItemAtom'
 import { DrawerDisconnectAccountItem } from './DrawerDisconnectAccountItem'
 
@@ -31,15 +31,15 @@ export const Drawer: React.FC<IDrawer> = () => {
   const { height } = useWindowDimensions()
 
   const profile = useSelectedProfileValue()
-  const [_1, setSelectDrawerItem] = useSelectDrawerItem()
+  const { setSelectDrawerItem } = useSelectDrawerItem()
 
   const widthShared = useSharedValue(120)
 
-  const [drawerIsOpen, setDrawerIsOpen] = useSelectDrawerOpen()
+  const { drawerOpen, setDrawerOpen } = useDrawerOpen()
 
   useEffect(() => {
-    widthShared.value = drawerIsOpen ? 110 : 46
-  }, [drawerIsOpen])
+    widthShared.value = drawerOpen ? 110 : 46
+  }, [drawerOpen])
 
   const widthAnimated = useAnimatedStyle(() => ({
     width: withTiming(widthShared.value, config),
@@ -47,7 +47,7 @@ export const Drawer: React.FC<IDrawer> = () => {
 
   const onFocusItem = (type: TDrawerItemType, focus: boolean) => {
     setSelectDrawerItem(type)
-    setDrawerIsOpen(true)
+    setDrawerOpen(true)
   }
 
   if (!profile) {
