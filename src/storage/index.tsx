@@ -6,6 +6,8 @@ export type TMKKVKey =
   | 'account.selected'
   | 'profile.all'
   | 'profile.selected.id'
+  | 'streams.to_continue'
+  | 'streams.added_to_list'
 
 export const storage = () => ({
   set: (k: TMKKVKey, v: string) => {

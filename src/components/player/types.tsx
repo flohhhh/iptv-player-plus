@@ -1,3 +1,5 @@
+import { IStream } from '../../atoms/streams/types'
+
 export interface IControl {
   onPlay: () => void
   onPause: () => void
@@ -13,6 +15,7 @@ export interface IControl {
   selectedAudioTrack: IAudioTrack[] | undefined
   selectedTextTrack: IAudioTrack[] | undefined
   duration: number
+  elapsedTime: number
   currentTime: number
 }
 export interface IProgressVideo {

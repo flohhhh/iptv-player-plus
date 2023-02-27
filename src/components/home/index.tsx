@@ -2,16 +2,16 @@ import { useWindowDimensions } from 'react-native'
 import React from 'react'
 import { Drawer } from './drawer/Drawer'
 import { Streams } from './Streams'
-import { useSelectedMedia } from '../../atoms/mediaAtom'
+import { useSelectedStream } from '../../atoms/streams/streamsAtoms'
 import Player from '../player'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../utils/colors'
 
 const Home = () => {
   const { width, height } = useWindowDimensions()
-  const { media } = useSelectedMedia()
+  const { stream } = useSelectedStream()
 
-  if (media) {
+  if (stream) {
     return <Player />
   }
 

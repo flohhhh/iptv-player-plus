@@ -7,7 +7,10 @@ import {
   View,
 } from 'react-native'
 import Video, { OnLoadData } from 'react-native-video'
-import { useSelectedMedia } from '../../atoms/mediaAtom'
+import {
+  useSelectedStream,
+  useStreamsToList,
+} from '../../atoms/streams/streamsAtoms'
 import { IAudioTrack, IProgressVideo, ITextTrack } from './types'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
@@ -18,22 +21,27 @@ import { colors } from '../../utils/colors'
 import { Back } from '../../icons/Back'
 import { Control } from './Control'
 import Text from '../text'
+import { bufferConfig } from './config'
+import { useStreamsToContinue } from '../../atoms/streams/streamsAtoms'
+import { IStream } from '../../atoms/streams/types'
 
 const ReanimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
 
 const Player = () => {
   const videoRef = useRef<Video | null>(null)
-  const { media, setMedia } = useSelectedMedia()
+  const { stream, setStream } = useSelectedStream()
   const { account } = useSelectedAccount()
   const { width, height } = useWindowDimensions()
   const { opacityAnimated } = useTimeoutOpacity()
   const { onFocus, onBlur, focus } = useFocusBlur()
   const { selectDrawerItem } = useSelectDrawerItem()
+  const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
 
   const [duration, setDuration] = useState(-1)
   const [currentTime, setCurrentTime] = useState(-1)
   const [progress, setProgress] = useState(0)
+  const [elapsedTime, setElapsedTime] = useState(0)
 
   const [audioTracks, setAudioTracks] = useState<IAudioTrack[] | undefined>(
     undefined
@@ -45,6 +53,7 @@ const Player = () => {
   const [selectedTextTrack, setSelectedTextTrack] = useState(undefined)
 
   const [paused, setPaused] = useState(false)
+  const [hasFinished, setHasFinished] = useState(false)
 
   const title = 'Seven'
   const onPlay = () => {
@@ -61,11 +70,19 @@ const Player = () => {
     setAudioTracks(onLoadData.audioTracks)
     setTextTracks(onLoadData.textTracks)
   }
+
   const onProgress = (e: IProgressVideo) => {
     setCurrentTime(e.currentTime)
 
     if (e.currentTime > 0 && duration > 0) {
-      setProgress(e.currentTime / duration)
+      const elapsedTime = duration - e.currentTime
+      setElapsedTime(elapsedTime)
+      const progressValue = e.currentTime / duration
+      setProgress(progressValue)
+
+      if (e.currentTime > duration - 180) {
+        setHasFinished(true)
+      }
     }
   }
 
@@ -73,7 +90,7 @@ const Player = () => {
   const onBlurChange = () => onBlur()
   const backAction = () => {
     setPaused(true)
-    setMedia(null)
+    setStream(null)
     return true
   }
 
@@ -94,8 +111,29 @@ const Player = () => {
       backAction
     )
 
-    return () => backHandler.remove()
+    return () => {
+      backHandler.remove()
+      if (stream) {
+        if (!streamsToContinue.some((s) => s.id === stream.id)) {
+          setStreamsToContinue([
+            ...streamsToContinue,
+            {
+              ...stream,
+              resumeAt: currentTime,
+              lastAudioTrackSelected: selectedAudioTrack,
+              lastSubtitleTrackSelected: selectedTextTrack,
+            },
+          ])
+        }
+      }
+    }
   }, [])
+
+  useEffect(() => {
+    if (hasFinished) {
+      setStreamsToContinue(streamsToContinue.filter((s) => s.id !== stream?.id))
+    }
+  }, [hasFinished])
 
   return (
     <>
@@ -106,7 +144,7 @@ const Player = () => {
         <ReanimatedTouchableOpacity
           style={[styles.back, opacityAnimated]}
           onPress={() => {
-            setMedia(null)
+            setStream(null)
           }}
           onFocus={onFocusChange}
           onBlur={onBlurChange}
@@ -129,12 +167,7 @@ const Player = () => {
           onLoad={onLoad}
           fullscreen={false}
           onProgress={onProgress}
-          bufferConfig={{
-            minBufferMs: 150000,
-            maxBufferMs: 500000,
-            bufferForPlaybackMs: 25000,
-            bufferForPlaybackAfterRebufferMs: 50000,
-          }}
+          bufferConfig={bufferConfig}
           // selectedAudioTrack={selectedAudioTrack}
           // selectedTextTrack={selectedTextTrack}
         />
@@ -152,6 +185,7 @@ const Player = () => {
           selectedTextTrack={selectedTextTrack}
           duration={duration}
           currentTime={currentTime}
+          elapsedTime={elapsedTime}
           progress={progress}
         />
       </View>

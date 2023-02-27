@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { useSelectedMedia } from '../../atoms/mediaAtom'
+import {
+  useSelectedStream,
+  useStreamsToList,
+} from '../../atoms/streams/streamsAtoms'
 import { SpacerX, SpacerY } from '../spacer'
 import { colors } from '../../utils/colors'
 import { Play } from '../../icons/Play'
@@ -32,17 +35,21 @@ export const Control: React.FC<IControl> = ({
   selectedTextTrack,
   duration,
   currentTime,
+  elapsedTime,
 }) => {
   const { t } = useTranslation()
+  const { streamsToList, setStreamsToList } = useStreamsToList()
+  const { stream, setStream } = useSelectedStream()
+
+  console.log('----streamsToList', stream, streamsToList)
+
   const [settingType, setSettingType] = useState<'audio' | 'subtitles' | null>(
     null
   )
-  const { media, setMedia } = useSelectedMedia()
-  const [lastEventType, setLastEventType] = React.useState('')
 
   const { opacityAnimated } = useTimeoutOpacity()
 
-  const hasAddedToList = false
+  const hasAddedToList = streamsToList.some((s) => s.id === stream?.id)
 
   const audios = ['Disable', 'French', 'English']
   const subtitles = ['Disable', 'Arabic', 'Spanish']
@@ -54,6 +61,18 @@ export const Control: React.FC<IControl> = ({
     }
     return []
   }
+
+  const onAddToList = () => {
+    if (stream) {
+      if (streamsToList.some((v) => v.id === stream.id)) {
+        setStreamsToList(streamsToList.filter((v) => v.id !== stream.id))
+      } else {
+        console.log('----aaddd')
+        setStreamsToList([...streamsToList, stream])
+      }
+    }
+  }
+
   return (
     <Animated.View style={[styles.container, opacityAnimated]}>
       <View style={styles.row}>
@@ -71,7 +90,7 @@ export const Control: React.FC<IControl> = ({
           <ProgressBar progress={progress} />
         </View>
         <View style={styles.leftAndRight}>
-          <Text size={12}>{formatTime(duration - currentTime)}</Text>
+          <Text size={12}>{formatTime(elapsedTime)}</Text>
           <FocusPressable
             onPress={paused ? onPlay : onPause}
             focusStyle={{ backgroundColor: 'red' }}
@@ -88,13 +107,14 @@ export const Control: React.FC<IControl> = ({
       <View style={styles.audioAndSubtitlesContainer}>
         <FocusPressableText
           text={t('streams.audio')}
-          onPress={() => null}
+          onPress={onAddToList}
           size={12}
           color={colors.white['0']}
           focusColorText={colors.black['0']}
           style={styles.audioSubButton}
           focusStyle={{ backgroundColor: colors.white['0'] }}
           onFocus={() => setSettingType('audio')}
+          forceFocusStyle={settingType === 'audio'}
           // onBlur={() => setSettingType(null)}
         />
 
@@ -109,6 +129,7 @@ export const Control: React.FC<IControl> = ({
           style={styles.audioSubButton}
           focusStyle={{ backgroundColor: colors.white['0'] }}
           onFocus={() => setSettingType('subtitles')}
+          forceFocusStyle={settingType === 'subtitles'}
           // onBlur={() => setSettingType(null)}
         />
       </View>
@@ -147,7 +168,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 100,
+    height: 80,
   },
   leftAndRight: {
     flex: 1,

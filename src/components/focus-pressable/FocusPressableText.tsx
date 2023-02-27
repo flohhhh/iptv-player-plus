@@ -12,9 +12,10 @@ export interface IFocusPressable {
   color: string
   focusSize?: TFontSize
   focusColorText?: string
-  focusStyle?: ViewStyle
   onFocus?: () => void
   onBlur?: () => void
+  focusStyle?: ViewStyle
+  forceFocusStyle?: boolean
 }
 export const FocusPressableText: React.FC<IFocusPressable> = ({
   onPress,
@@ -24,12 +25,14 @@ export const FocusPressableText: React.FC<IFocusPressable> = ({
   color,
   focusSize,
   focusStyle,
+  forceFocusStyle,
   focusColorText,
   onFocus,
   onBlur,
 }) => {
   const { onFocus: onFocus1, onBlur: onBlur1, focus } = useFocusBlur()
 
+  const focused = focus || forceFocusStyle
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -41,11 +44,11 @@ export const FocusPressableText: React.FC<IFocusPressable> = ({
         onBlur?.()
         onBlur1()
       }}
-      style={[style, focus ? focusStyle : undefined]}
+      style={[style, focused ? focusStyle : undefined]}
     >
       <Text
-        size={focus ? focusSize || size : size}
-        color={focus ? focusColorText : color}
+        size={focused ? focusSize || size : size}
+        color={focused ? focusColorText : color}
       >
         {text}
       </Text>

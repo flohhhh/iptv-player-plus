@@ -1,7 +1,7 @@
 import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Text from '../../text'
-import { useSelectedMedia } from '../../../atoms/mediaAtom'
+import { useSelectedStream } from '../../../atoms/streams/streamsAtoms'
 import { isAndroid } from '../../../utils/device'
 import { IMovie } from '../../../atoms/api/moviesTypes'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
@@ -23,7 +23,7 @@ const AnimatedTouchableOpacity =
 
 export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const { account } = useSelectedAccount()
-  const { setMedia } = useSelectedMedia()
+  const { setStream } = useSelectedStream()
   const { setDrawerOpen } = useDrawerOpen()
 
   const { onFocus, onBlur, focus } = useFocusBlur()
@@ -43,7 +43,8 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
 
   const onPressItem = () => {
     const url = buildStreamUrl('movie', account, movie.stream_id)
-    setMedia({ url })
+
+    setStream({ id: movie.stream_id, type: 'movie', url })
   }
 
   return (
