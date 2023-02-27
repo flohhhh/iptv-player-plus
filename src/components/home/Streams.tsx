@@ -3,7 +3,7 @@ import { MoviesByCategory } from './movies/MoviesByCategory'
 import { SpacerY } from '../spacer'
 import { useMoviesVodCategories } from '../../atoms/api/moviesCategories'
 import { FlashList, ListRenderItem } from '@shopify/flash-list'
-import { useSelectDrawerItem } from '../../atoms/selectDrawerItemAtom'
+import { useSelectDrawerItem } from '../../atoms/drawerAtom'
 import { TDrawerItemType } from './drawer/DrawerItem'
 import { ICategory } from '../../atoms/api/types'
 import { MovieDetails } from './movies/MovieDetails'
@@ -16,14 +16,14 @@ interface IScreen {
   renderItem: ListRenderItem<ICategory> | null | undefined
 }
 const screens: Record<TDrawerItemType, IScreen> = {
-  search: { renderItem: () => null },
-  movie: {
+  search: { renderItem: () => <View /> },
+  movies: {
     renderItem: ({ item }) => <MoviesByCategory category={item} />,
   },
-  tvshow: {
+  series: {
     renderItem: ({ item }) => <MoviesByCategory category={item} />,
   },
-  canal: {
+  live: {
     renderItem: ({ item }) => <MoviesByCategory category={item} />,
   },
   mylist: {
@@ -43,16 +43,13 @@ export const Streams = () => {
     return <SearchScreen />
   }
 
-  // TODO Remove default 'movie' ?
-  const _renderItem = screens[selectDrawerItem || 'movie'].renderItem
-
   return (
     <View style={styles.container}>
       <MovieDetails />
       <FlashList
         estimatedItemSize={80}
         data={vodCategories}
-        renderItem={_renderItem}
+        renderItem={screens[selectDrawerItem].renderItem}
         ItemSeparatorComponent={ItemSeparatorComponent}
       />
     </View>

@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated'
 import { colors } from '../../utils/colors'
+import { useFocusBlur } from '../../hooks/useFocusBlur'
 
 const { width } = Dimensions.get('screen')
 

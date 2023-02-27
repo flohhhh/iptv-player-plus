@@ -5,13 +5,13 @@ import { colors } from '../../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { MovieCard } from '../movies/MovieCard'
 import Fuse from 'fuse.js'
-import FocusPressable from '../../focus-pressable/FocusPressable'
 import Text from '../../text'
 import { FlashList } from '@shopify/flash-list'
 import { IMovie } from '../../../atoms/api/moviesTypes'
 import { Search } from '../../../icons/Search'
 import { FocusInput } from '../../focus-pressable/FocusInput'
 import FuseResult = Fuse.FuseResult
+import { FocusPressable } from '../../focus-pressable/FocusPressable'
 
 const DATA = [
   {

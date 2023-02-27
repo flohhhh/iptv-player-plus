@@ -67,7 +67,6 @@ export const Control: React.FC<IControl> = ({
       if (streamsToList.some((v) => v.id === stream.id)) {
         setStreamsToList(streamsToList.filter((v) => v.id !== stream.id))
       } else {
-        console.log('----aaddd')
         setStreamsToList([...streamsToList, stream])
       }
     }

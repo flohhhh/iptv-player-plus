@@ -5,6 +5,8 @@ export interface IStream {
   id: number
   type: TTypeUrl
   url: string
+  title: string
+  imageUrl: string
   episodes?: []
   resumeAt?: number
   lastAudioTrackSelected?: IAudioTrack

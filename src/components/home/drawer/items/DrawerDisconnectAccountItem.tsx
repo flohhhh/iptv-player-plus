@@ -4,7 +4,7 @@ import Text from '../../text'
 import { SpacerX } from '../../spacer'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { useDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen } from '../../../atoms/drawerAtom'
 import { useTranslation } from 'react-i18next'
 import { Disconnect } from '../../../icons/Disconnect'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
@@ -20,7 +20,6 @@ export const DrawerDisconnectAccountItem: React.FC<
 
   const onFocusChange = () => {
     onFocus()
-    setDrawerOpen(true)
   }
 
   const { setAccount } = useSelectedAccount()
@@ -50,6 +49,9 @@ export const DrawerDisconnectAccountItem: React.FC<
       <Animated.View style={opacityAnimated}>
         <Text size={focus ? 14 : 12}>
           {t('drawer.item.disconnect_account')}
+        </Text>
+        <Text size={8}>
+          {t('drawer.item.expire_date_account', { date: '28/02/2022' })}
         </Text>
       </Animated.View>
     </TouchableOpacity>

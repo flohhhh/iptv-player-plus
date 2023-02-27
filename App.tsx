@@ -1,10 +1,11 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useSelectedProfileValue } from './src/atoms/profiles/profilesAtom'
+import Home from './src/components/home'
+import Profiles from './src/components/profiles'
 import { useInitializeDefaultValues } from './src/hooks/useInitializeDefaultValues'
 import { useSelectedAccount } from './src/atoms/accounts/accountsAtom'
-import Player from './src/components/player'
-import 'react-native/tvos-types.d'
+import { SelectAccount } from './src/components/accounts'
 
 const App = () => {
   const { account } = useSelectedAccount()
@@ -15,7 +16,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <Player />
+      {!account ? <SelectAccount /> : selectedProfile ? <Home /> : <Profiles />}
     </View>
   )
 }

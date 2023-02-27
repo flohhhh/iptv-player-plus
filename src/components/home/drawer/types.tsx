@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import Text from '../../text'
 import { TvShow } from '../../../icons/TvShow'
@@ -9,15 +9,13 @@ import { Movie } from '../../../icons/Movie'
 import { colors } from '../../../utils/colors'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
-import { useDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen, useSelectDrawerItem } from '../../../atoms/drawerAtom'
 import { Search } from '../../../icons/Search'
 
-export type TDrawerItemType = 'search' | 'movie' | 'tvshow' | 'canal' | 'mylist'
+
 interface IDrawerItem {
   text: string
   type: TDrawerItemType
-  selected?: boolean
-  onFocusItem: (type: TDrawerItemType, value: boolean) => void
 }
 
 const DEFAULT_SIZE = 14
@@ -38,7 +36,7 @@ const iconByType: Record<
         }
       />
     ),
-  movie: (selected, drawerOpen) => () =>
+  movies: (selected, drawerOpen) => () =>
     (
       <Movie
         size={
@@ -50,7 +48,7 @@ const iconByType: Record<
         }
       />
     ),
-  tvshow: (selected, drawerOpen) => () =>
+  series: (selected, drawerOpen) => () =>
     (
       <TvShow
         size={
@@ -62,7 +60,7 @@ const iconByType: Record<
         }
       />
     ),
-  canal: (selected, drawerOpen) => () =>
+  live: (selected, drawerOpen) => () =>
     (
       <Canal
         size={
@@ -88,13 +86,9 @@ const iconByType: Record<
     ),
 }
 
-export const DrawerItem: React.FC<IDrawerItem> = ({
-  text,
-  type,
-  selected,
-  onFocusItem,
-}) => {
+export const DrawerItem: React.FC<IDrawerItem> = ({ text, type }) => {
   const { drawerOpen } = useDrawerOpen()
+  const { selectDrawerItem, setSelectDrawerItem } = useSelectDrawerItem()
 
   const refTouchable = useRef<TouchableOpacity | null>(null)
   const { onFocus, onBlur, focus } = useFocusBlur()
@@ -103,34 +97,28 @@ export const DrawerItem: React.FC<IDrawerItem> = ({
     opacity: withTiming(drawerOpen ? 1 : 0),
   }))
 
-  const Icon = iconByType[type](focus, drawerOpen)
+  const Icon = () => <Search size={12} />
 
   const onFocusChange = () => {
     onFocus()
-    onFocusItem(type, true)
+    setSelectDrawerItem(type)
   }
-
-  const onBlurChange = () => {
-    onBlur()
-    onFocusItem(type, false)
-  }
-
-  useEffect(() => {
-    // if (refTouchable) {
-    //   refTouchable.current?.setNativeProps({ hasTVPreferredFocus: selected })
-    // }
-  }, [refTouchable, selected])
 
   return (
     <TouchableOpacity
       ref={refTouchable}
       style={[
         styles.container,
-        { borderLeftColor: focus ? colors.white['0'] : colors.black['1'] },
+        {
+          borderLeftColor:
+            focus || type === selectDrawerItem
+              ? colors.white['0']
+              : colors.black['1'],
+        },
       ]}
       activeOpacity={1}
       onFocus={onFocusChange}
-      onBlur={onBlurChange}
+      onBlur={onBlur}
     >
       <SpacerX size={8} />
 
@@ -138,9 +126,9 @@ export const DrawerItem: React.FC<IDrawerItem> = ({
 
       <SpacerX size={20} />
 
-      <Animated.View style={opacityAnimated}>
+      <View>
         <Text size={focus ? 14 : 12}>{text}</Text>
-      </Animated.View>
+      </View>
     </TouchableOpacity>
   )
 }

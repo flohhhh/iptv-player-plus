@@ -11,11 +11,11 @@ import {
   useSelectedProfileValue,
 } from '../../../atoms/profiles/profilesAtom'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { useSelectDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen } from '../../../atoms/drawerAtom'
 
 interface IDrawerProfileItem {}
 export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({}) => {
-  const { drawerOpen } = useSelectDrawerOpen()
+  const { drawerOpen } = useDrawerOpen()
 
   const profile = useSelectedProfileValue()
   const setProfile = useSelectedProfileSet()

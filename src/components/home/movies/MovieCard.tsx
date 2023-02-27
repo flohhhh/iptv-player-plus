@@ -7,7 +7,7 @@ import { IMovie } from '../../../atoms/api/moviesTypes'
 import { useFocusBlur } from '../../../hooks/useFocusBlur'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { DEFAULT_VALUES } from '../constants'
-import { useDrawerOpen } from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen } from '../../../atoms/drawerAtom'
 import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 import { buildStreamUrl } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
@@ -32,7 +32,7 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const onFocusChange = () => {
     onFocus()
     setFocusId(movie.stream_id)
-    setDrawerOpen(false)
+    // setDrawerOpen(false)
   }
 
   const { WIDTH, HEIGHT } = DEFAULT_VALUES
@@ -44,7 +44,13 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const onPressItem = () => {
     const url = buildStreamUrl('movie', account, movie.stream_id)
 
-    setStream({ id: movie.stream_id, type: 'movie', url })
+    setStream({
+      id: movie.stream_id,
+      type: 'movie',
+      title: movie.name,
+      imageUrl: movie.stream_icon,
+      url,
+    })
   }
 
   return (

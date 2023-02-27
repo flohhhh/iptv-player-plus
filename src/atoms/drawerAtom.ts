@@ -1,11 +1,11 @@
 import { atom, useAtom } from 'jotai'
 import { TDrawerItemType } from '../components/home/drawer/DrawerItem'
 
-const selectDrawerItemAtom = atom<TDrawerItemType | null>(null)
+const drawerAtom = atom<TDrawerItemType>('movies')
 const selectDrawerOpenAtom = atom<boolean>(true)
 
 export const useSelectDrawerItem = () => {
-  const [selectDrawerItem, setSelectDrawerItem] = useAtom(selectDrawerItemAtom)
+  const [selectDrawerItem, setSelectDrawerItem] = useAtom(drawerAtom)
   return { selectDrawerItem, setSelectDrawerItem }
 }
 export const useDrawerOpen = () => {

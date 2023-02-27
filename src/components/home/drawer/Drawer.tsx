@@ -11,10 +11,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useSelectedProfileValue } from '../../../atoms/profiles/profilesAtom'
 import { DrawerProfileItem } from './DrawerProfileItem'
-import {
-  useDrawerOpen,
-  useSelectDrawerItem,
-} from '../../../atoms/selectDrawerItemAtom'
+import { useDrawerOpen, useSelectDrawerItem } from '../../../atoms/drawerAtom'
 import { DrawerDisconnectAccountItem } from './DrawerDisconnectAccountItem'
 
 const SPACER_SIZE = 16
@@ -47,7 +44,6 @@ export const Drawer: React.FC<IDrawer> = () => {
 
   const onFocusItem = (type: TDrawerItemType, focus: boolean) => {
     setSelectDrawerItem(type)
-    setDrawerOpen(true)
   }
 
   if (!profile) {
@@ -68,19 +64,19 @@ export const Drawer: React.FC<IDrawer> = () => {
       <SpacerY size={SPACER_SIZE} />
 
       <DrawerItem
-        type="movie"
+        type="movies"
         text={t('drawer.item.movies')}
         onFocusItem={onFocusItem}
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem
-        type="tvshow"
+        type="series"
         text={t('drawer.item.series')}
         onFocusItem={onFocusItem}
       />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem
-        type="canal"
+        type="live"
         text={t('drawer.item.canal')}
         onFocusItem={onFocusItem}
       />
