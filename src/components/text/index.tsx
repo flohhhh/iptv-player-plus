@@ -44,7 +44,7 @@ const Text: React.FC<PropsWithChildren & IText> = ({
   letterSpacing,
   numberOfLines,
 }) => {
-  const TextComponent = animated ? Animated.Text : RNText
+  const TextComponent = RNText
   return (
     <TextComponent
       style={{

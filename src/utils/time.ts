@@ -7,3 +7,9 @@ export const formatTime = (seconds: number) => {
   const hhmmssFormat = date.toISOString().substr(11, 8)
   return hhmmssFormat
 }
+
+export const dateFromTime = (seconds: string | undefined) => {
+  if (seconds === undefined) return ''
+  const date = new Date(Number(seconds) * 1000)
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+}

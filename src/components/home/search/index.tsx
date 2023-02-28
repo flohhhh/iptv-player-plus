@@ -111,7 +111,6 @@ export const SearchScreen = () => {
           placeholder={t('search.inputTitle') || ''}
           onChangeText={onChangeSearchText}
           value={searchText}
-          autoFocus
           blurOnSubmit={false}
         />
 

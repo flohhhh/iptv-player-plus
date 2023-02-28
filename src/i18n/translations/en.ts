@@ -1,7 +1,7 @@
 export const en = {
   translation: {
     accounts: {
-      title: 'Your account',
+      title: 'Your Account',
       host: 'Host',
       username: 'Username',
       password: 'Password',
@@ -21,6 +21,7 @@ export const en = {
         canal: 'Canal',
         mylist: 'My list',
         disconnect_account: 'Disconnect',
+        expire_date_account: 'Expire at {{date}}',
       },
     },
     search: {
@@ -48,6 +49,7 @@ export const en = {
       },
       error: {
         generic: 'Some fields are missing',
+        unauthorized: 'Your username or password is incorrect',
       },
     },
   },

@@ -1,7 +1,7 @@
 export const fr = {
   translation: {
     accounts: {
-      title: 'Votre compte',
+      title: 'Votre Compte',
       host: 'Hôte',
       username: "Nom d'utilisateur",
       password: 'Mot de passe',
@@ -22,6 +22,7 @@ export const fr = {
         canal: 'Chaînes',
         mylist: 'Ma liste',
         disconnect_account: 'Déconnecter',
+        expire_date_account: 'Expire le {{date}}',
       },
     },
     search: {
@@ -49,6 +50,7 @@ export const fr = {
       },
       error: {
         generic: 'Certains champs sont manquants',
+        unauthorized: "Votre nom d'utilisateur ou mot de passe est incorrect",
       },
     },
   },

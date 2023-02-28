@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import {
@@ -12,6 +12,7 @@ import { SpacerX, SpacerY } from '../spacer'
 import { ProfileCard } from './ProfileCard'
 import { IProfile } from '../../atoms/profiles/types'
 import { NewProfileCard } from './NewProfileCard'
+import { Keyboard } from 'react-native'
 
 interface ISelectProfiles {
   onNewProfile: () => void
@@ -25,6 +26,11 @@ const SelectProfiles: React.FC<ISelectProfiles> = ({ onNewProfile }) => {
   const onSelectProfile = (p: IProfile) => () => {
     setSelectedProfile(p)
   }
+
+  useEffect(() => {
+    console.log('----Coucou')
+    Keyboard.dismiss()
+  }, [])
 
   return (
     <View>

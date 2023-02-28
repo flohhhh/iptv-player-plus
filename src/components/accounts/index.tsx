@@ -6,6 +6,8 @@ import Text from '../text'
 import { SpacerY } from '../spacer'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { uuid } from '../../utils/uuid'
+import { useAccountInfo } from '../../atoms/api/account'
+import { IAccountInfo } from '../../atoms/api/types'
 
 export const SelectAccount = () => {
   const refUsername = useRef<TextInput | null>(null)
@@ -19,24 +21,40 @@ export const SelectAccount = () => {
   const [username, onChangeUsername] = React.useState('')
   const [password, onChangePassword] = React.useState('')
 
-  const onSave = () => {
+  const { fetch } = useAccountInfo()
+
+  const onSave = async () => {
     if (host.length === 0 || username.length === 0 || password.length === 0) {
       setError(t('common.error.generic'))
     } else {
-      setError(null)
-      setAccount({
-        id: uuid(),
+      const resp = await fetch({
+        id: '',
         host,
         username,
         password,
       })
+      if (resp.status > 400) {
+        setError(
+          t(`common.error.${resp.status === 401 ? 'unauthorized' : 'generic'}`)
+        )
+      } else {
+        const info = (await resp.json()) as IAccountInfo
+        setError(null)
+        setAccount({
+          id: uuid(),
+          host,
+          username,
+          password,
+          info,
+        })
+      }
     }
   }
 
   return (
     <View>
       <Text size={22} font="CandyCake" style={{ alignSelf: 'center' }}>
-        {t('accounts.title').toUpperCase()}
+        {t('accounts.title')}
       </Text>
       <SpacerY size={14} />
 
@@ -103,7 +121,6 @@ export const SelectAccount = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {},
   input: {
     borderRadius: 2,
     borderWidth: 1,

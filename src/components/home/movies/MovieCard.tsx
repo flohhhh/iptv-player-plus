@@ -32,7 +32,7 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const onFocusChange = () => {
     onFocus()
     setFocusId(movie.stream_id)
-    // setDrawerOpen(false)
+    setDrawerOpen(false)
   }
 
   const { WIDTH, HEIGHT } = DEFAULT_VALUES

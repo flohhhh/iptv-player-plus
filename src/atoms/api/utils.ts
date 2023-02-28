@@ -1,16 +1,16 @@
-import { IAccount } from '../accounts/accountsAtom'
+import { IAccount } from '../accounts/types'
 import { TAction } from './types'
 
 export const buildApiUrl = (
   account: IAccount,
-  actions: TAction[],
+  actions: TAction[] | null,
   strToReplace: string = ''
 ) => {
-  const url = `${account.host}/player_api.php?username=${
-    account.username
-  }&password=${account.password}&action=${actions
-    .join('&')
-    .replace('%sid%s', strToReplace)}`
+  const actionsQuery = actions
+    ? `&action=${actions.join('&').replace('%sid%s', strToReplace)}`
+    : ''
+
+  const url = `${account.host}/player_api.php?username=${account.username}&password=${account.password}${actionsQuery}`
   return url
 }
 
@@ -20,9 +20,7 @@ export const buildStreamUrl = (
   account: IAccount,
   mediaId: number
 ) => {
-  return `${account.host.replace('8080', '80')}/${type}/${account.username}/${
-    account.password
-  }/${mediaId}.mkv`
+  return `${account.host}/${type}/${account.username}/${account.password}/${mediaId}.mkv`
 }
 
 export const fetchConfig = {

@@ -14,3 +14,32 @@ export interface ICategory {
   category_name: string
   parent_id: number
 }
+
+export interface IAccountInfo {
+  user_info: IUserInfo
+  server_info: IServerInfo
+}
+
+interface IUserInfo {
+  username: string
+  password: string
+  message: string
+  auth: number
+  status: string
+  exp_date: string
+  is_trial: string
+  active_cons: string
+  created_at: string
+  max_connections: string
+  allowed_output_formats: string[]
+}
+interface IServerInfo {
+  url: string
+  port: string
+  https_port: string
+  server_protocol: string
+  rtmp_port: string
+  timezone: string
+  timestamp_now: number
+  time_now: string
+}

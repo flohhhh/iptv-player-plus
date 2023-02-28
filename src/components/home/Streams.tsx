@@ -4,11 +4,11 @@ import { SpacerY } from '../spacer'
 import { useMoviesVodCategories } from '../../atoms/api/moviesCategories'
 import { FlashList, ListRenderItem } from '@shopify/flash-list'
 import { useSelectDrawerItem } from '../../atoms/drawerAtom'
-import { TDrawerItemType } from './drawer/DrawerItem'
 import { ICategory } from '../../atoms/api/types'
 import { MovieDetails } from './movies/MovieDetails'
 import { StyleSheet, View } from 'react-native'
 import { SearchScreen } from './search'
+import { TDrawerItemType } from './drawer/types'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 

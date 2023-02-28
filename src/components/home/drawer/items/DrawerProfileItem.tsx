@@ -1,17 +1,17 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import Text from '../../text'
-import { SpacerX } from '../../spacer'
-import { colors } from '../../../utils/colors'
-import { useFocusBlur } from '../../../hooks/useFocusBlur'
-import { ProfileLinearGradient } from '../../profiles/ProfileLinearGradient'
+import Text from '../../../text'
+import { SpacerX } from '../../../spacer'
+import { colors } from '../../../../utils/colors'
+import { useFocusBlur } from '../../../../hooks/useFocusBlur'
+import { ProfileLinearGradient } from '../../../profiles/ProfileLinearGradient'
 import {
   useSelectedProfile,
   useSelectedProfileSet,
   useSelectedProfileValue,
-} from '../../../atoms/profiles/profilesAtom'
+} from '../../../../atoms/profiles/profilesAtom'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { useDrawerOpen } from '../../../atoms/drawerAtom'
+import { useDrawerOpen } from '../../../../atoms/drawerAtom'
 
 interface IDrawerProfileItem {}
 export const DrawerProfileItem: React.FC<IDrawerProfileItem> = ({}) => {

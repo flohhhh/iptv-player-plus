@@ -9,47 +9,48 @@ import {
   useDrawerOpen,
   useSelectDrawerItem,
 } from '../../../../atoms/drawerAtom'
-import { Search } from '../../../../icons/Search'
 import { DEFAULT_SIZE, iconByType } from './constants'
-import { IIcon } from '../../../../icons/types'
 import { TDrawerItemType } from '../types'
 
 interface IDrawerSearchItem {
   text: string
   type: TDrawerItemType
 }
-export const DrawerSearchItem: React.FC<IDrawerSearchItem> = ({
-  text,
-  type,
-}) => {
-  const { drawerOpen } = useDrawerOpen()
+export const DrawerItem: React.FC<IDrawerSearchItem> = ({ text, type }) => {
+  const { setSelectDrawerItem } = useSelectDrawerItem()
+  const { drawerOpen, setDrawerOpen } = useDrawerOpen()
 
   const { selectDrawerItem } = useSelectDrawerItem()
-  const setProfile = useSelectedProfileSet()
 
-  const { onFocus, onBlur, focus } = useFocusBlur()
+  const { onFocus: onFocusFunc, onBlur: onBlurFunc, focus } = useFocusBlur()
 
   const opacityAnimated = useAnimatedStyle(() => ({
     opacity: withTiming(drawerOpen ? 1 : 0),
   }))
 
-  const onPressProfile = () => setProfile(null)
+  const onPressProfile = () => {
+    setSelectDrawerItem(type)
+  }
 
   const Icon = iconByType[type]
-  console.log('----Icon', Icon)
+
+  const onFocus = () => {
+    onFocusFunc()
+    setDrawerOpen(true)
+  }
 
   return (
     <TouchableOpacity
       style={styles.selectedProfile}
       onFocus={onFocus}
-      onBlur={onBlur}
+      onBlur={onBlurFunc}
       onPress={onPressProfile}
     >
       <SpacerX size={8} />
       <Icon
         size={
           drawerOpen
-            ? selectDrawerItem === 'search'
+            ? focus || selectDrawerItem === 'search'
               ? DEFAULT_SIZE + 2
               : DEFAULT_SIZE
             : DEFAULT_SIZE
@@ -59,7 +60,7 @@ export const DrawerSearchItem: React.FC<IDrawerSearchItem> = ({
       <SpacerX size={8} />
 
       <Animated.View style={opacityAnimated}>
-        <Text size={focus ? DEFAULT_SIZE : DEFAULT_SIZE} bold={focus}>
+        <Text font="CandyCake" size={focus ? DEFAULT_SIZE + 2 : DEFAULT_SIZE}>
           {text}
         </Text>
       </Animated.View>
@@ -68,14 +69,9 @@ export const DrawerSearchItem: React.FC<IDrawerSearchItem> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderLeftWidth: 2,
-  },
   selectedProfile: {
     width: '100%',
+    height: 20,
     flexDirection: 'row',
     alignItems: 'center',
   },
