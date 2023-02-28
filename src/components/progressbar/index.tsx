@@ -13,6 +13,10 @@ import Animated, {
 } from 'react-native-reanimated'
 import { colors } from '../../utils/colors'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
+import {
+  FocusPressable,
+  FocusPressableWithFocus,
+} from '../focus-pressable/FocusPressable'
 
 const { width } = Dimensions.get('screen')
 
@@ -55,11 +59,21 @@ const DeterminateProgressBar = ({
   })
 
   return (
-    <View style={[style, styles.container, { backgroundColor }]}>
-      <Animated.View
-        style={[progressStyle, { backgroundColor: foregroundColor }]}
-      />
-    </View>
+    <FocusPressableWithFocus
+      onPress={() => null}
+      style={[style, styles.container, { backgroundColor }]}
+    >
+      {(focus) => (
+        <Animated.View
+          style={[
+            progressStyle,
+            {
+              backgroundColor: focus ? colors.fun.pink : foregroundColor,
+            },
+          ]}
+        />
+      )}
+    </FocusPressableWithFocus>
   )
 }
 

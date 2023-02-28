@@ -18,7 +18,7 @@ export const en = {
         search: 'Search',
         movies: 'Movies',
         series: 'Series',
-        canal: 'Canal',
+        live: 'Live',
         mylist: 'My list',
         disconnect_account: 'Disconnect',
         expire_date_account: 'Expire at {{date}}',

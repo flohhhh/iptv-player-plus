@@ -10,6 +10,7 @@ import { Cross } from '../../icons/Cross'
 import { SpacerY } from '../spacer'
 import { useProfiles } from '../../atoms/profiles/profilesAtom'
 import { FocusPressableIcon } from '../focus-pressable/FocusPressableIcon'
+import { FocusPressableWithFocus } from '../focus-pressable/FocusPressable'
 
 interface IProfileCard {
   profile: IProfile
@@ -58,13 +59,14 @@ export const ProfileCard: React.FC<IProfileCard> = ({
 
       <View style={{ alignItems: 'center' }}>
         <SpacerY size={12} />
-        <FocusPressableIcon
-          Icon={Cross}
-          onPress={onRemoveProfile(profile.id)}
-          sizeIcon={36}
-          color={colors.white['1']}
-          focusColor={colors.white['0']}
-        />
+        <FocusPressableWithFocus onPress={onRemoveProfile(profile.id)}>
+          {(focus) => (
+            <Cross
+              size={focus ? 32 : 30}
+              color={colors.white[focus ? '0' : '2']}
+            />
+          )}
+        </FocusPressableWithFocus>
       </View>
     </Animated.View>
   )

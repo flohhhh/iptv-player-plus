@@ -2,7 +2,7 @@ import { IIcon } from './types'
 import React from 'react'
 import Svg, { Circle, Path } from 'react-native-svg'
 
-export const Canal: React.FC<IIcon> = ({ size, color = '#FFF' }) => {
+export const Live: React.FC<IIcon> = ({ size, color = '#FFF' }) => {
   return (
     <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
       <Circle

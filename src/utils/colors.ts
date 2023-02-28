@@ -8,6 +8,7 @@ export const colors = {
   white: {
     0: '#FFF',
     1: '#7D7D7D',
+    2: '#4b4b4b',
   },
   orange: {
     0: '#E9724C',

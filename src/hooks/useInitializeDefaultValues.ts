@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { storage } from '../storage'
+import { useEffect } from 'react'
 
 export const useInitializeDefaultValues = () => {
   useEffect(() => {}, [])

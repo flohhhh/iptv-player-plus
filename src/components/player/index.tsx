@@ -24,6 +24,7 @@ import Text from '../text'
 import { bufferConfig } from './config'
 import { useStreamsToContinue } from '../../atoms/streams/streamsAtoms'
 import { IStream } from '../../atoms/streams/types'
+import { use } from 'i18next'
 
 const ReanimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
@@ -38,6 +39,7 @@ const Player = () => {
   const { selectDrawerItem } = useSelectDrawerItem()
   const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
 
+  const [loading, setLoading] = useState(true)
   const [duration, setDuration] = useState(-1)
   const [currentTime, setCurrentTime] = useState(-1)
   const [progress, setProgress] = useState(0)
@@ -159,7 +161,8 @@ const Player = () => {
         <Video
           ref={videoRef}
           style={{ width, height }}
-          paused={true}
+          paused={paused}
+          onReadyForDisplay={() => setLoading(false)}
           source={{
             uri: 'https://filesamples.com/samples/video/mkv/sample_1280x720_surfing_with_audio.mkv', //media.url,
           }}
@@ -187,6 +190,7 @@ const Player = () => {
           currentTime={currentTime}
           elapsedTime={elapsedTime}
           progress={progress}
+          loading={loading}
         />
       </View>
     </>

@@ -10,14 +10,14 @@ const Profiles = () => {
     setNewProfile(true)
   }
 
-  const onSaved = () => {
+  const onClose = () => {
     setNewProfile(false)
   }
 
   return (
     <View>
       {newProfile ? (
-        <NewProfile onSaved={onSaved} />
+        <NewProfile onClose={onClose} />
       ) : (
         <SelectProfiles onNewProfile={onNewProfile} />
       )}

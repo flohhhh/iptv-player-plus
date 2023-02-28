@@ -27,11 +27,6 @@ const SelectProfiles: React.FC<ISelectProfiles> = ({ onNewProfile }) => {
     setSelectedProfile(p)
   }
 
-  useEffect(() => {
-    console.log('----Coucou')
-    Keyboard.dismiss()
-  }, [])
-
   return (
     <View>
       <Text size={40} font="CandyCake">

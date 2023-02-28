@@ -1,35 +1,34 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { colors } from '../../utils/colors'
-import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { MyList as Plus } from '../../icons/MyList'
+import { FocusPressableWithFocus } from '../focus-pressable/FocusPressable'
 
 interface INewProfileCard {
   onNewProfile: () => void
 }
 export const NewProfileCard: React.FC<INewProfileCard> = ({ onNewProfile }) => {
-  const { onFocus, onBlur, focus } = useFocusBlur()
-
   return (
-    <Animated.View
-      style={[
-        styles.profile,
-        {
-          borderColor: focus ? colors.white['0'] : colors.white['1'],
-        },
-      ]}
-    >
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={onNewProfile}
-        style={styles.button}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      >
-        <Plus size={32} color={colors.white['0']} />
-      </TouchableOpacity>
-    </Animated.View>
+    <FocusPressableWithFocus onPress={onNewProfile}>
+      {(focus) => (
+        <Animated.View
+          style={[
+            styles.profile,
+            {
+              borderColor: focus ? colors.white['0'] : colors.white['2'],
+              scaleX: focus ? 1 : 0.9,
+              scaleY: focus ? 1 : 0.9,
+            },
+          ]}
+        >
+          <Plus
+            size={focus ? 32 : 30}
+            color={colors.white[focus ? '0' : '2']}
+          />
+        </Animated.View>
+      )}
+    </FocusPressableWithFocus>
   )
 }
 
@@ -42,11 +41,8 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 6,
     borderWidth: 2,
-  },
-  button: {
-    height: '100%',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   manageProfiles: {
     borderWidth: 1,

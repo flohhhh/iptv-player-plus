@@ -55,7 +55,7 @@ export const Drawer: React.FC<IDrawer> = () => {
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem type="series" text={t('drawer.item.series')} />
       <SpacerY size={SPACER_SIZE} />
-      <DrawerItem type="live" text={t('drawer.item.canal')} />
+      <DrawerItem type="live" text={t('drawer.item.live')} />
       <SpacerY size={SPACER_SIZE} />
       <DrawerItem type="mylist" text={t('drawer.item.mylist')} />
 

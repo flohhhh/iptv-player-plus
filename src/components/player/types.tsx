@@ -17,6 +17,7 @@ export interface IControl {
   duration: number
   elapsedTime: number
   currentTime: number
+  loading: boolean
 }
 export interface IProgressVideo {
   currentTime: number

@@ -8,8 +8,13 @@ import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { uuid } from '../../utils/uuid'
 import { useAccountInfo } from '../../atoms/api/account'
 import { IAccountInfo } from '../../atoms/api/types'
+import {
+  FocusPressable,
+  FocusPressableWithFocus,
+} from '../focus-pressable/FocusPressable'
 
 export const SelectAccount = () => {
+  const refHost = useRef<TextInput | null>(null)
   const refUsername = useRef<TextInput | null>(null)
   const refPassword = useRef<TextInput | null>(null)
   const { t } = useTranslation()
@@ -58,44 +63,74 @@ export const SelectAccount = () => {
       </Text>
       <SpacerY size={14} />
 
-      <TextInput
-        style={[styles.input, error && host.length === 0 ? styles.error : {}]}
-        placeholder={t('accounts.host') || ''}
-        onChangeText={onChangeHost}
-        value={host}
-        autoFocus
-        onSubmitEditing={() => {
+      <FocusPressable
+        onPress={() => null}
+        onFocus={() => {
+          refHost.current?.focus()
+        }}
+      >
+        <TextInput
+          ref={refHost}
+          style={[styles.input, error && host.length === 0 ? styles.error : {}]}
+          placeholder={t('accounts.host') || ''}
+          onChangeText={onChangeHost}
+          value={host}
+          autoFocus
+          selectionColor={colors.white['0']}
+          placeholderTextColor={colors.white['0']}
+          onSubmitEditing={() => {
+            refUsername.current?.focus()
+          }}
+          blurOnSubmit={false}
+        />
+      </FocusPressable>
+
+      <SpacerY size={12} />
+
+      <FocusPressable
+        onPress={() => null}
+        onFocus={() => {
           refUsername.current?.focus()
         }}
-        blurOnSubmit={false}
-      />
+      >
+        <TextInput
+          ref={refUsername}
+          style={[
+            styles.input,
+            error && username.length === 0 ? styles.error : {},
+          ]}
+          placeholder={t('accounts.username') || ''}
+          placeholderTextColor={colors.white['0']}
+          onChangeText={onChangeUsername}
+          value={username}
+          onSubmitEditing={() => {
+            refPassword.current?.focus()
+          }}
+          blurOnSubmit={false}
+        />
+      </FocusPressable>
+
       <SpacerY size={12} />
-      <TextInput
-        ref={refUsername}
-        style={[
-          styles.input,
-          error && username.length === 0 ? styles.error : {},
-        ]}
-        placeholder={t('accounts.username') || ''}
-        onChangeText={onChangeUsername}
-        value={username}
-        onSubmitEditing={() => {
+
+      <FocusPressable
+        onPress={() => null}
+        onFocus={() => {
           refPassword.current?.focus()
         }}
-        blurOnSubmit={false}
-      />
-      <SpacerY size={12} />
-      <TextInput
-        ref={refPassword}
-        style={[
-          styles.input,
-          error && password.length === 0 ? styles.error : {},
-        ]}
-        placeholder={t('accounts.password') || ''}
-        onChangeText={onChangePassword}
-        value={password}
-        secureTextEntry
-      />
+      >
+        <TextInput
+          ref={refPassword}
+          style={[
+            styles.input,
+            error && password.length === 0 ? styles.error : {},
+          ]}
+          placeholder={t('accounts.password') || ''}
+          placeholderTextColor={colors.white['0']}
+          onChangeText={onChangePassword}
+          value={password}
+          secureTextEntry
+        />
+      </FocusPressable>
 
       <SpacerY size={8} />
 
@@ -107,21 +142,28 @@ export const SelectAccount = () => {
 
       <SpacerY size={14} />
 
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={onSave}
-        style={styles.save}
-      >
-        <Text size={12} color={colors.black['0']}>
-          {t('common.button.save')}
-        </Text>
-      </TouchableOpacity>
+      <FocusPressableWithFocus onPress={onSave}>
+        {(focus) => (
+          <View
+            style={[
+              styles.save,
+              { backgroundColor: colors.white[focus ? '0' : '1'] },
+            ]}
+          >
+            <Text size={focus ? 14 : 12} color={colors.black['0']}>
+              {t('common.button.save')}
+            </Text>
+          </View>
+        )}
+      </FocusPressableWithFocus>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   input: {
+    backgroundColor: colors.black['0'],
+    color: colors.white['0'],
     borderRadius: 2,
     borderWidth: 1,
     borderColor: colors.white['0'],

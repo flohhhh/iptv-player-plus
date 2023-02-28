@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import {
   useSelectedStream,
   useStreamsToList,
@@ -17,7 +17,10 @@ import { formatTime } from '../../utils/time'
 import { Favorite } from '../../icons/Favorite'
 import { FocusPressableIcon } from '../focus-pressable/FocusPressableIcon'
 import { useTranslation } from 'react-i18next'
-import { FocusPressable } from '../focus-pressable/FocusPressable'
+import {
+  FocusPressable,
+  FocusPressableWithFocus,
+} from '../focus-pressable/FocusPressable'
 import { FocusPressableText } from '../focus-pressable/FocusPressableText'
 
 export const Control: React.FC<IControl> = ({
@@ -36,12 +39,13 @@ export const Control: React.FC<IControl> = ({
   duration,
   currentTime,
   elapsedTime,
+  loading,
 }) => {
   const { t } = useTranslation()
   const { streamsToList, setStreamsToList } = useStreamsToList()
   const { stream, setStream } = useSelectedStream()
 
-  console.log('----streamsToList', stream, streamsToList)
+  // console.log('----streamsToList', stream, streamsToList)
 
   const [settingType, setSettingType] = useState<'audio' | 'subtitles' | null>(
     null
@@ -76,69 +80,88 @@ export const Control: React.FC<IControl> = ({
     <Animated.View style={[styles.container, opacityAnimated]}>
       <View style={styles.row}>
         <View style={styles.leftAndRight}>
-          <Text size={12}>{formatTime(currentTime)}</Text>
-          <FocusPressableIcon
-            onPress={paused ? onPlay : onPause}
-            Icon={paused ? Play : Pause}
-            sizeIcon={14}
-            color={colors.white['1']}
-            focusColor={colors.white['0']}
-          />
+          {!loading && <Text size={12}>{formatTime(currentTime)}</Text>}
+
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.white['0']} />
+          ) : paused ? (
+            <FocusPressableWithFocus onPress={onPlay}>
+              {(focus) => (
+                <Play size={14} color={colors.white[focus ? '0' : '1']} />
+              )}
+            </FocusPressableWithFocus>
+          ) : (
+            <FocusPressableWithFocus onPress={onPause}>
+              {(focus) => (
+                <Pause size={14} color={colors.white[focus ? '0' : '1']} />
+              )}
+            </FocusPressableWithFocus>
+          )}
         </View>
         <View style={styles.progressContainer}>
           <ProgressBar progress={progress} />
         </View>
+
         <View style={styles.leftAndRight}>
-          <Text size={12}>{formatTime(elapsedTime)}</Text>
-          <FocusPressable
-            onPress={paused ? onPlay : onPause}
-            focusStyle={{ backgroundColor: 'red' }}
-          >
-            <Favorite
-              size={24}
-              borderColor={hasAddedToList ? colors.fun.red : colors.gray['0']}
-              color={hasAddedToList ? colors.fun.red : colors.gray['1']}
-            />
-          </FocusPressable>
+          {!loading && <Text size={12}>{formatTime(elapsedTime)}</Text>}
+          <FocusPressableWithFocus onPress={paused ? onPlay : onPause}>
+            {(focus) => (
+              <Favorite
+                size={24}
+                borderColor={
+                  hasAddedToList || focus
+                    ? colors.fun.pinkSecondary
+                    : colors.gray['0']
+                }
+                color={
+                  hasAddedToList || focus
+                    ? colors.fun.pinkSecondary
+                    : colors.gray['1']
+                }
+              />
+            )}
+          </FocusPressableWithFocus>
         </View>
       </View>
 
-      <View style={styles.audioAndSubtitlesContainer}>
-        <FocusPressableText
-          text={t('streams.audio')}
-          onPress={onAddToList}
-          size={12}
-          color={colors.white['0']}
-          focusColorText={colors.black['0']}
-          style={styles.audioSubButton}
-          focusStyle={{ backgroundColor: colors.white['0'] }}
-          onFocus={() => setSettingType('audio')}
-          forceFocusStyle={settingType === 'audio'}
-          // onBlur={() => setSettingType(null)}
-        />
+      {!loading && (
+        <View style={styles.audioAndSubtitlesContainer}>
+          <FocusPressableText
+            text={t('streams.audio')}
+            onPress={onAddToList}
+            size={12}
+            color={colors.white['0']}
+            focusColorText={colors.black['0']}
+            style={styles.audioSubButton}
+            focusStyle={{ backgroundColor: colors.white['0'] }}
+            onFocus={() => setSettingType('audio')}
+            forceFocusStyle={settingType === 'audio'}
+            // onBlur={() => setSettingType(null)}
+          />
 
-        <SpacerX size={6} />
+          <SpacerX size={6} />
 
-        <FocusPressableText
-          text={t('streams.subtitles')}
-          onPress={() => null}
-          size={12}
-          color={colors.white['0']}
-          focusColorText={colors.black['0']}
-          style={styles.audioSubButton}
-          focusStyle={{ backgroundColor: colors.white['0'] }}
-          onFocus={() => setSettingType('subtitles')}
-          forceFocusStyle={settingType === 'subtitles'}
-          // onBlur={() => setSettingType(null)}
-        />
-      </View>
+          <FocusPressableText
+            text={t('streams.subtitles')}
+            onPress={() => null}
+            size={12}
+            color={colors.white['0']}
+            focusColorText={colors.black['0']}
+            style={styles.audioSubButton}
+            focusStyle={{ backgroundColor: colors.white['0'] }}
+            onFocus={() => setSettingType('subtitles')}
+            forceFocusStyle={settingType === 'subtitles'}
+            // onBlur={() => setSettingType(null)}
+          />
+        </View>
+      )}
 
       {settingType && (
         <>
           <SpacerY size={4} />
           <View style={styles.audioAndSubtitlesContainer}>
             {getSettingValues().map((v, i, arr) => (
-              <>
+              <React.Fragment key={v}>
                 <FocusPressableText
                   text={v}
                   onPress={() => {
@@ -152,7 +175,7 @@ export const Control: React.FC<IControl> = ({
                   focusStyle={{ backgroundColor: colors.white['0'] }}
                 />
                 {i !== arr.length - 1 && <SpacerX size={4} />}
-              </>
+              </React.Fragment>
             ))}
           </View>
         </>
@@ -176,7 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressContainer: {
-    flexGrow: 6,
+    flex: 6,
     justifyContent: 'center',
     paddingHorizontal: 8,
   },
