@@ -17,7 +17,7 @@ import { DrawerItem } from './items/DrawerItem'
 const SPACER_SIZE = 16
 
 const config = {
-  duration: 100,
+  duration: 50,
   easing: Easing.ease,
 }
 
@@ -69,7 +69,5 @@ export const Drawer: React.FC<IDrawer> = () => {
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 16,
-    borderRadius: 4,
-    alignItems: 'center',
   },
 })

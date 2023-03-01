@@ -2,7 +2,7 @@ import {
   ImageBackground,
   StyleProp,
   StyleSheet,
-  TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native'
 import React, { PropsWithChildren, useEffect } from 'react'
@@ -22,6 +22,7 @@ import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 import { buildStreamUrl } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
+import { AnimatedViewScaleFocus } from '../../focus-pressable/AnimatedViewFocus'
 
 interface IMovieCard {
   movie: IMovie
@@ -29,17 +30,16 @@ interface IMovieCard {
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground)
 
-const AnimatedTouchableOpacity =
-  Animated.createAnimatedComponent(TouchableOpacity)
-
 interface IAnimatedImageBackgroundFocus extends PropsWithChildren {
   focus: boolean
   uri: string
+  style?: StyleProp<AnimateStyle<ViewStyle>>
 }
 const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
   children,
   focus,
   uri,
+  style,
 }) => {
   const animatedImageStyle = useAnimatedStyle(() => ({
     transform: [{ scale: withTiming(focus ? 1 : 0.9, { duration: 100 }) }],
@@ -51,7 +51,7 @@ const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
         uri,
       }}
       resizeMode="contain"
-      style={[animatedImageStyle]}
+      style={[animatedImageStyle, style]}
       imageStyle={[styles.imageStyle]}
     >
       {children}
@@ -59,28 +59,7 @@ const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
   )
 }
 
-interface IAnimatedViewFocus extends PropsWithChildren {
-  focus: boolean
-  style?: StyleProp<AnimateStyle<StylesOrDefault<ViewStyle>>>
-}
-
 const { WIDTH, HEIGHT } = DEFAULT_VALUES
-
-const AnimatedViewFocus: React.FC<IAnimatedViewFocus> = ({
-  children,
-  focus,
-  style,
-}) => {
-  const animatedImageStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: withTiming(focus ? 1 : 0.9, { duration: 100 }) }],
-  }))
-
-  return (
-    <Animated.View style={[style, animatedImageStyle]}>
-      {children}
-    </Animated.View>
-  )
-}
 
 export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const { account } = useSelectedAccount()
@@ -106,15 +85,16 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
     <FocusPressableWithFocus onPress={onPressItem}>
       {(focus) => (
         <AnimatedImageBackgroundFocus uri={movie.stream_icon} focus={focus}>
-          <AnimatedViewFocus
+          <AnimatedViewScaleFocus
             focus={focus}
             style={{
               width: WIDTH,
               height: HEIGHT,
+              justifyContent: 'flex-end',
             }}
           >
             <TextMovieComponent movie={movie} focus={focus} />
-          </AnimatedViewFocus>
+          </AnimatedViewScaleFocus>
         </AnimatedImageBackgroundFocus>
       )}
     </FocusPressableWithFocus>
@@ -152,10 +132,11 @@ const styles = StyleSheet.create({
     height: DEFAULT_VALUES.HEIGHT,
   },
   title: {
+    // width: WIDTH,
+    // height: HEIGHT,
     // position: 'absolute',
     // paddingTop: 4,
     // paddingHorizontal: 2,
-    // width: '100%',
     // backgroundColor: 'rgba(0,0,0,0.5)',
   },
   imageStyle: {
