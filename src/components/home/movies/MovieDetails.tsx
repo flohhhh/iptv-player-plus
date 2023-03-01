@@ -1,12 +1,36 @@
 import { StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Text from '../../text'
 import { colors } from '../../../utils/colors'
-import { useMovieDetails } from '../../../atoms/api/moviesCategories'
+import {
+  useFocusMovieId,
+  useMovieDetails,
+} from '../../../atoms/api/moviesCategories'
 import { SpacerX, SpacerY } from '../../spacer'
+import { IInfoMovieData } from '../../../atoms/api/moviesTypes'
+import { buildApiUrl, fetchConfig } from '../../../atoms/api/utils'
+import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 
 export const MovieDetails: React.FC = () => {
-  const { data: details } = useMovieDetails()
+  const [details, setDetails] = useState<IInfoMovieData | null>(null)
+  const { account } = useSelectedAccount()
+  const { focusMovieId } = useFocusMovieId()
+
+  const callAsync = async (id: number) => {
+    const res = await fetch(
+      buildApiUrl(account, ['get_vod_info', 'vod_id=%sid%s'], id),
+      fetchConfig
+    )
+    const data = await res.json()
+    setDetails(data)
+  }
+
+  useEffect(() => {
+    if (focusMovieId > -1) {
+      callAsync(focusMovieId)
+    }
+  }, [focusMovieId])
+
   if (!details || !details.info) {
     return <View style={styles.container} />
   }

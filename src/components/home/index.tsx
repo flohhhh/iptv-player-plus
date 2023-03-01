@@ -17,9 +17,9 @@ const Home = () => {
 
   return (
     <LinearGradient
-      colors={[colors.black['0'], colors.black['1']]}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 1, y: 0 }}
+      colors={[colors.black['0'], colors.black['2']]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{
         width,
         height,

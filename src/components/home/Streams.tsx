@@ -9,6 +9,7 @@ import { MovieDetails } from './movies/MovieDetails'
 import { StyleSheet, View } from 'react-native'
 import { SearchScreen } from './search'
 import { TDrawerItemType } from './drawer/types'
+import Text from '../text'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
@@ -30,6 +31,7 @@ const screens: Record<TDrawerItemType, IScreen> = {
     renderItem: ({ item }) => <MoviesByCategory category={item} />,
   },
 }
+
 export const Streams = () => {
   const { selectDrawerItem } = useSelectDrawerItem()
 
@@ -43,13 +45,15 @@ export const Streams = () => {
     return <SearchScreen />
   }
 
+  const renderItem = ({ item }) => <MoviesByCategory category={item} />
+
   return (
     <View style={styles.container}>
       <MovieDetails />
       <FlashList
         estimatedItemSize={80}
         data={vodCategories}
-        renderItem={screens[selectDrawerItem].renderItem}
+        renderItem={renderItem}
         ItemSeparatorComponent={ItemSeparatorComponent}
       />
     </View>

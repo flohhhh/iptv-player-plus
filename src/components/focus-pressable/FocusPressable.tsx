@@ -34,7 +34,18 @@ export const FocusPressable: React.FC<IFocusPressable> = ({
   )
 }
 
-export interface IFocusPressableFocus {
+type TTouchablePropsPicked = Partial<
+  Pick<
+    TouchableOpacity,
+    // @ts-ignore
+    | 'nextFocusUp'
+    | 'nextFocusDown'
+    | 'nextFocusLeft'
+    | 'nextFocusRight'
+    | 'nextFocusForward'
+  >
+>
+export interface IFocusPressableFocus extends TTouchablePropsPicked {
   children: (v: any) => ReactNode | undefined
   onPress?: () => void
   style?: StyleProp<ViewStyle> | undefined
@@ -44,15 +55,18 @@ export const FocusPressableWithFocus: React.FC<IFocusPressableFocus> = ({
   children,
   onPress,
   style,
+  ...props
 }) => {
   const { onFocus, onBlur, focus } = useFocusBlur()
 
   return (
+    // @ts-ignore
     <TouchableOpacity
       onPress={onPress}
       onFocus={onFocus}
       onBlur={onBlur}
       style={style}
+      {...props}
     >
       {children(focus)}
     </TouchableOpacity>

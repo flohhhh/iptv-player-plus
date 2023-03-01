@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Text from '../../../text'
 import { SpacerX } from '../../../spacer'
@@ -10,18 +10,14 @@ import { Disconnect } from '../../../../icons/Disconnect'
 import { useSelectedAccount } from '../../../../atoms/accounts/accountsAtom'
 import { colors } from '../../../../utils/colors'
 import { dateFromTime } from '../../../../utils/time'
+import { FocusPressableWithFocus } from '../../../focus-pressable/FocusPressable'
 
 interface IDrawerProfileItem {}
 export const DrawerDisconnectAccountItem: React.FC<
   IDrawerProfileItem
 > = ({}) => {
   const { t } = useTranslation()
-  const { drawerOpen, setDrawerOpen } = useDrawerOpen()
-  const { onFocus, onBlur, focus } = useFocusBlur()
-
-  const onFocusChange = () => {
-    onFocus()
-  }
+  const { drawerOpen } = useDrawerOpen()
 
   const { account, setAccount } = useSelectedAccount()
 
@@ -32,32 +28,36 @@ export const DrawerDisconnectAccountItem: React.FC<
   const onPressDisconnect = () => setAccount(null)
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.container,
-        { borderLeftColor: focus ? colors.white['0'] : colors.black['1'] },
-      ]}
-      onFocus={onFocusChange}
-      onBlur={onBlur}
+    <FocusPressableWithFocus
       onPress={onPressDisconnect}
+      nextFocusDown={() => console.log('----coucou')}
     >
-      <SpacerX size={8} />
+      {(focus) => (
+        <View
+          style={[
+            styles.container,
+            { borderLeftColor: focus ? colors.white['0'] : colors.black['1'] },
+          ]}
+        >
+          <SpacerX size={8} />
 
-      <Disconnect size={focus ? 16 : 14} />
+          <Disconnect size={focus ? 16 : 14} />
 
-      <SpacerX size={8} />
+          <SpacerX size={8} />
 
-      <Animated.View style={opacityAnimated}>
-        <Text font="CandyCake" size={focus ? 14 : 12}>
-          {t('drawer.item.disconnect_account')}
-        </Text>
-        <Text size={8}>
-          {t('drawer.item.expire_date_account', {
-            date: dateFromTime(account?.info?.user_info.exp_date),
-          })}
-        </Text>
-      </Animated.View>
-    </TouchableOpacity>
+          <Animated.View style={opacityAnimated}>
+            <Text font="CandyCake" size={focus ? 14 : 12}>
+              {t('drawer.item.disconnect_account')}
+            </Text>
+            <Text size={8}>
+              {t('drawer.item.expire_date_account', {
+                date: dateFromTime(account?.info?.user_info.exp_date),
+              })}
+            </Text>
+          </Animated.View>
+        </View>
+      )}
+    </FocusPressableWithFocus>
   )
 }
 

@@ -6,6 +6,7 @@ import { MovieCard } from './MovieCard'
 import { ICategory } from '../../../atoms/api/types'
 import { useMoviesByCategoryId } from '../../../atoms/api/moviesByCategoryId'
 import { IMovie } from '../../../atoms/api/moviesTypes'
+import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
 
 interface IContentByCategory {
   category: ICategory
@@ -17,12 +18,15 @@ export const MoviesByCategory: React.FC<IContentByCategory> = ({
   const streamsByCatId: IMovie[] = useMoviesByCategoryId(category.category_id)
   const _renderItem = ({ item }: { item: IMovie }) => <MovieCard movie={item} />
 
+  // console.log('----streamsByCatId len', streamsByCatId.length)
+
   return (
     <View style={styles.container}>
       <Text size={14}>{category.category_name}</Text>
 
       <FlatList
         horizontal
+        keyExtractor={(item) => String(item.stream_id)}
         // disableHorizontalListHeightMeasurement={true}
         // estimatedListSize={{
         //   width: width,
@@ -32,6 +36,7 @@ export const MoviesByCategory: React.FC<IContentByCategory> = ({
         showsHorizontalScrollIndicator={false}
         data={streamsByCatId}
         renderItem={_renderItem}
+
         // ItemSeparatorComponent={ItemSeparatorComponent}
       />
     </View>

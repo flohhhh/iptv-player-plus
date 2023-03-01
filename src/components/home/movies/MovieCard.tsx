@@ -1,16 +1,27 @@
-import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import {
+  ImageBackground,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native'
+import React, { PropsWithChildren, useEffect } from 'react'
 import Text from '../../text'
 import { useSelectedStream } from '../../../atoms/streams/streamsAtoms'
 import { isAndroid } from '../../../utils/device'
 import { IMovie } from '../../../atoms/api/moviesTypes'
-import { useFocusBlur } from '../../../hooks/useFocusBlur'
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
+import Animated, {
+  AnimateStyle,
+  StylesOrDefault,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated'
 import { DEFAULT_VALUES } from '../constants'
 import { useDrawerOpen } from '../../../atoms/drawerAtom'
 import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 import { buildStreamUrl } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
+import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
 
 interface IMovieCard {
   movie: IMovie
@@ -21,25 +32,63 @@ const AnimatedImageBackground =
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
 
+interface IAnimatedImageBackgroundFocus extends PropsWithChildren {
+  focus: boolean
+  uri: string
+}
+const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
+  children,
+  focus,
+  uri,
+}) => {
+  const animatedImageStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withTiming(focus ? 1 : 0.9, { duration: 100 }) }],
+  }))
+
+  return (
+    <AnimatedImageBackground
+      source={{
+        uri,
+      }}
+      resizeMode="contain"
+      style={[animatedImageStyle]}
+      imageStyle={[styles.imageStyle]}
+    >
+      {children}
+    </AnimatedImageBackground>
+  )
+}
+
+interface IAnimatedViewFocus extends PropsWithChildren {
+  focus: boolean
+  style?: StyleProp<AnimateStyle<StylesOrDefault<ViewStyle>>>
+}
+
+const { WIDTH, HEIGHT } = DEFAULT_VALUES
+
+const AnimatedViewFocus: React.FC<IAnimatedViewFocus> = ({
+  children,
+  focus,
+  style,
+}) => {
+  const animatedImageStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withTiming(focus ? 1 : 0.9, { duration: 100 }) }],
+  }))
+
+  return (
+    <Animated.View style={[style, animatedImageStyle]}>
+      {children}
+    </Animated.View>
+  )
+}
+
 export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   const { account } = useSelectedAccount()
   const { setStream } = useSelectedStream()
-  const { setDrawerOpen } = useDrawerOpen()
 
-  const { onFocus, onBlur, focus } = useFocusBlur()
-  const [_3, setFocusId] = useFocusMovieId()
-
-  const onFocusChange = () => {
-    onFocus()
-    setFocusId(movie.stream_id)
-    setDrawerOpen(false)
+  if (!account) {
+    return null
   }
-
-  const { WIDTH, HEIGHT } = DEFAULT_VALUES
-
-  const animatedImageStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: withTiming(focus ? 1 : 0.9) }],
-  }))
 
   const onPressItem = () => {
     const url = buildStreamUrl('movie', account, movie.stream_id)
@@ -54,26 +103,42 @@ export const MovieCard: React.FC<IMovieCard> = ({ movie }) => {
   }
 
   return (
-    <AnimatedImageBackground
-      source={{
-        uri: movie.stream_icon,
-      }}
-      resizeMode="contain"
-      style={[animatedImageStyle]}
-      imageStyle={[styles.imageStyle]}
-    >
-      <AnimatedTouchableOpacity
-        activeOpacity={0.9}
-        onPress={onPressItem}
-        style={[styles.container, { width: WIDTH, height: HEIGHT }]}
-        onFocus={onFocusChange}
-        onBlur={onBlur}
-      >
-        <Text size={10} style={styles.title} numberOfLines={1}>
-          {movie.name.split('|')[1]}
-        </Text>
-      </AnimatedTouchableOpacity>
-    </AnimatedImageBackground>
+    <FocusPressableWithFocus onPress={onPressItem}>
+      {(focus) => (
+        <AnimatedImageBackgroundFocus uri={movie.stream_icon} focus={focus}>
+          <AnimatedViewFocus
+            focus={focus}
+            style={{
+              width: WIDTH,
+              height: HEIGHT,
+            }}
+          >
+            <TextMovieComponent movie={movie} focus={focus} />
+          </AnimatedViewFocus>
+        </AnimatedImageBackgroundFocus>
+      )}
+    </FocusPressableWithFocus>
+  )
+}
+
+const TextMovieComponent: React.FC<{ focus: boolean; movie: IMovie }> = ({
+  focus,
+  movie,
+}) => {
+  const { setFocusMovieId } = useFocusMovieId()
+  const { setDrawerOpen } = useDrawerOpen()
+
+  useEffect(() => {
+    if (focus) {
+      setFocusMovieId(movie.stream_id)
+      setDrawerOpen(false)
+    }
+  }, [focus])
+
+  return (
+    <Text size={12} style={styles.title} numberOfLines={1}>
+      {movie.name.length > 1 ? movie.name.split('|')[1] : movie.name}
+    </Text>
   )
 }
 
@@ -87,11 +152,11 @@ const styles = StyleSheet.create({
     height: DEFAULT_VALUES.HEIGHT,
   },
   title: {
-    position: 'absolute',
-    paddingTop: 4,
-    paddingHorizontal: 2,
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    // position: 'absolute',
+    // paddingTop: 4,
+    // paddingHorizontal: 2,
+    // width: '100%',
+    // backgroundColor: 'rgba(0,0,0,0.5)',
   },
   imageStyle: {
     borderRadius: 8,

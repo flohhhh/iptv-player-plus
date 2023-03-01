@@ -3,7 +3,6 @@ import React from 'react'
 import Text from '../../../text'
 import { SpacerX } from '../../../spacer'
 import { useFocusBlur } from '../../../../hooks/useFocusBlur'
-import { useSelectedProfileSet } from '../../../../atoms/profiles/profilesAtom'
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import {
   useDrawerOpen,
