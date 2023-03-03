@@ -36,11 +36,6 @@ export const MoviesByCategory: React.FC<IContentByCategory> = ({
           keyExtractor={(item) => String(item.stream_id)}
           horizontal
           estimatedItemSize={200}
-          // disableHorizontalListHeightMeasurement={true}
-          // estimatedListSize={{
-          //   width: width,
-          //   height: 200,
-          // }}
           showsHorizontalScrollIndicator={false}
           data={streamsByCatId}
           renderItem={_renderItem}

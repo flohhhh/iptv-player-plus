@@ -27,7 +27,7 @@ export const useFocusMovieId = () => {
 
 export const useMoviesVodCategories = () => {
   const [status] = useAtom(statusMoviesVodCategoriesAtom)
-  const data = status.data?.length > 5 ? status.data.slice(0, 6) : []
+  const data = status.data?.length > 5 ? status.data : []
   return {
     data: data as ICategory[],
     isLoading: status.isLoading,

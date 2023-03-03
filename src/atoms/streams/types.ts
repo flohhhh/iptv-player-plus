@@ -1,9 +1,10 @@
-import { TTypeUrl } from '../api/utils'
 import { IAudioTrack, ITextTrack } from '../../components/player/types'
+import { IMovie } from '../api/moviesTypes'
+import { ISerie } from '../api/seriesTypes'
 
-export interface IStream {
+interface ICommon {
   id: number
-  type: 'movies' | 'series'
+
   url: string
   title: string
   imageUrl: string
@@ -12,3 +13,15 @@ export interface IStream {
   lastAudioTrackSelected?: IAudioTrack
   lastSubtitleTrackSelected?: ITextTrack
 }
+
+export interface IStreamMovie extends ICommon {
+  type: 'movies'
+  info: IMovie
+}
+
+export interface IStreamSerie extends ICommon {
+  type: 'series'
+  info: ISerie
+}
+
+export type IStream = IStreamMovie | IStreamSerie

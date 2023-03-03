@@ -23,14 +23,8 @@ export const useSelectedAccount = () => {
 
   const setAccount = (acc: IAccount) => {
     setAccountFunc(acc)
-    setStreamsToContinue((prev) => ({
-      [acc.id]: { movies: [], series: [] },
-      ...prev,
-    }))
-    setStreamsToList((prev) => ({
-      [acc.id]: { movies: [], series: [] },
-      ...prev,
-    }))
+    setStreamsToContinue({ [acc.id]: [] })
+    setStreamsToList({ [acc.id]: [] })
   }
   return { account, setAccount }
 }

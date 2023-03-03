@@ -9,15 +9,19 @@ import { StyleSheet, View } from 'react-native'
 import { useStreamsToContinue } from '../../atoms/streams/streamsAtoms'
 import { IMovie } from '../../atoms/api/moviesTypes'
 import { MovieCard } from './movies/MovieCard'
+import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
+import { IStreamMovie } from '../../atoms/streams/types'
+import { isMovieStream } from '../../atoms/streams/utils'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
 export const MoviesStreams = () => {
   const { data: moviesCategories, isLoading } = useMoviesVodCategories()
 
+  const { account } = useSelectedAccount()
   const { streamsToContinue } = useStreamsToContinue()
 
-  if (isLoading) {
+  if (isLoading || !account) {
     return null
   }
 
@@ -29,7 +33,11 @@ export const MoviesStreams = () => {
     <MovieCard movie={item} />
   )
 
-  const data = streamsToContinue ? streamsToContinue['movies'] : []
+  const data: IMovie[] = streamsToContinue
+    ? streamsToContinue[account.id]
+        .filter((s) => isMovieStream(s))
+        .map((s) => s.info as IMovie)
+    : []
 
   return (
     <View style={styles.container}>

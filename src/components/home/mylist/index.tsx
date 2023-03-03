@@ -6,7 +6,7 @@ import { MovieCard } from '../movies/MovieCard'
 import { useTranslation } from 'react-i18next'
 import Text from '../../text'
 import { SerieCard } from '../series/SerieCard'
-import { ISerieByCategoryId } from '../../../atoms/api/seriesTypes'
+import { ISerie } from '../../../atoms/api/seriesTypes'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 import { SpacerY } from '../../spacer'
 import { FlashList } from '@shopify/flash-list'
@@ -20,12 +20,9 @@ export const MyList = () => {
     <MovieCard movie={item} />
   )
 
-  const _renderSerieItem = ({
-    item,
-  }: {
-    item: ISerieByCategoryId
-    index: number
-  }) => <SerieCard serie={item} />
+  const _renderSerieItem = ({ item }: { item: ISerie; index: number }) => (
+    <SerieCard serie={item} />
+  )
 
   if (!account) {
     return null

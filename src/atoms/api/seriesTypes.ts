@@ -1,4 +1,4 @@
-export interface ISerieByCategoryId {
+export interface ISerie {
   num: number
   name: string
   series_id: number

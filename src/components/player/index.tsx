@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   BackHandler,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
 import Video, { OnLoadData } from 'react-native-video'
 import {
   useSelectedStream,
-  useStreamsToList,
+  useStreamsToContinue,
 } from '../../atoms/streams/streamsAtoms'
 import { IAudioTrack, IProgressVideo, ITextTrack } from './types'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
@@ -22,9 +22,6 @@ import { Back } from '../../icons/Back'
 import { Control } from './Control'
 import Text from '../text'
 import { bufferConfig } from './config'
-import { useStreamsToContinue } from '../../atoms/streams/streamsAtoms'
-import { IStream } from '../../atoms/streams/types'
-import { use } from 'i18next'
 
 const ReanimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity)
@@ -37,7 +34,7 @@ const Player = () => {
   const { opacityAnimated } = useTimeoutOpacity()
   const { onFocus, onBlur, focus } = useFocusBlur()
   const { selectDrawerItem } = useSelectDrawerItem()
-  // const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
+  const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
 
   const [loading, setLoading] = useState(true)
   const [duration, setDuration] = useState(-1)
@@ -56,6 +53,10 @@ const Player = () => {
 
   const [paused, setPaused] = useState(false)
   const [hasFinished, setHasFinished] = useState(false)
+
+  if (!account || !stream) {
+    return null
+  }
 
   const onPlay = () => {
     setPaused(false)
@@ -106,6 +107,11 @@ const Player = () => {
   const onSelectAudioTrack = () => {}
   const onSelectTextTrack = () => {}
 
+  const streamExists = useMemo(
+    () => streamsToContinue[account.id].some((s) => s.id === stream.id),
+    [stream.id]
+  )
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -114,31 +120,41 @@ const Player = () => {
 
     return () => {
       backHandler.remove()
-      if (stream) {
-        // if (!streamsToContinue.some((s) => s.id === stream.id)) {
-        //   setStreamsToContinue([
-        //     ...streamsToContinue,
-        //     {
-        //       ...stream,
-        //       resumeAt: currentTime,
-        //       lastAudioTrackSelected: selectedAudioTrack,
-        //       lastSubtitleTrackSelected: selectedTextTrack,
-        //     },
-        //   ])
-        // }
+      if (stream && account) {
+        if (streamExists) {
+          setStreamsToContinue((prev) => ({
+            ...prev,
+            [account.id]: streamsToContinue[account.id].map((s) => {
+              if (s.id === stream.id) {
+                s.resumeAt = currentTime
+                s.lastAudioTrackSelected = selectedAudioTrack
+                s.lastSubtitleTrackSelected = selectedTextTrack
+              }
+              return s
+            }),
+          }))
+        } else {
+          streamsToContinue[account.id].push({
+            ...stream,
+            resumeAt: currentTime,
+            lastAudioTrackSelected: selectedAudioTrack,
+            lastSubtitleTrackSelected: selectedTextTrack,
+          })
+        }
       }
     }
   }, [])
 
   useEffect(() => {
     if (hasFinished) {
-      // setStreamsToContinue(streamsToContinue.filter((s) => s.id !== stream?.id))
+      setStreamsToContinue((prev) => ({
+        ...prev,
+        [account.id]: streamsToContinue[account.id].filter(
+          (s) => s.id !== stream.id
+        ),
+      }))
     }
   }, [hasFinished])
-
-  if (!stream) {
-    return null
-  }
 
   const title = stream.title
   return (

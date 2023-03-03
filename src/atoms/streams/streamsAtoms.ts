@@ -2,19 +2,15 @@ import { atom, useAtom } from 'jotai'
 import { IMovie } from '../api/moviesTypes'
 import { atomWithMMKV } from '../storageAtoms'
 import { IStream } from './types'
-import { ISerieByCategoryId } from '../api/seriesTypes'
 
 const loadingStream = atom<boolean>(false)
 const allStreamsAtom = atom<IMovie[]>([])
 
-interface IStreamsToSave {
-  movies: IMovie[]
-  series: ISerieByCategoryId[]
-}
-const streamsToContinueAtom = atomWithMMKV<
-  Record<string, IStreamsToSave & IStream>
->('streams.to_continue', {})
-const streamsAddedToListAtom = atomWithMMKV<Record<string, IStreamsToSave>>(
+const streamsToContinueAtom = atomWithMMKV<Record<string, IStream[]>>(
+  'streams.to_continue',
+  {}
+)
+const streamsAddedToListAtom = atomWithMMKV<Record<string, IStream[]>>(
   'streams.added_to_list',
   {}
 )

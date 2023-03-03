@@ -14,11 +14,11 @@ import { buildStreamUrl } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
 import { AnimatedViewScaleFocus } from '../../focus-pressable/AnimatedViewFocus'
-import { ISerieByCategoryId } from '../../../atoms/api/seriesTypes'
+import { ISerie } from '../../../atoms/api/seriesTypes'
 import { useFocusSerieId } from '../../../atoms/api/seriesCategories'
 
 interface ISerieCard {
-  serie: ISerieByCategoryId
+  serie: ISerie
 }
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground)
@@ -69,6 +69,7 @@ export const SerieCard: React.FC<ISerieCard> = ({ serie }) => {
       title: serie.name,
       imageUrl: serie.cover,
       url,
+      info: serie,
     })
   }
 
@@ -94,7 +95,7 @@ export const SerieCard: React.FC<ISerieCard> = ({ serie }) => {
 
 const TextSerieComponent: React.FC<{
   focus: boolean
-  serie: ISerieByCategoryId
+  serie: ISerie
 }> = ({ focus, serie }) => {
   const { setFocusSerieId } = useFocusSerieId()
 

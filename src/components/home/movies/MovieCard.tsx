@@ -69,10 +69,11 @@ export const MovieCard: React.FC<IMovieCard> = ({
 
     setStream({
       id: movie.stream_id,
-      type: 'movie',
+      type: 'movies',
       title: movie.name,
       imageUrl: movie.stream_icon,
       url,
+      info: movie,
     })
   }
 

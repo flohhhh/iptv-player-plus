@@ -1,10 +1,10 @@
 import { useSelectedAccount } from '../accounts/accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
 import { useEffect, useState } from 'react'
-import { ISerieByCategoryId } from './seriesTypes'
+import { ISerie } from './seriesTypes'
 
 export const useSeriesByCategoryId = (catId: string) => {
-  const [seriesByCatId, setSeriesByCatId] = useState<ISerieByCategoryId[]>([])
+  const [seriesByCatId, setSeriesByCatId] = useState<ISerie[]>([])
   const { account } = useSelectedAccount()
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export const useSeriesByCategoryId = (catId: string) => {
         return
       }
 
-      const data: ISerieByCategoryId[] = await fetch(
+      const data: ISerie[] = await fetch(
         buildApiUrl(account, ['get_series', 'category_id=%sid%s'], catId),
         fetchConfig
       ).then((res) => res.json())

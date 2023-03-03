@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { SpacerX, SpacerY } from '../../spacer'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TextInput, View } from 'react-native'
 import { colors } from '../../../utils/colors'
 import { useTranslation } from 'react-i18next'
 import { MovieCard } from '../movies/MovieCard'
@@ -11,7 +11,10 @@ import { IMovie } from '../../../atoms/api/moviesTypes'
 import { Search } from '../../../icons/Search'
 import { FocusInput } from '../../focus-pressable/FocusInput'
 import FuseResult = Fuse.FuseResult
-import { FocusPressable } from '../../focus-pressable/FocusPressable'
+import {
+  FocusPressable,
+  FocusPressableWithFocus,
+} from '../../focus-pressable/FocusPressable'
 
 const DATA = [
   {
@@ -105,14 +108,15 @@ export const SearchScreen = () => {
       <View style={styles.containerSearchInput}>
         <Search size={14} />
         <SpacerX size={16} />
-        <FocusInput
-          style={styles.input}
-          focusStyle={styles.inputFocus}
-          placeholder={t('search.inputTitle') || ''}
-          onChangeText={onChangeSearchText}
-          value={searchText}
-          blurOnSubmit={false}
-        />
+        <FocusPressableWithFocus>
+          {(focus) => (
+            <SearchInput
+              focus={focus}
+              onChangeSearchText={onChangeSearchText}
+              searchText={searchText}
+            />
+          )}
+        </FocusPressableWithFocus>
 
         <SpacerX size={12} />
 
@@ -177,6 +181,32 @@ export const SearchScreen = () => {
         ItemSeparatorComponent={ItemSeparatorComponent}
       />
     </View>
+  )
+}
+
+const SearchInput: React.FC<{
+  focus: boolean
+  onChangeSearchText: (str: string) => void
+  searchText: string
+}> = ({ focus, onChangeSearchText, searchText }) => {
+  const { t } = useTranslation()
+  const refSearchInput = useRef<TextInput | null>(null)
+
+  useEffect(() => {
+    if (focus) {
+      refSearchInput.current?.focus()
+    }
+  }, [focus])
+
+  return (
+    <TextInput
+      ref={refSearchInput}
+      style={[focus ? { ...styles.input, ...styles.inputFocus } : styles.input]}
+      placeholder={t('search.inputTitle') || ''}
+      onChangeText={onChangeSearchText}
+      value={searchText}
+      blurOnSubmit={false}
+    />
   )
 }
 
