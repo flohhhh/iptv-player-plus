@@ -3,7 +3,7 @@ import { IAudioTrack, ITextTrack } from '../../components/player/types'
 
 export interface IStream {
   id: number
-  type: TTypeUrl
+  type: 'movies' | 'series'
   url: string
   title: string
   imageUrl: string

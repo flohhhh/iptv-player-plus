@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { IAccount } from './types'
 import { atomWithMMKV } from '../storageAtoms'
+import { useStreamsToContinue, useStreamsToList } from '../streams/streamsAtoms'
 
 // const defaultAccount = {
 // id: 1,
@@ -15,6 +16,21 @@ export const selectedAccountAtom = atomWithMMKV<IAccount | null>(
 )
 
 export const useSelectedAccount = () => {
-  const [account, setAccount] = useAtom(selectedAccountAtom)
+  const [account, setAccountFunc] = useAtom(selectedAccountAtom)
+
+  const { setStreamsToContinue } = useStreamsToContinue()
+  const { setStreamsToList } = useStreamsToList()
+
+  const setAccount = (acc: IAccount) => {
+    setAccountFunc(acc)
+    setStreamsToContinue((prev) => ({
+      [acc.id]: { movies: [], series: [] },
+      ...prev,
+    }))
+    setStreamsToList((prev) => ({
+      [acc.id]: { movies: [], series: [] },
+      ...prev,
+    }))
+  }
   return { account, setAccount }
 }

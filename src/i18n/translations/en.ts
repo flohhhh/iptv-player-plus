@@ -38,6 +38,12 @@ export const en = {
       audio: 'Audio',
       subtitles: 'Subtitles',
     },
+    series: {
+      season_total: '{{num}} Saison',
+      seasons_total: '{{num}} Saisons',
+      episode_total: '{{num}} Épisode',
+      episodes_total: '{{num}} Épisodes',
+    },
     common: {
       search: 'Recherche',
       movies: 'Films',

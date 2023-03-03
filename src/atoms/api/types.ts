@@ -6,6 +6,8 @@ export type TAction =
   | 'category_id=%sid%s'
   | 'get_series_categories'
   | 'get_series'
+  | 'get_series_info'
+  | 'series_id=%sid%s'
   | 'get_live_categories'
   | 'get_live_streams'
 

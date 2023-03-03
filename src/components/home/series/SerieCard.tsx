@@ -3,7 +3,6 @@ import React, { PropsWithChildren, useEffect } from 'react'
 import Text from '../../text'
 import { useSelectedStream } from '../../../atoms/streams/streamsAtoms'
 import { isAndroid } from '../../../utils/device'
-import { IMovie } from '../../../atoms/api/moviesTypes'
 import Animated, {
   AnimateStyle,
   useAnimatedStyle,
@@ -11,15 +10,15 @@ import Animated, {
 } from 'react-native-reanimated'
 import { DEFAULT_VALUES } from '../constants'
 import { useDrawerOpen } from '../../../atoms/drawerAtom'
-import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 import { buildStreamUrl } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
 import { AnimatedViewScaleFocus } from '../../focus-pressable/AnimatedViewFocus'
+import { ISerieByCategoryId } from '../../../atoms/api/seriesTypes'
+import { useFocusSerieId } from '../../../atoms/api/seriesCategories'
 
-interface IMovieCard {
-  movie: IMovie
-  hasTVPreferredFocus?: boolean
+interface ISerieCard {
+  serie: ISerieByCategoryId
 }
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground)
@@ -53,10 +52,7 @@ const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
   )
 }
 
-export const MovieCard: React.FC<IMovieCard> = ({
-  movie,
-  hasTVPreferredFocus,
-}) => {
+export const SerieCard: React.FC<ISerieCard> = ({ serie }) => {
   const { account } = useSelectedAccount()
   const { setStream } = useSelectedStream()
 
@@ -65,24 +61,21 @@ export const MovieCard: React.FC<IMovieCard> = ({
   }
 
   const onPressItem = () => {
-    const url = buildStreamUrl('movie', account, movie.stream_id)
+    const url = buildStreamUrl('series', account, serie.series_id)
 
     setStream({
-      id: movie.stream_id,
-      type: 'movie',
-      title: movie.name,
-      imageUrl: movie.stream_icon,
+      id: serie.series_id,
+      type: 'series',
+      title: serie.name,
+      imageUrl: serie.cover,
       url,
     })
   }
 
   return (
-    <FocusPressableWithFocus
-      onPress={onPressItem}
-      hasTVPreferredFocus={hasTVPreferredFocus}
-    >
+    <FocusPressableWithFocus onPress={onPressItem}>
       {(focus) => (
-        <AnimatedImageBackgroundFocus uri={movie.stream_icon} focus={focus}>
+        <AnimatedImageBackgroundFocus uri={serie.cover} focus={focus}>
           <AnimatedViewScaleFocus
             focus={focus}
             style={{
@@ -91,7 +84,7 @@ export const MovieCard: React.FC<IMovieCard> = ({
               justifyContent: 'flex-end',
             }}
           >
-            <TextMovieComponent movie={movie} focus={focus} />
+            <TextSerieComponent serie={serie} focus={focus} />
           </AnimatedViewScaleFocus>
         </AnimatedImageBackgroundFocus>
       )}
@@ -99,26 +92,24 @@ export const MovieCard: React.FC<IMovieCard> = ({
   )
 }
 
-const TextMovieComponent: React.FC<{ focus: boolean; movie: IMovie }> = ({
-  focus,
-  movie,
-}) => {
-  const { setFocusMovieId } = useFocusMovieId()
+const TextSerieComponent: React.FC<{
+  focus: boolean
+  serie: ISerieByCategoryId
+}> = ({ focus, serie }) => {
+  const { setFocusSerieId } = useFocusSerieId()
 
   useEffect(() => {
     if (focus) {
-      setFocusMovieId(movie.stream_id)
+      setFocusSerieId(serie.series_id)
     }
   }, [focus])
 
   return (
     <Text size={12} numberOfLines={1}>
-      {movie.name.length > 1 ? movie.name.split('|')[1] : movie.name}
+      {serie.name.length > 1 ? serie.name.split('|')[1] : serie.name}
     </Text>
   )
 }
-
-// backgroundColor: 'rgba(0,0,0,0.5)',
 
 const styles = StyleSheet.create({
   container: {

@@ -37,7 +37,7 @@ const Player = () => {
   const { opacityAnimated } = useTimeoutOpacity()
   const { onFocus, onBlur, focus } = useFocusBlur()
   const { selectDrawerItem } = useSelectDrawerItem()
-  const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
+  // const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
 
   const [loading, setLoading] = useState(true)
   const [duration, setDuration] = useState(-1)
@@ -57,7 +57,6 @@ const Player = () => {
   const [paused, setPaused] = useState(false)
   const [hasFinished, setHasFinished] = useState(false)
 
-  const title = 'Seven'
   const onPlay = () => {
     setPaused(false)
   }
@@ -116,27 +115,32 @@ const Player = () => {
     return () => {
       backHandler.remove()
       if (stream) {
-        if (!streamsToContinue.some((s) => s.id === stream.id)) {
-          setStreamsToContinue([
-            ...streamsToContinue,
-            {
-              ...stream,
-              resumeAt: currentTime,
-              lastAudioTrackSelected: selectedAudioTrack,
-              lastSubtitleTrackSelected: selectedTextTrack,
-            },
-          ])
-        }
+        // if (!streamsToContinue.some((s) => s.id === stream.id)) {
+        //   setStreamsToContinue([
+        //     ...streamsToContinue,
+        //     {
+        //       ...stream,
+        //       resumeAt: currentTime,
+        //       lastAudioTrackSelected: selectedAudioTrack,
+        //       lastSubtitleTrackSelected: selectedTextTrack,
+        //     },
+        //   ])
+        // }
       }
     }
   }, [])
 
   useEffect(() => {
     if (hasFinished) {
-      setStreamsToContinue(streamsToContinue.filter((s) => s.id !== stream?.id))
+      // setStreamsToContinue(streamsToContinue.filter((s) => s.id !== stream?.id))
     }
   }, [hasFinished])
 
+  if (!stream) {
+    return null
+  }
+
+  const title = stream.title
   return (
     <>
       <View style={{ width, height }}>
@@ -164,7 +168,8 @@ const Player = () => {
           paused={paused}
           onReadyForDisplay={() => setLoading(false)}
           source={{
-            uri: 'https://filesamples.com/samples/video/mkv/sample_1280x720_surfing_with_audio.mkv', //media.url,
+            // uri: 'https://filesamples.com/samples/video/mkv/sample_1280x720_surfing_with_audio.mkv', //media.url,
+            uri: stream.url,
           }}
           currentTime={currentTime}
           onLoad={onLoad}

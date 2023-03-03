@@ -15,13 +15,10 @@ import { IControl } from './types'
 import Text from '../text'
 import { formatTime } from '../../utils/time'
 import { Favorite } from '../../icons/Favorite'
-import { FocusPressableIcon } from '../focus-pressable/FocusPressableIcon'
 import { useTranslation } from 'react-i18next'
-import {
-  FocusPressable,
-  FocusPressableWithFocus,
-} from '../focus-pressable/FocusPressable'
+import { FocusPressableWithFocus } from '../focus-pressable/FocusPressable'
 import { FocusPressableText } from '../focus-pressable/FocusPressableText'
+import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 
 export const Control: React.FC<IControl> = ({
   onPlay,
@@ -42,10 +39,9 @@ export const Control: React.FC<IControl> = ({
   loading,
 }) => {
   const { t } = useTranslation()
+  const { account } = useSelectedAccount()
   const { streamsToList, setStreamsToList } = useStreamsToList()
   const { stream, setStream } = useSelectedStream()
-
-  // console.log('----streamsToList', stream, streamsToList)
 
   const [settingType, setSettingType] = useState<'audio' | 'subtitles' | null>(
     null
@@ -53,8 +49,15 @@ export const Control: React.FC<IControl> = ({
 
   const { opacityAnimated } = useTimeoutOpacity()
 
-  const hasAddedToList = streamsToList.some((s) => s.id === stream?.id)
+  if (!account || !stream) {
+    return null
+  }
 
+  // const hasAddedToList = streamsToList[account.id][stream.type].some(
+  //   (s) => s.category_id === stream?.id
+  // )
+
+  const hasAddedToList = false
   const audios = ['Disable', 'French', 'English']
   const subtitles = ['Disable', 'Arabic', 'Spanish']
 
@@ -67,13 +70,13 @@ export const Control: React.FC<IControl> = ({
   }
 
   const onAddToList = () => {
-    if (stream) {
-      if (streamsToList.some((v) => v.id === stream.id)) {
-        setStreamsToList(streamsToList.filter((v) => v.id !== stream.id))
-      } else {
-        setStreamsToList([...streamsToList, stream])
-      }
-    }
+    // if (stream) {
+    //   if (streamsToList.some((v) => v.id === stream.id)) {
+    //     setStreamsToList(streamsToList.filter((v) => v.id !== stream.id))
+    //   } else {
+    //     setStreamsToList([...streamsToList, stream])
+    //   }
+    // }
   }
 
   return (
@@ -165,7 +168,6 @@ export const Control: React.FC<IControl> = ({
                 <FocusPressableText
                   text={v}
                   onPress={() => {
-                    console.log('----v', v)
                     setSettingType(null)
                   }}
                   size={12}

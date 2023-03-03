@@ -31,7 +31,7 @@ export const DrawerItem: React.FC<IDrawerSearchItem> = ({ text, type }) => {
   )
 }
 
-const Wrapper: React.FC<{
+export const Wrapper: React.FC<{
   type: TDrawerItemType
   focus: boolean
   text: string
@@ -62,7 +62,6 @@ const Wrapper: React.FC<{
               : colors.black['0'],
         },
       ]}
-      hasTVPreferredFocus={selectDrawerItem === type}
     >
       <SpacerX size={8} />
       <Icon size={!drawerOpen || focus ? DEFAULT_SIZE + 2 : DEFAULT_SIZE} />
@@ -83,14 +82,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 24,
     alignItems: 'center',
-
     borderLeftWidth: 1,
-  },
-  squareProfile: {
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 6,
   },
 })

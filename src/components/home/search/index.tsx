@@ -167,6 +167,7 @@ export const SearchScreen = () => {
       <SpacerY size={14} />
 
       <FlashList
+        keyExtractor={(item) => String(item.stream_id)}
         estimatedItemSize={20}
         numColumns={6}
         showsVerticalScrollIndicator={false}

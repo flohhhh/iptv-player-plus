@@ -3,6 +3,7 @@ import { atomsWithQuery } from 'jotai-tanstack-query'
 import { selectedAccountAtom } from '../accounts/accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
 import { ICategory } from './types'
+import { atom } from 'jotai/index'
 
 const [_, statusAtom] = atomsWithQuery((get) => ({
   queryKey: ['seriesCategories'],
@@ -18,6 +19,11 @@ const [_, statusAtom] = atomsWithQuery((get) => ({
     return res.json()
   },
 }))
+const focusSerieIdAtom = atom<number>(-1)
+export const useFocusSerieId = () => {
+  const [focusSerieId, setFocusSerieId] = useAtom(focusSerieIdAtom)
+  return { focusSerieId, setFocusSerieId }
+}
 
 export const useSeriesCategories = () => {
   const [status] = useAtom(statusAtom)

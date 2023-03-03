@@ -1,63 +1,35 @@
 import React from 'react'
-import { MoviesByCategory } from './movies/MoviesByCategory'
 import { SpacerY } from '../spacer'
-import { useMoviesVodCategories } from '../../atoms/api/moviesCategories'
-import { FlashList, ListRenderItem } from '@shopify/flash-list'
+import { ListRenderItem } from '@shopify/flash-list'
 import { useSelectDrawerItem } from '../../atoms/drawerAtom'
 import { ICategory } from '../../atoms/api/types'
-import { MovieDetails } from './movies/MovieDetails'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { SearchScreen } from './search'
-import { TDrawerItemType } from './drawer/types'
-import Text from '../text'
+import { MoviesStreams } from './MoviesStreams'
+import { SeriesStreams } from './SeriesStreams'
+import { MyList } from './mylist'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
 interface IScreen {
   renderItem: ListRenderItem<ICategory> | null | undefined
 }
-const screens: Record<TDrawerItemType, IScreen> = {
-  search: { renderItem: () => <View /> },
-  movies: {
-    renderItem: ({ item }) => <MoviesByCategory category={item} />,
-  },
-  series: {
-    renderItem: ({ item }) => <MoviesByCategory category={item} />,
-  },
-  live: {
-    renderItem: ({ item }) => <MoviesByCategory category={item} />,
-  },
-  mylist: {
-    renderItem: ({ item }) => <MoviesByCategory category={item} />,
-  },
-}
-
 export const Streams = () => {
   const { selectDrawerItem } = useSelectDrawerItem()
-
-  const { data: vodCategories, isLoading } = useMoviesVodCategories()
-
-  if (isLoading) {
-    return null
-  }
 
   if (selectDrawerItem === 'search') {
     return <SearchScreen />
   }
 
-  const renderItem = ({ item }) => <MoviesByCategory category={item} />
+  if (selectDrawerItem === 'series') {
+    return <SeriesStreams />
+  }
 
-  return (
-    <View style={styles.container}>
-      <MovieDetails />
-      <FlashList
-        estimatedItemSize={80}
-        data={vodCategories}
-        renderItem={renderItem}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-      />
-    </View>
-  )
+  if (selectDrawerItem === 'movies') {
+    return <MoviesStreams />
+  }
+
+  return <MyList />
 }
 
 const styles = StyleSheet.create({

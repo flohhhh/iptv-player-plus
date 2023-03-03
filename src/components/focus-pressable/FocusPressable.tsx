@@ -43,6 +43,7 @@ type TTouchablePropsPicked = Partial<
     | 'nextFocusLeft'
     | 'nextFocusRight'
     | 'nextFocusForward'
+    | 'hasTVPreferredFocus'
   >
 >
 export interface IFocusPressableFocus extends TTouchablePropsPicked {

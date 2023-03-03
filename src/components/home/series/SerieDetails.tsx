@@ -2,21 +2,23 @@ import { StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Text from '../../text'
 import { colors } from '../../../utils/colors'
-import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 import { SpacerX, SpacerY } from '../../spacer'
-import { IInfoMovieData } from '../../../atoms/api/moviesTypes'
 import { buildApiUrl, fetchConfig } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
+import { useFocusSerieId } from '../../../atoms/api/seriesCategories'
+import { ISerieInfo } from '../../../atoms/api/seriesTypes'
+import { useTranslation } from 'react-i18next'
 
-export const MovieDetails: React.FC = () => {
-  const [details, setDetails] = useState<IInfoMovieData | null>(null)
+export const SerieDetails: React.FC = () => {
+  const { t } = useTranslation()
+  const [details, setDetails] = useState<ISerieInfo | null>(null)
   const { account } = useSelectedAccount()
-  const { focusMovieId } = useFocusMovieId()
+  const { focusSerieId } = useFocusSerieId()
 
   const callAsync = async (id: number) => {
     if (!account) return
     const res = await fetch(
-      buildApiUrl(account, ['get_vod_info', 'vod_id=%sid%s'], String(id)),
+      buildApiUrl(account, ['get_series_info', 'series_id=%sid%s'], String(id)),
       fetchConfig
     )
     const data = await res.json()
@@ -24,10 +26,10 @@ export const MovieDetails: React.FC = () => {
   }
 
   useEffect(() => {
-    if (focusMovieId > -1) {
-      callAsync(focusMovieId)
+    if (focusSerieId > -1) {
+      callAsync(focusSerieId)
     }
-  }, [focusMovieId])
+  }, [focusSerieId])
 
   if (!details || !details.info) {
     return <View style={styles.container} />
@@ -42,13 +44,26 @@ export const MovieDetails: React.FC = () => {
 
       <View style={styles.subtitle}>
         <Text size={10} color={colors.white['0']}>
-          {details.info.releasedate.slice(0, 4)}
+          {details.info.releaseDate.slice(0, 4)}
         </Text>
 
         <SpacerX size={8} />
 
         <Text size={10} color={colors.white['0']}>
-          {details.info.duration}
+          {t(`series.season${details.seasons.length > 1 ? 's' : ''}_total`, {
+            num: details.seasons.length,
+          })}
+        </Text>
+
+        <SpacerX size={8} />
+
+        <Text size={10} color={colors.white['0']}>
+          {t(
+            `series.episode${
+              Object.keys(details.episodes).length > 1 ? 's' : ''
+            }_total`,
+            { num: Object.keys(details.episodes).length }
+          )}
         </Text>
 
         <SpacerX size={8} />
@@ -58,10 +73,6 @@ export const MovieDetails: React.FC = () => {
         </Text>
 
         <SpacerX size={8} />
-
-        <Text size={10} color={colors.white['0']}>
-          {details.info.country}
-        </Text>
 
         <SpacerX size={8} />
 
@@ -74,7 +85,7 @@ export const MovieDetails: React.FC = () => {
 
       <View style={styles.description}>
         <Text size={10} color={colors.white['1']}>
-          {details.info.description}
+          {details.info.plot}
         </Text>
       </View>
     </View>

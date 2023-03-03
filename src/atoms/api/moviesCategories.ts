@@ -3,7 +3,6 @@ import { atomsWithQuery } from 'jotai-tanstack-query'
 import { selectedAccountAtom } from '../accounts/accountsAtom'
 import { buildApiUrl, fetchConfig } from './utils'
 import { ICategory } from './types'
-import { IInfoMovieData, IMovie } from './moviesTypes'
 
 const [_1, statusMoviesVodCategoriesAtom] = atomsWithQuery((get) => ({
   queryKey: ['moviesVodCategories'],
@@ -21,8 +20,6 @@ const [_1, statusMoviesVodCategoriesAtom] = atomsWithQuery((get) => ({
 }))
 
 const focusMovieIdAtom = atom<number>(-1)
-const statusMovieDetailsAtom = atom<IInfoMovieData | null>(null)
-
 export const useFocusMovieId = () => {
   const [focusMovieId, setFocusMovieId] = useAtom(focusMovieIdAtom)
   return { focusMovieId, setFocusMovieId }
