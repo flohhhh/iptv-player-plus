@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   BackHandler,
   StyleSheet,
-  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native'
@@ -15,16 +14,14 @@ import { IAudioTrack, IProgressVideo, ITextTrack } from './types'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
 import { useTimeoutOpacity } from '../../hooks/useTimeoutOpacity'
-import Animated from 'react-native-reanimated'
+import Animated, { useAnimatedProps } from 'react-native-reanimated'
 import { useSelectDrawerItem } from '../../atoms/drawerAtom'
 import { colors } from '../../utils/colors'
 import { Back } from '../../icons/Back'
 import { Control } from './Control'
 import Text from '../text'
 import { bufferConfig } from './config'
-
-const ReanimatedTouchableOpacity =
-  Animated.createAnimatedComponent(TouchableOpacity)
+import { FocusPressableWithFocus } from '../focus-pressable/FocusPressable'
 
 const Player = () => {
   const videoRef = useRef<Video | null>(null)
@@ -33,7 +30,6 @@ const Player = () => {
   const { width, height } = useWindowDimensions()
   const { opacityAnimated } = useTimeoutOpacity()
   const { onFocus, onBlur, focus } = useFocusBlur()
-  const { selectDrawerItem } = useSelectDrawerItem()
   const { streamsToContinue, setStreamsToContinue } = useStreamsToContinue()
 
   const [loading, setLoading] = useState(true)
@@ -91,6 +87,33 @@ const Player = () => {
   const onFocusChange = () => onFocus()
   const onBlurChange = () => onBlur()
   const backAction = () => {
+    // Clean
+    // setStreamsToContinue((prev) => ({
+    //   ...prev,
+    //   [account.id]: [],
+    // }))
+    if (stream && account && elapsedTime > 5000) {
+      if (streamExists) {
+        setStreamsToContinue((prev) => ({
+          ...prev,
+          [account.id]: streamsToContinue[account.id].map((s) => {
+            if (s.id === stream.id) {
+              s.resumeAt = currentTime
+              s.lastAudioTrackSelected = selectedAudioTrack
+              s.lastSubtitleTrackSelected = selectedTextTrack
+            }
+            return s
+          }),
+        }))
+      } else {
+        streamsToContinue[account.id].push({
+          ...stream,
+          resumeAt: currentTime,
+          lastAudioTrackSelected: selectedAudioTrack,
+          lastSubtitleTrackSelected: selectedTextTrack,
+        })
+      }
+    }
     setPaused(true)
     setStream(null)
     return true
@@ -120,28 +143,6 @@ const Player = () => {
 
     return () => {
       backHandler.remove()
-      if (stream && account) {
-        if (streamExists) {
-          setStreamsToContinue((prev) => ({
-            ...prev,
-            [account.id]: streamsToContinue[account.id].map((s) => {
-              if (s.id === stream.id) {
-                s.resumeAt = currentTime
-                s.lastAudioTrackSelected = selectedAudioTrack
-                s.lastSubtitleTrackSelected = selectedTextTrack
-              }
-              return s
-            }),
-          }))
-        } else {
-          streamsToContinue[account.id].push({
-            ...stream,
-            resumeAt: currentTime,
-            lastAudioTrackSelected: selectedAudioTrack,
-            lastSubtitleTrackSelected: selectedTextTrack,
-          })
-        }
-      }
     }
   }, [])
 
@@ -163,20 +164,14 @@ const Player = () => {
         <Animated.View style={[styles.title, opacityAnimated]}>
           <Text size={16}>{title}</Text>
         </Animated.View>
-        <ReanimatedTouchableOpacity
-          style={[styles.back, opacityAnimated]}
-          onPress={() => {
-            setStream(null)
-          }}
-          onFocus={onFocusChange}
-          onBlur={onBlurChange}
-        >
-          <Back
-            // animatedProps={animatedProps}
-            size={30}
-            color={colors.white['0']}
-          />
-        </ReanimatedTouchableOpacity>
+        <FocusPressableWithFocus style={[styles.back]} onPress={backAction}>
+          {(focus) => (
+            <Back
+              size={focus ? 24 : 22}
+              color={focus ? colors.white['0'] : colors.white['1']}
+            />
+          )}
+        </FocusPressableWithFocus>
 
         <Video
           ref={videoRef}

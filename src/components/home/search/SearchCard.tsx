@@ -1,26 +1,40 @@
-import { ImageBackground, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import {
+  ImageBackground,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native'
 import React, { PropsWithChildren, useEffect } from 'react'
 import Text from '../../text'
 import { useSelectedStream } from '../../../atoms/streams/streamsAtoms'
 import { isAndroid } from '../../../utils/device'
-import { IMovie } from '../../../atoms/api/moviesTypes'
 import Animated, {
   AnimateStyle,
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated'
 import { DEFAULT_VALUES } from '../constants'
-import { useDrawerOpen } from '../../../atoms/drawerAtom'
 import { useFocusMovieId } from '../../../atoms/api/moviesCategories'
 import { buildStreamUrl } from '../../../atoms/api/utils'
 import { useSelectedAccount } from '../../../atoms/accounts/accountsAtom'
 import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
 import { AnimatedViewScaleFocus } from '../../focus-pressable/AnimatedViewFocus'
+import { IGenericByCategory } from '../../../atoms/api/types'
+import { Image } from '../../../icons/Image'
+import { colors } from '../../../utils/colors'
 
-interface IMovieCard {
-  movie: IMovie
+export interface ISearchStream extends IGenericByCategory {
+  streamId: number
+  coverUri: string
+  type: 'movies' | 'series'
+}
+
+interface ISearchCard {
+  item: ISearchStream
   hasTVPreferredFocus?: boolean
 }
+
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground)
 
@@ -42,7 +56,7 @@ const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
   return (
     <AnimatedImageBackground
       source={{
-        uri: uri || '',
+        uri: uri,
       }}
       resizeMode="contain"
       style={[animatedImageStyle, style]}
@@ -53,8 +67,8 @@ const AnimatedImageBackgroundFocus: React.FC<IAnimatedImageBackgroundFocus> = ({
   )
 }
 
-export const MovieCard: React.FC<IMovieCard> = ({
-  movie,
+export const SearchCard: React.FC<ISearchCard> = ({
+  item,
   hasTVPreferredFocus,
 }) => {
   const { account } = useSelectedAccount()
@@ -65,15 +79,14 @@ export const MovieCard: React.FC<IMovieCard> = ({
   }
 
   const onPressItem = () => {
-    const url = buildStreamUrl('movie', account, movie.stream_id)
+    const url = buildStreamUrl('movie', account, item.streamId)
 
     setStream({
-      id: movie.stream_id,
+      id: item.streamId,
       type: 'movies',
-      title: movie.name,
-      imageUrl: movie.stream_icon,
+      title: item.name,
+      imageUrl: item.coverUri,
       url,
-      info: movie,
     })
   }
 
@@ -82,44 +95,64 @@ export const MovieCard: React.FC<IMovieCard> = ({
       onPress={onPressItem}
       hasTVPreferredFocus={hasTVPreferredFocus}
     >
-      {(focus) => (
-        <AnimatedImageBackgroundFocus uri={movie.stream_icon} focus={focus}>
-          <AnimatedViewScaleFocus
-            focus={focus}
-            style={{
-              width: DEFAULT_VALUES.WIDTH,
-              height: DEFAULT_VALUES.HEIGHT,
-              justifyContent: 'flex-end',
-            }}
-          >
-            <TextMovieComponent movie={movie} focus={focus} />
-          </AnimatedViewScaleFocus>
-        </AnimatedImageBackgroundFocus>
-      )}
+      {(focus) => {
+        return item.coverUri && item.coverUri.length > 0 ? (
+          <AnimatedImageBackgroundFocus uri={item.coverUri} focus={focus}>
+            <AnimatedViewScaleFocus
+              focus={focus}
+              style={{
+                width: DEFAULT_VALUES.WIDTH,
+                height: DEFAULT_VALUES.HEIGHT,
+                justifyContent: 'flex-end',
+              }}
+            />
+          </AnimatedImageBackgroundFocus>
+        ) : (
+          <>
+            <View
+              style={{
+                width: DEFAULT_VALUES.WIDTH,
+                height: DEFAULT_VALUES.HEIGHT,
+                justifyContent: 'flex-end',
+                backgroundColor: colors.gray[3],
+              }}
+            >
+              <View
+                style={{
+                  position: 'absolute',
+                  left: '32%',
+                  top: '34%',
+                }}
+              >
+                <Image size={48} />
+              </View>
+              <TextMovieComponent item={item} focus={focus} />
+            </View>
+          </>
+        )
+      }}
     </FocusPressableWithFocus>
   )
 }
 
-const TextMovieComponent: React.FC<{ focus: boolean; movie: IMovie }> = ({
+const TextMovieComponent: React.FC<{ focus: boolean; item: ISearchStream }> = ({
   focus,
-  movie,
+  item,
 }) => {
   const { setFocusMovieId } = useFocusMovieId()
 
   useEffect(() => {
     if (focus) {
-      setFocusMovieId(movie.stream_id)
+      setFocusMovieId(item.streamId)
     }
   }, [focus])
 
   return (
     <Text size={12} numberOfLines={1}>
-      {movie.name.length > 1 ? movie.name.split('|')[1] : movie.name}
+      {item.name.length > 1 ? item.name.split('|')[1] : item.name}
     </Text>
   )
 }
-
-// backgroundColor: 'rgba(0,0,0,0.5)',
 
 const styles = StyleSheet.create({
   container: {

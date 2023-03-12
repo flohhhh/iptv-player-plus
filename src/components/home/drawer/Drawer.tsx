@@ -4,7 +4,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SpacerY } from '../../spacer'
 import Animated, {
@@ -18,6 +18,8 @@ import { DrawerProfileItem } from './items/DrawerProfileItem'
 import { useDrawerOpen } from '../../../atoms/drawerAtom'
 import { DrawerDisconnectAccountItem } from './items/DrawerDisconnectAccountItem'
 import { DrawerItem, Wrapper } from './items/DrawerItem'
+import { AnimatedViewScaleFocus } from '../../focus-pressable/AnimatedViewFocus'
+import { FocusPressableWithFocus } from '../../focus-pressable/FocusPressable'
 
 const SPACER_SIZE = 16
 

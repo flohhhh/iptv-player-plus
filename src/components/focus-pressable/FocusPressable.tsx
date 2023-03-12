@@ -1,6 +1,6 @@
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 import { useFocusBlur } from '../../hooks/useFocusBlur'
-import React, { PropsWithChildren, ReactNode } from 'react'
+import React, { LegacyRef, PropsWithChildren, ReactNode } from 'react'
 
 export interface IFocusPressable extends PropsWithChildren {
   onPress: () => void
@@ -50,6 +50,7 @@ export interface IFocusPressableFocus extends TTouchablePropsPicked {
   children: (v: any) => ReactNode | undefined
   onPress?: () => void
   style?: StyleProp<ViewStyle> | undefined
+  ref?: LegacyRef<T> | undefined
 }
 
 export const FocusPressableWithFocus: React.FC<IFocusPressableFocus> = ({

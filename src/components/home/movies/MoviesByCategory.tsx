@@ -15,7 +15,7 @@ export const MoviesByCategory: React.FC<IContentByCategory> = ({
   index,
   category,
 }) => {
-  const streamsByCatId: IMovie[] = useMoviesByCategoryId(category.category_id)
+  const { movies } = useMoviesByCategoryId(category.category_id)
 
   const _renderItem = ({
     item,
@@ -31,13 +31,13 @@ export const MoviesByCategory: React.FC<IContentByCategory> = ({
     <View style={styles.container}>
       <Text size={14}>{category.category_name}</Text>
 
-      {streamsByCatId.length > 0 && (
+      {movies.length > 0 && (
         <FlashList
           keyExtractor={(item) => String(item.stream_id)}
           horizontal
           estimatedItemSize={200}
           showsHorizontalScrollIndicator={false}
-          data={streamsByCatId}
+          data={movies}
           renderItem={_renderItem}
         />
       )}

@@ -45,3 +45,12 @@ interface IServerInfo {
   timestamp_now: number
   time_now: string
 }
+
+export interface IGenericByCategory {
+  num: number
+  name: string
+  rating: string
+  rating_5based: number
+  category_id: string
+  tmdb_id: string
+}

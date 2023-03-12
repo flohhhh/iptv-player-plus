@@ -12,10 +12,14 @@ import { MovieCard } from './movies/MovieCard'
 import { useSelectedAccount } from '../../atoms/accounts/accountsAtom'
 import { IStreamMovie } from '../../atoms/streams/types'
 import { isMovieStream } from '../../atoms/streams/utils'
+import Text from '../text'
+import { useTranslation } from 'react-i18next'
+import { colors } from '../../utils/colors'
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
 export const MoviesStreams = () => {
+  const { t } = useTranslation()
   const { data: moviesCategories, isLoading } = useMoviesVodCategories()
 
   const { account } = useSelectedAccount()
@@ -44,12 +48,19 @@ export const MoviesStreams = () => {
       <MovieDetails />
 
       {data.length > 0 && (
-        <FlashList
-          estimatedItemSize={10}
-          data={data}
-          renderItem={_renderToContinueItem}
-          ItemSeparatorComponent={ItemSeparatorComponent}
-        />
+        <>
+          <Text size={14} color={colors.white[0]}>
+            {t('streams.continue_watching')}
+          </Text>
+          <SpacerY size={1} />
+          <FlashList
+            horizontal
+            estimatedItemSize={10}
+            data={data}
+            renderItem={_renderToContinueItem}
+            ItemSeparatorComponent={ItemSeparatorComponent}
+          />
+        </>
       )}
 
       <FlashList

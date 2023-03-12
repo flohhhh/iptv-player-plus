@@ -15,20 +15,20 @@ const ItemSeparatorComponent = () => <SpacerX size={8} />
 export const SeriesByCategory: React.FC<IContentByCategory> = ({
   category,
 }) => {
-  const streamsByCatId: ISerie[] = useSeriesByCategoryId(category.category_id)
+  const { series } = useSeriesByCategoryId(category.category_id)
   const _renderItem = ({ item }: { item: ISerie }) => <SerieCard serie={item} />
 
   return (
     <View style={styles.container}>
       <Text size={14}>{category.category_name}</Text>
 
-      {streamsByCatId.length > 0 && (
+      {series.length > 0 && (
         <FlashList
           keyExtractor={(item) => String(item.series_id)}
           estimatedItemSize={20}
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={streamsByCatId}
+          data={series}
           renderItem={_renderItem}
         />
       )}

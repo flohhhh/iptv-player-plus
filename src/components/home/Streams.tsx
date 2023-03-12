@@ -17,15 +17,15 @@ interface IScreen {
 export const Streams = () => {
   const { selectDrawerItem } = useSelectDrawerItem()
 
-  if (selectDrawerItem === 'search') {
+  if (selectDrawerItem?.current === 'search') {
     return <SearchScreen />
   }
 
-  if (selectDrawerItem === 'series') {
+  if (selectDrawerItem?.current === 'series') {
     return <SeriesStreams />
   }
 
-  if (selectDrawerItem === 'movies') {
+  if (selectDrawerItem.current === 'movies') {
     return <MoviesStreams />
   }
 

@@ -1,6 +1,6 @@
-export interface ISerie {
-  num: number
-  name: string
+import { IGenericByCategory } from './types'
+
+export interface ISerie extends IGenericByCategory {
   series_id: number
   cover: string
   plot: string
@@ -9,13 +9,9 @@ export interface ISerie {
   genre: string
   releaseDate: string
   last_modified: string
-  rating: string
-  rating_5based: number
   backdrop_path: any[]
   youtube_trailer: string
   episode_run_time: string
-  category_id: string
-  tmdb_id: string
 }
 
 export interface ISerieInfo {

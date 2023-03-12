@@ -46,9 +46,15 @@ export const Wrapper: React.FC<{
   const Icon = iconByType[type]
 
   useEffect(() => {
-    if (focus) {
-      setDrawerOpen(true)
-    }
+    // if (selectDrawerItem.current && selectDrawerItem.prev) {
+    //   setDrawerOpen()
+    // }
+    // console.log('----focus', focus)
+    // console.log('----type', selectDrawerItem)
+    // console.log('----ttt', type, focus)
+    // if (focus) {
+    //   setDrawerOpen(true)
+    // }
   }, [focus])
 
   return (
@@ -57,13 +63,14 @@ export const Wrapper: React.FC<{
         styles.selectedProfile,
         {
           borderLeftColor:
-            focus || selectDrawerItem === type
+            focus || selectDrawerItem?.current === type
               ? colors.white['0']
               : colors.black['0'],
         },
       ]}
     >
       <SpacerX size={8} />
+
       <Icon size={!drawerOpen || focus ? DEFAULT_SIZE + 2 : DEFAULT_SIZE} />
 
       <SpacerX size={8} />

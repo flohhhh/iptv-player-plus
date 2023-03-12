@@ -1,71 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { SpacerX, SpacerY } from '../../spacer'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, TextInput, View } from 'react-native'
 import { colors } from '../../../utils/colors'
 import { useTranslation } from 'react-i18next'
-import { MovieCard } from '../movies/MovieCard'
 import Fuse from 'fuse.js'
 import Text from '../../text'
 import { FlashList } from '@shopify/flash-list'
-import { IMovie } from '../../../atoms/api/moviesTypes'
 import { Search } from '../../../icons/Search'
-import { FocusInput } from '../../focus-pressable/FocusInput'
-import FuseResult = Fuse.FuseResult
 import {
   FocusPressable,
   FocusPressableWithFocus,
 } from '../../focus-pressable/FocusPressable'
-
-const DATA = [
-  {
-    added: '1665831900',
-    category_id: '11',
-    container_extension: 'mkv',
-    custom_sid: null,
-    direct_source: '',
-    name: 'FR| Blade I',
-    num: 7188,
-    rating: '6.742',
-    rating5_based: 0,
-    stream_icon:
-      'https://image.tmdb.org/t/p/w600_and_h900_bestv2/pFCZwMEkPaWpjBfZ5tiZWxHTo8I.jpg',
-    stream_id: 448937,
-    stream_type: 'movie',
-    tmdb_id: '36647',
-  },
-  {
-    added: '1665832620',
-    category_id: '11',
-    container_extension: 'mkv',
-    custom_sid: null,
-    direct_source: '',
-    name: 'FR| Le Retour De La Momie 2001',
-    num: 7149,
-    rating: '6.3',
-    rating5_based: 0,
-    stream_icon:
-      'https://image.tmdb.org/t/p/w600_and_h900_bestv2/lpoNz4jcuRGki78ucF0et4Uy3vB.jpg',
-    stream_id: 448976,
-    stream_type: 'movie',
-    tmdb_id: '1734',
-  },
-  {
-    added: '1665831900',
-    category_id: '11',
-    container_extension: 'mkv',
-    custom_sid: null,
-    direct_source: '',
-    name: 'EN | Blade II',
-    num: 7187,
-    rating: '6.5',
-    rating5_based: 0,
-    stream_icon:
-      'https://image.tmdb.org/t/p/w600_and_h900_bestv2/yDHwo3eWcMiy5LnnEnlGV9iLu9k.jpg',
-    stream_id: 448938,
-    stream_type: 'movie',
-    tmdb_id: '36586',
-  },
-]
+import { useMoviesByCategoryId } from '../../../atoms/api/moviesByCategoryId'
+import { ISearchStream, SearchCard } from './SearchCard'
+import { useSeriesByCategoryId } from '../../../atoms/api/seriesByCategoryId'
+import FuseResult = Fuse.FuseResult
+import { debounce } from '../../../utils/debounce'
 
 const options = {
   includeScore: true,
@@ -74,26 +24,68 @@ const options = {
 
 const ItemSeparatorComponent = () => <SpacerY size={10} />
 
-type TSelectTypes = 'movies' | 'series' | 'mylist'
+type TSelectTypes = 'movies' | 'series' // | 'mylist'
 export const SearchScreen = () => {
   const { t } = useTranslation()
+
+  const { movies, loading: loadingMovies } = useMoviesByCategoryId('all')
+  const { series, loading: loadingSeries } = useSeriesByCategoryId('all')
+
+  const moviesMemo: ISearchStream[] = useMemo(
+    () =>
+      movies.map((m) => ({
+        streamId: m.stream_id,
+        coverUri: m.stream_icon,
+        type: 'movies',
+        ...m,
+      })),
+    [movies]
+  )
+
+  const seriesMemo: ISearchStream[] = useMemo(
+    () =>
+      series.map((s) => ({
+        streamId: s.series_id,
+        coverUri: s.cover,
+        type: 'series',
+        ...s,
+      })),
+    [series]
+  )
+
+  const all = useMemo(
+    () => [...moviesMemo, ...seriesMemo],
+    [movies, seriesMemo]
+  )
+
   const [selectedTypes, setSelectedTypes] = useState<TSelectTypes[]>([])
-  const [results, setResults] = useState<IMovie[]>(DATA)
+  const [results, setResults] = useState<ISearchStream[]>([])
   const [searchText, setSearchText] = useState('')
 
-  const fuse = new Fuse(DATA, options)
+  const fuse = new Fuse(all, options)
+
+  const search = (txt: string) => {
+    const fuseResults: FuseResult<ISearchStream>[] = fuse.search(txt)
+    setResults(fuseResults.map((r) => r.item))
+  }
+
+  const delayedSearch = useCallback(
+    debounce((txt: string) => search(txt)),
+    []
+  )
 
   const onChangeSearchText = (txt: string) => {
     setSearchText(txt)
     if (txt.length === 0) {
-      setResults(DATA)
+      setResults(all)
     } else {
-      const fuseResults: FuseResult<IMovie>[] = fuse.search(txt)
-      setResults(fuseResults.map((r) => r.item))
+      delayedSearch(txt)
     }
   }
 
-  const _renderItem = ({ item }) => <MovieCard movie={item} />
+  const _renderItem = ({ item }: { item: ISearchStream }) => (
+    <SearchCard item={item} />
+  )
 
   const onSelectFilters = (value: TSelectTypes) => () => {
     if (selectedTypes.includes(value)) {
@@ -101,6 +93,26 @@ export const SearchScreen = () => {
     } else {
       setSelectedTypes([...selectedTypes, value])
     }
+  }
+
+  useEffect(() => {
+    if (searchText.length === 0) {
+      setResults(all)
+    } else if (selectedTypes.length > 0) {
+      setResults((prevResults) =>
+        prevResults.filter((i) => selectedTypes.includes(i.type))
+      )
+    } else {
+      search(searchText)
+    }
+  }, [all, selectedTypes])
+
+  if (loadingMovies || loadingSeries) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="small" color={colors.white['1']} />
+      </View>
+    )
   }
 
   return (
@@ -155,25 +167,14 @@ export const SearchScreen = () => {
         </FocusPressable>
 
         <SpacerX size={8} />
-
-        <FocusPressable
-          style={[
-            styles.searchType,
-            selectedTypes.includes('mylist') ? styles.searchTypeSelected : {},
-          ]}
-          focusStyle={styles.focusType}
-          onPress={onSelectFilters('mylist')}
-        >
-          <Text size={12}>{t('common.mylist')}</Text>
-        </FocusPressable>
       </View>
 
       <SpacerY size={14} />
 
       <FlashList
-        keyExtractor={(item) => String(item.stream_id)}
-        estimatedItemSize={20}
-        numColumns={6}
+        keyExtractor={(item) => `${item.type}-${String(item.streamId)}`}
+        estimatedItemSize={500}
+        numColumns={7}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={results}

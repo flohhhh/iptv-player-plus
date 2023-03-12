@@ -1,21 +1,17 @@
+import { IGenericByCategory } from './types'
+
 export interface IInfoMovieData {
   info: IInfo
   movie_data: IMovieData
 }
-export interface IMovie {
-  num: number
-  name: string
+export interface IMovie extends IGenericByCategory {
   stream_type: string
   stream_id: number
   stream_icon: string
-  rating: string
-  rating5_based: number
   added: string
-  category_id: string
   container_extension: string
   direct_source: string
   custom_sid?: any
-  tmdb_id: string
 }
 
 export interface IInfo {
